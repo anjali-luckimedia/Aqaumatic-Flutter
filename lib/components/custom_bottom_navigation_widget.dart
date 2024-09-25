@@ -1,0 +1,214 @@
+import '../favourite/favourite_page.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'custom_bottom_navigation_model.dart';
+export 'custom_bottom_navigation_model.dart';
+
+class CustomBottomNavigationWidget extends StatefulWidget {
+  const CustomBottomNavigationWidget({
+    super.key,
+    required this.selectedPage,
+  });
+
+  final String? selectedPage;
+
+  @override
+  State<CustomBottomNavigationWidget> createState() =>
+      _CustomBottomNavigationWidgetState();
+}
+
+class _CustomBottomNavigationWidgetState
+    extends State<CustomBottomNavigationWidget> {
+  late CustomBottomNavigationModel _model;
+
+  @override
+  void setState(VoidCallback callback) {
+    super.setState(callback);
+    _model.onUpdate();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _model = createModel(context, () => CustomBottomNavigationModel());
+  }
+
+  @override
+  void dispose() {
+    _model.maybeDispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 80.0,
+      decoration: BoxDecoration(
+        color: Color(0xFF019ADE),
+      ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                FlutterFlowIconButton(
+                  borderColor: Color(0xFF019ADE),
+                  borderRadius: 20.0,
+                  borderWidth: 1.0,
+                  buttonSize: 40.0,
+                  fillColor: Color(0xFF019ADE),
+                  icon: Icon(
+                    Icons.menu_book,
+                    color: widget!.selectedPage == 'catalouge'
+                        ? FlutterFlowTheme.of(context).secondaryBackground
+                        : Color(0xFF43484B),
+                    size: 24.0,
+                  ),
+                  onPressed: () async {
+                    if (Navigator.of(context).canPop()) {
+                      context.pop();
+                    }
+                    context.pushNamed('CatalougePage');
+                  },
+                ),
+                Text(
+                  'Catalouge',
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        fontFamily: 'Open Sans',
+                        color: widget!.selectedPage == 'catalouge'
+                            ? FlutterFlowTheme.of(context).secondaryBackground
+                            : Color(0xFF43484B),
+                        fontSize: 10.0,
+                        letterSpacing: 0.0,
+                      ),
+                ),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                FlutterFlowIconButton(
+                  borderColor: Color(0xFF019ADE),
+                  borderRadius: 20.0,
+                  borderWidth: 1.0,
+                  buttonSize: 40.0,
+                  fillColor: Color(0xFF019ADE),
+                  icon: Icon(
+                    Icons.star_rate,
+                    color: widget!.selectedPage == 'favourites'
+                        ? FlutterFlowTheme.of(context).secondaryBackground
+                        : Color(0xFF43484B),
+                    size: 24.0,
+                  ),
+                  onPressed: () async {
+                    if (Navigator.of(context).canPop()) {
+                      context.pop();
+                    }
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritesPage(),));
+                    //context.pushNamed('FavouritePage');
+                  },
+                ),
+                Text(
+                  'Favourites',
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        fontFamily: 'Open Sans',
+                        color: widget!.selectedPage == 'favourites'
+                            ? FlutterFlowTheme.of(context).secondaryBackground
+                            : Color(0xFF43484B),
+                        fontSize: 10.0,
+                        letterSpacing: 0.0,
+                      ),
+                ),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                FlutterFlowIconButton(
+                  borderColor: Color(0xFF019ADE),
+                  borderRadius: 20.0,
+                  borderWidth: 1.0,
+                  buttonSize: 40.0,
+                  fillColor: Color(0xFF019ADE),
+                  icon: Icon(
+                    Icons.menu_sharp,
+                    color: widget!.selectedPage == 'orders'
+                        ? FlutterFlowTheme.of(context).secondaryBackground
+                        : Color(0xFF43484B),
+                    size: 24.0,
+                  ),
+                  onPressed: () async {
+                    if (Navigator.of(context).canPop()) {
+                      context.pop();
+                    }
+                    context.pushNamed('OrderPage');
+                  },
+                ),
+                Text(
+                  'Orders',
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        fontFamily: 'Open Sans',
+                        color: widget!.selectedPage == 'orders'
+                            ? FlutterFlowTheme.of(context).secondaryBackground
+                            : Color(0xFF43484B),
+                        fontSize: 10.0,
+                        letterSpacing: 0.0,
+                      ),
+                ),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                FlutterFlowIconButton(
+                  borderColor: Color(0xFF019ADE),
+                  borderRadius: 20.0,
+                  borderWidth: 1.0,
+                  buttonSize: 40.0,
+                  fillColor: Color(0xFF019ADE),
+                  icon: Icon(
+                    Icons.info_outline,
+                    color: widget!.selectedPage == 'about'
+                        ? FlutterFlowTheme.of(context).secondaryBackground
+                        : Color(0xFF43484B),
+                    size: 24.0,
+                  ),
+                  onPressed: () async {
+                    if (Navigator.of(context).canPop()) {
+                      context.pop();
+                    }
+                    context.pushNamed('AboutPage');
+                  },
+                ),
+                Text(
+                  'About',
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        fontFamily: 'Open Sans',
+                        color: widget!.selectedPage == 'about'
+                            ? FlutterFlowTheme.of(context).secondaryBackground
+                            : Color(0xFF43484B),
+                        fontSize: 10.0,
+                        letterSpacing: 0.0,
+                      ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

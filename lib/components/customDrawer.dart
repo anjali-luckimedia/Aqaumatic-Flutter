@@ -8,10 +8,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
+import '../Cart/CartModel.dart';
+import '../Cart/cart_service.dart';
 import '../auth/custom_auth/auth_util.dart';
 import '../flutter_flow/flutter_flow_theme.dart'; // for WebViewAware
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   const CustomDrawer({
     Key? key,
     required this.firstName,
@@ -22,6 +24,30 @@ class CustomDrawer extends StatelessWidget {
   final String firstName;
   final String lastName;
   final String contactNumber;
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+
+
+  final CartService _cartService = CartService();
+  List<CartItem>? _cartItems;
+ // Allow cart items to be null initially
+  Future<void> _loadCart() async {
+    // Fetch cart items from SharedPreferences using _cartService
+    final cartItems = await _cartService.getCart();
+
+    setState(() {
+      _cartItems = cartItems;
+
+
+    });
+
+    // Log cart items quantities to verify
+    print("Cart Items after loading: ${_cartItems?.map((item) => item.quantity).toList()}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +71,7 @@ class CustomDrawer extends StatelessWidget {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: capitalizeFirstLetter(firstName),
+                      text: capitalizeFirstLetter(widget.firstName),
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                         fontFamily: 'Open Sans',
                         color: const Color(0xFF43484B),
@@ -57,7 +83,7 @@ class CustomDrawer extends StatelessWidget {
                       text: ' ',
                     ),
                     TextSpan(
-                      text: capitalizeFirstLetter(lastName),
+                      text: capitalizeFirstLetter(widget.lastName),
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                         fontFamily: 'Open Sans',
                         color: const Color(0xFF43484B),
@@ -105,14 +131,14 @@ class CustomDrawer extends StatelessWidget {
                 context,
                 icon: FontAwesomeIcons.phone,
                 label: 'Call Aqaumatic',
-                onTap: () => _makePhoneCall(contactNumber),
+                onTap: () => _makePhoneCall(widget.contactNumber),
               ),
               const SizedBox(height: 15.0),
               _buildDrawerItem(
                 context,
                 icon: Icons.login_sharp,
                 label: 'Logout',
-                onTap: () => _logout(context),
+                onTap: () => _logout(context, cartService: _cartService,loadCart:() => _loadCart,),
               ),
               const Spacer(),
               Padding(
@@ -183,7 +209,7 @@ class CustomDrawer extends StatelessWidget {
     await launchUrl(url);
   }
 
-  void _logout(BuildContext context) async {
+  void _logout(BuildContext context, {required CartService cartService, required Future<void> Function() Function() loadCart}) async {
     // Show a loading dialog
     showDialog(
       context: context,
@@ -200,6 +226,8 @@ class CustomDrawer extends StatelessWidget {
     );
 
     try {
+
+      await Future.delayed(const Duration(milliseconds: 200));
       // Prepare for auth event
       GoRouter.of(context).prepareAuthEvent();
 
@@ -215,7 +243,8 @@ class CustomDrawer extends StatelessWidget {
       FFAppState().lastName = '';
       FFAppState().telephone = '';
       FFAppState().email = '';
-
+      await cartService.clearCart();
+      loadCart();
       // Navigate to the login page
       context.goNamedAuth('LoginPage', context.mounted);
     } catch (e) {
@@ -226,19 +255,4 @@ class CustomDrawer extends StatelessWidget {
       Navigator.of(context).pop(); // Close the loader
     }
   }
-
-/*  void _logout(BuildContext context) async {
-    GoRouter.of(context).prepareAuthEvent();
-    await authManager.signOut();
-    GoRouter.of(context).clearRedirectLocation();
-
-    // Clearing state variables
-    FFAppState().userId = 0;
-    FFAppState().firstName = '';
-    FFAppState().lastName = '';
-    FFAppState().telephone = '';
-    FFAppState().email = '';
-
-    context.goNamedAuth('LoginPage', context.mounted);
-  }*/
 }

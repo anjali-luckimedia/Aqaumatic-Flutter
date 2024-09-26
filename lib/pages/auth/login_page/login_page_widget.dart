@@ -293,7 +293,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                               content: Text(
                                 getJsonField(
                                   (_model.loginAPIResult?.jsonBody ?? ''),
-                                  r'''$.data''',
+                                  r'''$.message''',
                                 ).toString(),
                                 style: TextStyle(
                                   color: FlutterFlowTheme.of(context)

@@ -112,6 +112,7 @@ class GetCatalougeCall {
       .toList();
 }
 
+/*
 class GetOrderListCall {
   static Future<ApiCallResponse> call({
     String? page = '1',
@@ -159,6 +160,61 @@ class GetOrderListCall {
           .map((x) => castToType<String>(x))
           .withoutNulls
           .toList();
+}
+*/
+class GetOrderListCall {
+  static Future<ApiCallResponse> call({
+    String? page = '1',
+    int? userId,
+  }) async {
+
+    print('User ID: $userId');
+
+    final response = await ApiManager.instance.makeApiCall(
+      callName: 'getOrderList',
+      apiUrl:
+      'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?per_page=10&customer=${userId}',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization':
+        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+      },
+      params: {
+        //'customer':userId,
+        'page': page,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+
+    // Print the raw API response for debugging
+    print('API Response: ${response.jsonBody}');
+
+    return response;
+  }
+
+  static List<int>? orderId(dynamic response) => (getJsonField(
+    response,
+    r'''$[:].id''',
+    true,
+  ) as List?)
+      ?.withoutNulls
+      .map((x) => castToType<int>(x))
+      .withoutNulls
+      .toList();
+  static List<String>? status(dynamic response) => (getJsonField(
+    response,
+    r'''$[:].status''',
+    true,
+  ) as List?)
+      ?.withoutNulls
+      .map((x) => castToType<String>(x))
+      .withoutNulls
+      .toList();
 }
 
 class GetCatalougeSearchCall {
@@ -780,6 +836,86 @@ class GetOrderDetailsCall {
   static Future<ApiCallResponse> call({
     int? orderId,
   }) async {
+    // Make the API call
+    ApiCallResponse response = await ApiManager.instance.makeApiCall(
+      callName: 'getOrderDetails',
+      apiUrl:
+      'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders/${orderId}',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization':
+        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+
+    // Print the API response for debugging
+    dev.log('API Response: ${response.jsonBody}');
+
+    // Return the API response
+    return response;
+  }
+
+  static int? id(dynamic response) => castToType<int>(getJsonField(
+    response,
+    r'''$.id''',
+  ));
+  static String? status(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.status''',
+  ));
+  static String? currency(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.currency''',
+  ));
+  static String? createDate(dynamic response) =>
+      castToType<String>(getJsonField(
+        response,
+        r'''$.date_created''',
+      ));
+  static String? total(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.total''',
+  ));
+  static String? updatedDate(dynamic response) =>
+      castToType<String>(getJsonField(
+        response,
+        r'''$.date_modified''',
+      ));
+  static String? firstName(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.first_name''',
+  ));
+  static String? lastName(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.last_name''',
+  ));
+  static String? number(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.number''',
+  ));
+  static String? phoneNumber(dynamic response) =>
+      castToType<String>(getJsonField(
+        response,
+        r'''$.shipping.phone''',
+      ));
+  static List? lineItems(dynamic response) => getJsonField(
+    response,
+    r'''$.line_items''',
+    true,
+  ) as List?;
+}
+
+/*class GetOrderDetailsCall {
+  static Future<ApiCallResponse> call({
+    int? orderId,
+  }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'getOrderDetails',
       apiUrl:
@@ -847,7 +983,7 @@ class GetOrderDetailsCall {
         r'''$.line_items''',
         true,
       ) as List?;
-}
+}*/
 
 class GetUserProfileCall {
   static Future<ApiCallResponse> call({
@@ -987,6 +1123,8 @@ class CreateOrderCall {
   }) async {
     final lineItems = _serializeJson(lineItemsJson);
     final ffApiRequestBody = '''
+    
+     
 {
   "payment_method": "bacs",
   "payment_method_title": "Direct Bank Transfer",
@@ -1022,6 +1160,8 @@ class CreateOrderCall {
     }
   ]
 }''';
+
+    print('BodyType.JSON: ${ffApiRequestBody}');
     return ApiManager.instance.makeApiCall(
       callName: 'createrOrder',
       apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders',

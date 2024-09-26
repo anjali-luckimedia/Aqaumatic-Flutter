@@ -488,12 +488,41 @@ class _CartScreenState extends State<CartScreen> {
                 size: 24.0,
               ),
               onPressed: () async {
-                await _cartService.clearCart();
-                _loadCart();
+                // Show confirmation dialog
+                bool? confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext dialogContext) {
+                    return AlertDialog(
+                      title: Text('Confirm'),
+                      content: Text('Are you sure you want to clear the cart?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop(false); // User canceled
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop(true); // User confirmed
+                          },
+                          child: Text('Clear Cart'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                // If the user confirmed, clear the cart
+                if (confirmed == true) {
+                  await _cartService.clearCart();
+                  _loadCart();
+                }
               },
             ),
           ),
         ],
+
         flexibleSpace: FlexibleSpaceBar(
           title: Text(
             'Your Cart',
@@ -512,7 +541,13 @@ class _CartScreenState extends State<CartScreen> {
       body: _cartItems == null
           ? Center(child: CircularProgressIndicator()) // Show loading while cart items are being loaded
           : _cartItems!.isEmpty
-          ? Center(child: Text('Your cart is empty'))
+          ? Center(child: Text('Your cart is empty',style: FlutterFlowTheme.of(context).bodyMedium.override(
+        fontFamily: 'Open Sans',
+        color: Colors.black,
+        fontSize: 18.0,
+        letterSpacing: 0.0,
+        fontWeight: FontWeight.w600,
+      ),))
           : SingleChildScrollView(
         child: Column(
           children: [
@@ -670,6 +705,7 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                             ),
                             FFButtonWidget(
+                              showLoadingIndicator: true,
                               onPressed: () {
                                 _removeItem(item.id);
                               },
@@ -712,7 +748,7 @@ class _CartScreenState extends State<CartScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Total: £ ${_calculateTotal()}',
+                    'Total: £ ${_calculateTotal().toStringAsFixed(2)}',
                     style: FlutterFlowTheme.of(context).bodyMedium.override(
                       fontFamily: 'Open Sans',
                       fontSize: 23.0,
@@ -749,7 +785,8 @@ class _CartScreenState extends State<CartScreen> {
                           postcode: postcode,
                           country: country,
                           phone: FFAppState().telephone,
-                          lineItemsJson: _cartItems,
+                          //lineItemsJson: _cartItems,
+                          lineItemsJson: items,
                           customerId: FFAppState().userId.toString(),
                         );
 

@@ -36,6 +36,7 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final CartService _cartService = CartService();
   List<CartItem> _cartItems = [];
+  int count = 0;
   @override
   void initState() {
     super.initState();
@@ -55,6 +56,10 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
     setState(() {
       _cartItems = cartItems;
       FFAppState().cartCount = _cartItems.length;
+      count = _cartItems.length;
+
+
+      print('count instant -------$count');
     });
   }
   @override
@@ -78,11 +83,11 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
           leading: Align(
             alignment: AlignmentDirectional(0.0, 0.0),
             child: FlutterFlowIconButton(
-              borderColor: Color(0xFF27AEDF),
+              //borderColor: Color(0xFF27AEDF),
               borderRadius: 0.0,
               borderWidth: 1.0,
               buttonSize: 46.0,
-              fillColor: Color(0xFF27AEDF),
+            //  fillColor: Color(0xFF27AEDF),
               icon: Icon(
                 Icons.menu,
                 color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -96,9 +101,11 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
           actions: [
             badges.Badge(
               position: badges.BadgePosition.topEnd(top: -5, end: 15),
-              badgeContent: FFAppState().cartCount > 0
+              //badgeContent: FFAppState().cartCount > 0
+              badgeContent: count > 0
                   ? Text(
-                FFAppState().cartCount.toString(),
+                //FFAppState().cartCount.toString(),
+                count.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14.0,
@@ -106,7 +113,8 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                 ),
               )
                   : null,
-              showBadge: FFAppState().cartCount > 0,
+              //showBadge: FFAppState().cartCount > 0,
+              showBadge: count > 0,
               badgeStyle: badges.BadgeStyle(
                 shape: badges.BadgeShape.circle,
                 badgeColor: Colors.red,

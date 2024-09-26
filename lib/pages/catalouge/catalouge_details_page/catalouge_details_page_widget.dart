@@ -52,7 +52,7 @@ class _CatalougeDetailsPageWidgetState
   List<CartItem> _cartItems = [];
   final FavouriteService _favoritesService = FavouriteService();
   List<int> favorites = [];
-
+  int count = 0;
   Future<void> _loadFavorites() async {
     List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
     setState(() {
@@ -64,6 +64,7 @@ class _CatalougeDetailsPageWidgetState
   void initState() {
     super.initState();
     _loadFavorites();
+   FFAppState().cartCount = 1;
     _loadCart();
     _model = createModel(context, () => CatalougeDetailsPageModel());
   }
@@ -80,6 +81,10 @@ class _CatalougeDetailsPageWidgetState
     setState(() {
       _cartItems = cartItems;
       FFAppState().cartCount = _cartItems.length;
+      count = _cartItems.length;
+
+
+      print('count instant -------$count');
     });
   }
   @override
@@ -114,9 +119,11 @@ class _CatalougeDetailsPageWidgetState
         actions: [
           badges.Badge(
             position: badges.BadgePosition.topEnd(top: -5, end: 15),
-            badgeContent: FFAppState().cartCount > 0
+            //badgeContent: FFAppState().cartCount > 0
+            badgeContent: count > 0
                 ? Text(
-              FFAppState().cartCount.toString(),
+              //FFAppState().cartCount.toString(),
+              count.toString(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14.0,
@@ -124,7 +131,8 @@ class _CatalougeDetailsPageWidgetState
               ),
             )
                 : null,
-            showBadge: FFAppState().cartCount > 0,
+            //showBadge: FFAppState().cartCount > 0,
+            showBadge: count > 0,
             badgeStyle: badges.BadgeStyle(
               shape: badges.BadgeShape.circle,
               badgeColor: Colors.red,
@@ -151,7 +159,7 @@ class _CatalougeDetailsPageWidgetState
           valueOrDefault<String>(
             widget.slugName,
             'slug',
-          ).maybeHandleOverflow(maxChars: 10),
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: true,
@@ -226,19 +234,52 @@ class _CatalougeDetailsPageWidgetState
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
+                                    child: Builder(
+                                      builder: (context) {
+                                        // Check if images array is empty or null
+                                        final imageList = GetProductDetailsCall.image(jsonResponse);
+                                        if (imageList == null || imageList.isEmpty) {
+                                          // Handle empty or null image list by showing a placeholder image
+                                          return Image.asset(
+                                            'assets/images/error_image.png',  // Placeholder or error image
+                                            width: double.infinity,
+                                            height: 200,
+                                            fit: BoxFit.contain,
+                                          );
+                                        } else {
+                                          // Display the first image from the list
+                                          return Image.network(
+                                            imageList[0],  // Assuming you want to display the first image
+                                            width: double.infinity,
+                                            height: 200,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) => Image.asset(
+                                              'assets/images/error_image.png',  // Placeholder if image fails to load
+                                              width: double.infinity,
+                                              height: 200,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+/*ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
                                     child: Image.network(
                                       GetProductDetailsCall.image(jsonResponse)!,
                                       width: double.infinity,
                                       height: 200,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error,
-                                          stackTrace) =>
+                                      errorBuilder: (context, error, stackTrace) =>
                                           Image.asset(
                                             'assets/images/error_image.png',
+                                            width: double.infinity,
+                                            height: 200,
                                             fit: BoxFit.contain,
                                           ),
                                     ),
-                                  ),
+                                  ),*/
                                 ),
                               ),
                               Padding(
@@ -557,6 +598,8 @@ class _CatalougeDetailsPageWidgetState
                                                         Image.asset(
                                                           'assets/images/error_image.png',
                                                           fit: BoxFit.contain,
+                                                          width: 154,
+                                                          height: 100,
                                                         ),
                                                   ),
                                                 ),
@@ -688,7 +731,7 @@ class _CatalougeDetailsPageWidgetState
                                         ),
 
                                         Padding(
-                                          padding: EdgeInsetsDirectional.fromSTEB(0, 5, 10, 0),
+                                          padding: EdgeInsetsDirectional.fromSTEB(0, 10, 10, 0),
                                           child: FlutterFlowIconButton(
                                             borderColor: isRelFavourite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
                                             borderRadius: 20,
@@ -790,7 +833,21 @@ class _CatalougeDetailsPageWidgetState
           actions: <Widget>[
             TextButton(
               child: Text("OK"),
-              onPressed: () {
+              onPressed: () async {
+                _loadCart();
+                final cartItems = await _cartService.getCart();
+                setState(() {
+                  _cartItems = cartItems;
+                  print(_cartItems.length);
+                  //FFAppState().cartCount = _cartItems.length;
+                  count = _cartItems.length;
+
+
+                  print('count instant -------$count');
+                });
+                setState(() {
+
+                });
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),

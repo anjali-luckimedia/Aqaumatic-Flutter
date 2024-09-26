@@ -54,6 +54,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
   List<CartItem> _cartItems = [];
   final FavouriteService _favoritesService = FavouriteService();
   List<int> favorites = [];
+  int count = 0;
 
   Future<void> _loadFavorites() async {
     List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
@@ -68,6 +69,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
     print(widget.catId);
     _loadFavorites();
     //_loadCartCount();
+     FFAppState().cartCount = 1;
     _loadCart();
     _model = createModel(context, () => CatalougeListPageModel());
   }
@@ -83,15 +85,18 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
     setState(() {
       _cartItems = cartItems;
       print(_cartItems.length);
-      FFAppState().cartCount = _cartItems.length;
+      //FFAppState().cartCount = _cartItems.length;
+      count = _cartItems.length;
+
+
+      print('count instant -------$count');
     });
   }
 
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
+    context.watch<FFAppState>();// Ensure this is set up correctly
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -120,9 +125,11 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
           actions: [
             badges.Badge(
               position: badges.BadgePosition.topEnd(top: -5, end: 15),
-              badgeContent: FFAppState().cartCount > 0
+              //badgeContent: FFAppState().cartCount > 0
+              badgeContent: count > 0
                   ? Text(
-                FFAppState().cartCount.toString(),
+                //FFAppState().cartCount.toString(),
+                count.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14.0,
@@ -130,7 +137,8 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                 ),
               )
                   : null,
-              showBadge: FFAppState().cartCount > 0,
+              //showBadge: FFAppState().cartCount > 0,
+              showBadge: count > 0,
               badgeStyle: badges.BadgeStyle(
                 shape: badges.BadgeShape.circle,
                 badgeColor: Colors.red,
@@ -524,6 +532,8 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                             15.0, 0.0, 0.0, 0.0),
                                         child: FFButtonWidget(
                                           onPressed: () {
+
+                                            print( FFAppState().cartCount,);
                                             _addItem(
                                               getJsonField(getCatalougeProductListItem, r'''$.id''',),
                                               getJsonField(getCatalougeProductListItem, r'''$.name''',).toString(),
@@ -666,10 +676,17 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
   }
 
   Future<void> _addItem(int id, String name , String price ,int quantity, String pn , String image,String slug) async {
+
     final newItem = CartItem(id: id, name: name, price: price, quantity: quantity, pn: pn,image: image, slug: slug);
     _cartService.addToCart(newItem);
     _loadCart();
+
+    setState(() {
+
+    });
   }
+
+
   void _showDialog(BuildContext context, String title, String content) {
     showDialog(
       context: context,
@@ -680,7 +697,21 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
           actions: <Widget>[
             TextButton(
               child: Text("OK"),
-              onPressed: () {
+              onPressed: () async {
+                _loadCart();
+                final cartItems = await _cartService.getCart();
+                setState(() {
+                  _cartItems = cartItems;
+                  print(_cartItems.length);
+                  //FFAppState().cartCount = _cartItems.length;
+                  count = _cartItems.length;
+
+
+                  print('count instant -------$count');
+                });
+                setState(() {
+
+                });
                 Navigator.of(context).pop(); // Close the dialog
               },
             ),

@@ -479,20 +479,17 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                 .asValidator(context),
                           ),
                         ),
-                        Align(
+                        /*Align(
                           alignment: AlignmentDirectional(0.0, 0.0),
                           child: Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 35.0, 0.0, 0.0),
                             child: FFButtonWidget(
                               onPressed: () async {
-                                _model.changePasswordAPI =
-                                    await ChangePasswordCall.call(
+                                _model.changePasswordAPI = await ChangePasswordCall.call(
                                   userId: FFAppState().userId,
-                                  password:
-                                      _model.oldPasswordTextController.text,
-                                  newPassword:
-                                      _model.newPasswordTextController.text,
+                                  password: _model.oldPasswordTextController.text,
+                                  newPassword: _model.newPasswordTextController.text,
                                 );
 
                                 if ((_model.changePasswordAPI?.succeeded ??
@@ -552,7 +549,97 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                               ),
                             ),
                           ),
+                        ),*/
+                        Align(
+                          alignment: AlignmentDirectional(0.0, 0.0),
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 35.0, 0.0, 0.0),
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                // Call the API to change the password
+                                _model.changePasswordAPI = await ChangePasswordCall.call(
+                                  userId: FFAppState().userId,
+                                  password: _model.oldPasswordTextController.text,
+                                  newPassword: _model.newPasswordTextController.text,
+                                );
+
+                                // Print the full API response for debugging
+                                print('API Response: ${_model.changePasswordAPI?.jsonBody}');
+
+                                // Check if the API call was successful
+                                if (_model.changePasswordAPI?.succeeded ?? false) {
+                                  // Print success message from API response
+                                  print('Success Message: ${getJsonField(_model.changePasswordAPI?.jsonBody ?? '', r'''$.data''')}');
+
+                                  // Clear the text fields after success
+                                  _model.oldPasswordTextController!.clear();
+                                  _model.newPasswordTextController!.clear();
+
+                                  // Show success message in a SnackBar
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        getJsonField(
+                                          (_model.changePasswordAPI?.jsonBody ?? ''),
+                                          r'''$.data''',
+                                        ).toString(),
+                                        style: TextStyle(
+                                          color: FlutterFlowTheme.of(context).primaryText,
+                                        ),
+                                      ),
+                                      duration: Duration(milliseconds: 4000),
+                                      backgroundColor: FlutterFlowTheme.of(context).success, // Success color
+                                    ),
+                                  );
+                                } else {
+                                  // Print error message from API response
+                                  print('Error Message: ${getJsonField(_model.changePasswordAPI?.jsonBody ?? '', r'''$.data''')}');
+
+                                  // Show error message in a SnackBar
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        getJsonField(
+                                          (_model.changePasswordAPI?.jsonBody ?? ''),
+                                          r'''$.data''',
+                                        ).toString(),
+                                        style: TextStyle(
+                                          color: FlutterFlowTheme.of(context).primaryText,
+                                        ),
+                                      ),
+                                      duration: Duration(milliseconds: 4000),
+                                      backgroundColor: FlutterFlowTheme.of(context).secondary, // Error color
+                                    ),
+                                  );
+                                }
+
+                                // Update the UI
+                                safeSetState(() {});
+                              },
+                              text: 'Update Password',
+                              options: FFButtonOptions(
+                                width: double.infinity,
+                                height: 40.0,
+                                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                color: Color(0xFF27AEDF),
+                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                  fontFamily: 'Open Sans',
+                                  color: Colors.white,
+                                  letterSpacing: 0.0,
+                                ),
+                                elevation: 3.0,
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(6.0),
+                              ),
+                            ),
+                          ),
                         ),
+
+
                       ].addToEnd(SizedBox(height: 50.0)),
                     ),
                   );

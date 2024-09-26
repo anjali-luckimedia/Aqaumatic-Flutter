@@ -88,12 +88,21 @@ class FFAppState extends ChangeNotifier {
     prefs.setString('ff_pendingStatus', value);
   }
 
-  int _cartCount = 1;
+  int _cartCount = 1; // Default value of 1
+
+  int get cartCount => _cartCount;
+
+  set cartCount(int value) {
+    _cartCount = value;
+    notifyListeners();  // Notify listeners when the cart count changes
+  }
+
+ /* int _cartCount = 1;
   int get cartCount => _cartCount;
   set cartCount(int value) {
     _cartCount = value;
   }
-
+*/
   String _firstName = '';
   String get firstName => _firstName;
   set firstName(String value) {

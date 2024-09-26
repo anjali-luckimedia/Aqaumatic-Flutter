@@ -38,11 +38,12 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<CartItem> _cartItems = [];
   final CartService _cartService = CartService();
-
+  int count = 0;
   @override
   void initState() {
     super.initState();
     _loadCart();
+
     _model = createModel(context, () => CatalougePageModel());
     print( FFAppState().wishlistKey,);
    _model.searchTextFieldTextController ??= TextEditingController();
@@ -61,6 +62,10 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
     setState(() {
       _cartItems = cartItems;
       FFAppState().cartCount = _cartItems.length;
+      count = _cartItems.length;
+
+
+      print('count instant -------$count');
     });
   }
 
@@ -109,9 +114,11 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
         actions: [
           badges.Badge(
             position: badges.BadgePosition.topEnd(top: -5, end: 15),
-            badgeContent: FFAppState().cartCount > 0
+            //badgeContent: FFAppState().cartCount > 0
+            badgeContent: count > 0
                 ? Text(
-              FFAppState().cartCount.toString(),
+              //FFAppState().cartCount.toString(),
+              count.toString(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14.0,
@@ -119,7 +126,8 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
               ),
             )
                 : null,
-            showBadge: FFAppState().cartCount > 0,
+            //showBadge: FFAppState().cartCount > 0,
+            showBadge: count > 0,
             badgeStyle: badges.BadgeStyle(
               shape: badges.BadgeShape.circle,
               badgeColor: Colors.red,

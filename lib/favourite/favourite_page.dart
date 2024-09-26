@@ -28,11 +28,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final CartService _cartService = CartService();
   List<CartItem> _cartItems = [];
-
-
+  int count = 0;
   @override
   void initState() {
     super.initState();
+    FFAppState().cartCount = 1;
     _loadCart();
     _loadFavorites();
   }
@@ -49,6 +49,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
     setState(() {
       _cartItems = cartItems;
       FFAppState().cartCount = _cartItems.length;
+      count = _cartItems.length;
+
+
+      print('count instant -------$count');
     });
   }
 
@@ -75,6 +79,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key:scaffoldKey,
+      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       drawer: CustomDrawer(
         firstName: FFAppState().firstName,
         lastName: FFAppState().lastName,
@@ -104,9 +109,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
         actions: [
           badges.Badge(
             position: badges.BadgePosition.topEnd(top: -5, end: 15),
-            badgeContent: FFAppState().cartCount > 0
+            //badgeContent: FFAppState().cartCount > 0
+            badgeContent: count > 0
                 ? Text(
-              FFAppState().cartCount.toString(),
+              //FFAppState().cartCount.toString(),
+              count.toString(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14.0,
@@ -114,7 +121,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
               ),
             )
                 : null,
-            showBadge: FFAppState().cartCount > 0,
+            //showBadge: FFAppState().cartCount > 0,
+            showBadge: count > 0,
             badgeStyle: badges.BadgeStyle(
               shape: badges.BadgeShape.circle,
               badgeColor: Colors.red,
@@ -155,7 +163,18 @@ class _FavoritesPageState extends State<FavoritesPage> {
       bottomNavigationBar: CustomBottomNavigationWidget(
         selectedPage: 'favourites', // Pass the selected page
       ),
-      body: ListView.builder(
+      body:  _favorites.isEmpty
+          ? Center(
+        child: Text(
+          'No favorites added yet!',
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+            fontFamily: 'Open Sans',
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      )
+          : ListView.builder(
         itemCount: _favorites.length,
         itemBuilder: (context, index) {
           final item = _favorites[index];
@@ -165,6 +184,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
             favoritesService: _favoritesService,
             cartService: _cartService,
             onRemove: () => _removeFromFavorites(item.id),
+            loadCart:() => _loadCart,
+            cartNewItems:_cartItems,
+            count: count,
 
 
           );
@@ -179,8 +201,11 @@ class WishlistItem extends StatelessWidget {
   List<FavoriteItem> favorites = [];
    FavouriteService favoritesService = FavouriteService();
   final VoidCallback onRemove;
+  final VoidCallback loadCart;
   final CartService cartService;
-  WishlistItem({super.key, required this.item, required this.favorites,required this.favoritesService, required this.onRemove, required this.cartService,});
+  List<CartItem> cartNewItems = [];
+  int count;
+  WishlistItem({super.key,required this.item, required this.favorites,required this.favoritesService, required this.onRemove, required this.cartService, required this.loadCart, required this.cartNewItems, required this.count});
 
 
 
@@ -289,7 +314,7 @@ class WishlistItem extends StatelessWidget {
                           id: item.id,
                           name: item.name,
                           price: item.price,
-                          quantity: 1,
+                          quantity: FFAppState().cartCount,
                           pn: item.sku,
                           image: item.imageUrl, slug: '',
                          // Add slug if needed
@@ -331,26 +356,41 @@ class WishlistItem extends StatelessWidget {
       ),
     );
   }
- /* Future<void> _addItem(int id, String name , String price ,int quantity, String pn , String image,String slug) async {
-    final newItem = CartItem(id: id, name: name, price: price, quantity: quantity, pn: pn,image: image, slug: slug);
-    cartService.addToCart(newItem);
 
-  }*/
   void _showDialog(BuildContext context, String title, String content) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-          ],
+        return StatefulBuilder(
+         // stream: null,
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(title),
+              content: Text(content),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () async {
+                    loadCart();
+                    final cartItems = await cartService.getCart();
+                    setState(() {
+                      cartNewItems = cartItems;
+                      print(cartItems.length);
+                      //FFAppState().cartCount = _cartItems.length;
+                      count = cartItems.length;
+
+
+                      print('count instant -------$count');
+                    });
+                    setState(() {
+
+                    });
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                ),
+              ],
+            );
+          }
         );
       },
     );

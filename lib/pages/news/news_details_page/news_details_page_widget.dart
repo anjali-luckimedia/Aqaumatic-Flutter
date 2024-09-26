@@ -1,6 +1,7 @@
 import 'package:aqaumatic_app/Cart/CartModel.dart';
 import 'package:aqaumatic_app/Cart/cart_page.dart';
 import 'package:aqaumatic_app/Cart/cart_service.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -36,6 +37,7 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final CartService _cartService = CartService();
   List<CartItem> _cartItems = [];
+  int count = 0;
   @override
   void initState() {
     super.initState();
@@ -55,6 +57,10 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
     setState(() {
       _cartItems = cartItems;
       FFAppState().cartCount = _cartItems.length;
+      count = _cartItems.length;
+
+
+      print('count instant -------$count');
     });
   }
 
@@ -69,11 +75,11 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
           backgroundColor: Color(0xFF27AEDF),
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
-            borderColor: Color(0xFF27AEDF),
+           // borderColor: Color(0xFF27AEDF),
             borderRadius: 20.0,
             borderWidth: 1.0,
             buttonSize: 40.0,
-            fillColor: Color(0xFF27AEDF),
+            //fillColor: Color(0xFF27AEDF),
             icon: Icon(
               Icons.arrow_back,
               color: FlutterFlowTheme.of(context).primaryBackground,
@@ -86,9 +92,11 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
           actions: [
             badges.Badge(
               position: badges.BadgePosition.topEnd(top: -5, end: 15),
-              badgeContent: FFAppState().cartCount > 0
+              //badgeContent: FFAppState().cartCount > 0
+              badgeContent: count > 0
                   ? Text(
-                FFAppState().cartCount.toString(),
+                //FFAppState().cartCount.toString(),
+                count.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14.0,
@@ -96,7 +104,8 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
                 ),
               )
                   : null,
-              showBadge: FFAppState().cartCount > 0,
+              //showBadge: FFAppState().cartCount > 0,
+              showBadge: count > 0,
               badgeStyle: badges.BadgeStyle(
                 shape: badges.BadgeShape.circle,
                 badgeColor: Colors.red,
@@ -140,7 +149,7 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
             padding: EdgeInsetsDirectional.fromSTEB(10.0, 5.0, 0.0, 0.0),
             child: FutureBuilder<ApiCallResponse>(
               future: GetNewsDetailsCall.call(
-                slug: widget!.slugName,
+                slug: widget.slugName,
               ),
               builder: (context, snapshot) {
                 // Customize what your widget looks like when it's loading.
@@ -211,7 +220,24 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
                           ),
                         ),
                       ),
-                      Padding(
+                      Html(
+                        data:  GetNewsDetailsCall.content(
+                          columnGetNewsDetailsResponse.jsonBody,
+                        )!,
+                        // Optional styling
+                        style: {
+                          "p": Style(
+                            fontSize: FontSize.large,
+                            color: Colors.black87,
+                          ),
+                          "src": Style(
+
+                            //padding:  HtmlPaddings(top: 8,bottom: 8,left: 8,right: 8),
+                            width: Width(MediaQuery.of(context).size.width * 0.3), // Resizes image width
+                          ),
+                        },
+                      ),
+                    /*  Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
                             0.0, 8.0, 15.0, 35.0),
                         child: FlutterFlowWebView(
@@ -224,7 +250,7 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
                           horizontalScroll: false,
                           html: true,
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 );

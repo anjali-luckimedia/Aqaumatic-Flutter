@@ -35,8 +35,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        alignment: Alignment.center,
         children: [
           Container(height: double.infinity,width: double.infinity,child: Image.asset('assets/images/new-modern-steel-faucet-kitchen_1.png',fit: BoxFit.cover)),
+          Image.asset('assets/images/Group.png',scale: 4.0,),
           //Container(width: double.infinity,child: Image.asset(AppImages.kSplash1,fit: BoxFit.cover)),
           //Center(child: Image.asset(AppImages.kSplash1Text,scale: 4.5,)),
         ],

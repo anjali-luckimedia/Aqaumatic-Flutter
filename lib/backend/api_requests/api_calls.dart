@@ -174,6 +174,7 @@ class GetOrderListCall {
       callName: 'getOrderList',
       apiUrl:
       'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?per_page=10&customer=${userId}',
+      //'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?customer=${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
@@ -192,7 +193,7 @@ class GetOrderListCall {
     );
 
     // Print the raw API response for debugging
-    print('API Response: ${response.jsonBody}');
+    dev.log('API Response: ${response.jsonBody}');
 
     return response;
   }
@@ -240,7 +241,7 @@ class GetCatalougeSearchCall {
       alwaysAllowBody: false,
     );
 
-    debugPrint(response.jsonBody.toString());
+    dev.log(response.jsonBody.toString());
     return response;
   }
 
@@ -251,7 +252,8 @@ class LoginCall {
     String? password = '',
     String? username = '',
   }) async {
-    final ffApiRequestBody = '''{ "username": "${username}","password": "${password}"}''';
+    final ffApiRequestBody =
+        '''{ "username": "${username}","password": "${password}"}''';
 
     print('BodyType.JSON: ${ffApiRequestBody}');
     print('BodyType.JSON: ${username}');
@@ -274,8 +276,8 @@ class LoginCall {
     );*/
     final response = await ApiManager.instance.makeApiCall(
       callName: 'login',
-     // apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/login',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/jwt-auth/v1/token',
+     //apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/login',
+     apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/jwt-auth/v1/token',
       callType: ApiCallType.POST,
       headers: {},
       params: {},
@@ -290,7 +292,7 @@ class LoginCall {
     );
 
     // Print the entire response
-    print('Response: ${response.jsonBody}');
+    print('Login Response: ${response.jsonBody}');
 
     return response;
   }
@@ -361,7 +363,7 @@ class GetProductListByCatalougeCall {
     );
 
     // Print the entire response to see the structure
-   dev.log('API Response: ${response.jsonBody}');
+   //dev.log('API Response: ${response.jsonBody}');
 
     // Return the response
     return response;
@@ -465,7 +467,7 @@ class GetProductDetailsCall {
     );
 
     // Print the response for debugging
-    //dev.log('response ${response.jsonBody}');
+   dev.log('response ${response.jsonBody}');
 
     return response;
 
@@ -1078,6 +1080,46 @@ class GetUserProfileCall {
     r'''$.billing.state''',
   ));
 
+  static String? shippingFName(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.first_name''',
+  ));
+  static String? shippingLName(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.last_name''',
+  ));
+  static String? shippingPostCode(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.postcode''',
+  ));
+  static String? shippingEmail(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.email''',
+  ));
+  static String? shippingPhone(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.phone''',
+  ));
+  static String? shippingAdd(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.address_1''',
+  ));
+  static String? shippingAdd2(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.address_2''',
+  ));
+  static String? shippingCity(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.city''',
+  ));
+  static String? shippingCountry(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.country''',
+  ));
+  static String? shippingState(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.shipping.state''',
+  ));
 }
 
 class DeleteItemInCartCall {
@@ -1109,6 +1151,9 @@ class DeleteItemInCartCall {
 
 class CreateOrderCall {
   static Future<ApiCallResponse> call({
+    String? customerNote = '',
+    String? billingMethod = '',
+    String? purchaseNote = '',
     String? firstName = '',
     String? lastName = '',
     String? address1 = '',
@@ -1118,6 +1163,15 @@ class CreateOrderCall {
     String? postcode = '',
     String? country = '',
     String? phone = '',
+    String? shippingFirstName = '',
+    String? shippingLastName = '',
+    String? shippingAddress1 = '',
+    String? shippingAddress2 = '',
+    String? shippingCity = '',
+    String? shippingState = '',
+    String? shippingPostcode = '',
+    String? shippingCountry = '',
+    String? shippingPhone = '',
     dynamic? lineItemsJson,
     String? customerId = '',
   }) async {
@@ -1142,15 +1196,26 @@ class CreateOrderCall {
     "phone": "${phone}"
   },
   "shipping": {
-    "first_name": "${firstName}",
-    "last_name": "${lastName}",
-    "address_1": "${address1}",
-    "address_2": "${address2}",
-    "city": "${city}",
-    "state": "${state}",
-    "postcode": "${postcode}",
-    "country": "${country}"
+    "first_name": "${shippingFirstName}",
+    "last_name": "${shippingLastName}",
+    "address_1": "${shippingAddress1}",
+    "address_2": "${shippingAddress2}",
+    "city": "${shippingCity}",
+    "state": "${shippingState}",
+    "postcode": "${shippingPostcode}",
+    "country": "${shippingCountry}"
   },
+  "customer_note" : "${customerNote}",
+  "meta_data": [
+        {
+           "key": "selected billing method",
+            "value": "${billingMethod}"
+        },
+        {
+           "key": "purchase note",
+            "value": "${purchaseNote}"
+        }
+        ],
   "line_items": ${lineItems},
   "shipping_lines": [
     {

@@ -198,7 +198,8 @@ class _CatalougeDetailsPageWidgetState
                           width: 40,
                           height: 40,
                           child: SpinKitFadingCircle(
-                            color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
+
                             size: 40,
                           ),
                         ),
@@ -249,7 +250,8 @@ class _CatalougeDetailsPageWidgetState
                                         } else {
                                           // Display the first image from the list
                                           return Image.network(
-                                            imageList[0],  // Assuming you want to display the first image
+                                            imageList
+                                            /*GetProductDetailsCall.image(jsonResponse)!*/,  // Assuming you want to display the first image
                                             width: double.infinity,
                                             height: 200,
                                             fit: BoxFit.cover,

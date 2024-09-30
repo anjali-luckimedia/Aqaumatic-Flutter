@@ -46,7 +46,9 @@ class CatalougeListPageWidget extends StatefulWidget {
 
 class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
   late CatalougeListPageModel _model;
+  static const _pageSize = 10;
 
+  final PagingController<int, dynamic> _pagingController = PagingController(firstPageKey: 1);
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final CartService _cartService = CartService();
   bool isLoading = false;  // Loading state
@@ -68,6 +70,9 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
     super.initState();
     print(widget.catId);
     _loadFavorites();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     //_loadCartCount();
      FFAppState().cartCount = 1;
     _loadCart();
@@ -79,6 +84,30 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final response = await GetProductListByCatalougeCall.call(
+        categoryId: widget.catId,
+        page: pageKey,
+        userId: FFAppState().userId, // Assuming FFAppState().userId exists
+      );
+
+      // Parse the response to extract the list of orders
+      final List<dynamic> fetchedOrders = response.jsonBody as List<dynamic>;
+
+      final isLastPage = fetchedOrders.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(fetchedOrders);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(fetchedOrders, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
   }
   Future<void> _loadCart() async {
     final cartItems = await _cartService.getCart();
@@ -185,15 +214,15 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
             children: [
               Align(
                 alignment: AlignmentDirectional(0.0, 0.0),
-                child: PagedListView<ApiPagingParams, dynamic>(
-                  pagingController: _model.setListViewController(
+                child: PagedListView<int, dynamic>(
+                  pagingController: _pagingController,
+                  /*pagingController: _model.setListViewController(
                     (nextPageMarker) => GetProductListByCatalougeCall.call(
                       userId: FFAppState().userId,
-                      page: functions
-                          .getPageNumber(nextPageMarker.nextPageNumber),
+                      page: functions.getPageNumber(nextPageMarker.nextPageNumber),
                       categoryId: widget.catId,
                     ),
-                  ),
+                  ),*/
                   shrinkWrap: true,
                   reverse: false,
                   scrollDirection: Axis.vertical,
@@ -204,7 +233,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                         width: 40.0,
                         height: 40.0,
                         child: SpinKitFadingCircle(
-                          color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
                           size: 40.0,
                         ),
                       ),
@@ -215,17 +244,19 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                         width: 40.0,
                         height: 40.0,
                         child: SpinKitFadingCircle(
-                          color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
                           size: 40.0,
                         ),
                       ),
                     ),
 
-                    itemBuilder: (context, _, getCatalougeProductListIndex) {
-                      final item = _model.listViewPagingController!.itemList![getCatalougeProductListIndex];
-                      final getCatalougeProductListItem = _model.listViewPagingController!.itemList![getCatalougeProductListIndex];
-                      //bool isFavourite1 = favorites.contains(getCatalougeProductListItem.id);
-                      bool isFavourite1 = favorites.contains(getCatalougeProductListItem['id']); // Use map access
+
+
+                    itemBuilder: (context, item, getCatalougeProductListIndex) {
+                      final getListItem = item;
+                      //final getCatalougeProductListItem = _model.listViewPagingController!.itemList![getCatalougeProductListIndex];
+
+                      bool isFavourite1 = favorites.contains(getListItem['id']); // Use map access
 
                       return SizedBox(
                         child: Padding(
@@ -255,7 +286,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                             child: FlutterFlowExpandedImageView(
                                               image: Image.network(
                                                 getJsonField(
-                                                  getCatalougeProductListItem,
+                                                  getListItem,
                                                   r'''$.images[:].src''',
                                                 ).toString(),
                                                 fit: BoxFit.contain,
@@ -268,7 +299,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                               ),
                                               allowRotation: false,
                                               tag: getJsonField(
-                                                getCatalougeProductListItem,
+                                                getListItem,
                                                 r'''$.images[:].src''',
                                               ).toString(),
                                               useHeroAnimation: true,
@@ -278,7 +309,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                       },
                                       child: Hero(
                                         tag: getJsonField(
-                                          getCatalougeProductListItem,
+                                          getListItem,
                                           r'''$.images[:].src''',
                                         ).toString(),
                                         transitionOnUserGestures: true,
@@ -287,7 +318,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                               BorderRadius.circular(8.0),
                                           child: Image.network(
                                             getJsonField(
-                                              getCatalougeProductListItem,
+                                              getListItem,
                                               r'''$.images[:].src''',
                                             ).toString(),
                                             width: 50.0,
@@ -321,7 +352,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                           decoration: BoxDecoration(),
                                           child: Text(
                                             getJsonField(
-                                              getCatalougeProductListItem,
+                                              getListItem,
                                               r'''$.name''',
                                             ).toString(),
                                             maxLines: 1,
@@ -358,7 +389,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                                 ),
                                                 TextSpan(
                                                   text: getJsonField(
-                                                    getCatalougeProductListItem,
+                                                    getListItem,
                                                     r'''$.sku''',
                                                   ).toString(),
                                                   style: TextStyle(),
@@ -405,7 +436,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                                 ),
                                                 TextSpan(
                                                   text: getJsonField(
-                                                    getCatalougeProductListItem,
+                                                    getListItem,
                                                     r'''$.price''',
                                                   ).toString(),
                                                   style: TextStyle(),
@@ -432,7 +463,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                             onTap: () async {
                                               final slug = serializeParam(
                                                 getJsonField(
-                                                        getCatalougeProductListItem,
+                                                    getListItem,
                                                         r'''$.slug''')
                                                     .toString(),
                                                 ParamType.String,
@@ -523,8 +554,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                   Row(
                                     children: [
                                       CountControllerComponentWidget(
-                                        key: Key(
-                                            'Keyqvb_${getCatalougeProductListIndex}_of_${_model.listViewPagingController!.itemList!.length}'),
+                                       // key: Key('Keyqvb_${getCatalougeProductListIndex}_of_${_model.listViewPagingController!.itemList!.length}'),
                                         countValue: FFAppState().cartCount,
                                       ),
                                       Padding(
@@ -535,13 +565,13 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
 
                                             print( FFAppState().cartCount,);
                                             _addItem(
-                                              getJsonField(getCatalougeProductListItem, r'''$.id''',),
-                                              getJsonField(getCatalougeProductListItem, r'''$.name''',).toString(),
-                                              getJsonField(getCatalougeProductListItem, r'''$.price''',),
+                                              getJsonField(getListItem, r'''$.id''',),
+                                              getJsonField(getListItem, r'''$.name''',).toString(),
+                                              getJsonField(getListItem, r'''$.price''',),
                                               FFAppState().cartCount,
-                                              getJsonField(getCatalougeProductListItem, r'''$.sku''',).toString(),
-                                              getJsonField(getCatalougeProductListItem, r'''$.images[:].src''',).toString(),
-                                              getJsonField(getCatalougeProductListItem, r'''$.slug''',),
+                                              getJsonField(getListItem, r'''$.sku''',).toString(),
+                                              getJsonField(getListItem, r'''$.images[:].src''',).toString(),
+                                              getJsonField(getListItem, r'''$.slug''',),
                                             ).then((_) {
                                               // Show a dialog box after the item has been added successfully
                                               _showDialog(context, "Item Added", "The item has been successfully added to your cart.");
@@ -587,45 +617,18 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                       ),
                                     ],
                                   ),
-                                 /* FFButtonWidget(
-                                    onPressed: () async {
-                                      if (isFavourite1) {
-                                        await favoritesService.removeFavorite(item.id);
-                                      } else {
-                                        await favoritesService.addFavorite(item.id);
-                                      }
-                                      await _loadFavorites(); // Refresh the favorites list
-                                    },
-                                    text: isFavourite1 ? 'Remove' : 'Add',
-                                    icon: Icon(Icons.favorite_border, size: 15.0),
-                                    options: FFButtonOptions(
-                                      height: 30.0,
-                                      padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                                      color: isFavourite1 ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                        fontFamily: 'Open Sans',
-                                        color: Colors.white,
-                                        fontSize: 13.0,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      elevation: 0.0,
-                                      borderSide: BorderSide(
-                                        color: isFavourite1 ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                  ),*/
+
                                   FFButtonWidget(
                                     onPressed: () async {
                                       if (isFavourite1) {
-                                        await _favoritesService.removeFromFavourite(getJsonField(getCatalougeProductListItem, r'''$.id''',),); // Access via map
+                                        await _favoritesService.removeFromFavourite(getJsonField(getListItem, r'''$.id''',),); // Access via map
                                       } else {
                                         FavoriteItem newItem = FavoriteItem(
-                                          id: getJsonField(getCatalougeProductListItem, r'''$.id''',),
-                                          name: getJsonField(getCatalougeProductListItem, r'''$.name''',).toString(),
-                                          sku: getJsonField(getCatalougeProductListItem, r'''$.sku''',).toString(),
-                                          price: getJsonField(getCatalougeProductListItem, r'''$.price''',),
-                                          imageUrl: getJsonField(getCatalougeProductListItem, r'''$.images[:].src''',).toString(),
+                                          id: getJsonField(getListItem, r'''$.id''',),
+                                          name: getJsonField(getListItem, r'''$.name''',).toString(),
+                                          sku: getJsonField(getListItem, r'''$.sku''',).toString(),
+                                          price: getJsonField(getListItem, r'''$.price''',),
+                                          imageUrl: getJsonField(getListItem, r'''$.images[:].src''',).toString(),
 
                                         );
                                         //  await favouriteService.addToFavourite(newItem);

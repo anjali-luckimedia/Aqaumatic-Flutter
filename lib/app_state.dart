@@ -22,16 +22,7 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _userId = prefs.getInt('ff_userId') ?? _userId;
     });
-    _safeInit(() {
-      _cancelStatus = prefs.getString('ff_cancelStatus') ?? _cancelStatus;
-    });
-    _safeInit(() {
-      _submittedStatus =
-          prefs.getString('ff_submittedStatus') ?? _submittedStatus;
-    });
-    _safeInit(() {
-      _pendingStatus = prefs.getString('ff_pendingStatus') ?? _pendingStatus;
-    });
+
     _safeInit(() {
       _firstName = prefs.getString('ff_firstName') ?? _firstName;
     });
@@ -50,7 +41,12 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _wishlistId = prefs.getInt('ff_wishlistId') ?? _wishlistId;
     });
-
+    _safeInit(() {
+      _firstName = prefs.getString('ff_firstName') ?? _firstName;
+    });
+    _safeInit(() {
+      isNewsVisible = prefs.getBool('ff_isNewsVisible') ?? _isNewsVisible;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -67,25 +63,12 @@ class FFAppState extends ChangeNotifier {
     prefs.setInt('ff_userId', value);
   }
 
-  String _cancelStatus = '';
-  String get cancelStatus => _cancelStatus;
-  set cancelStatus(String value) {
-    _cancelStatus = value;
-    prefs.setString('ff_cancelStatus', value);
-  }
 
-  String _submittedStatus = '';
-  String get submittedStatus => _submittedStatus;
-  set submittedStatus(String value) {
-    _submittedStatus = value;
-    prefs.setString('ff_submittedStatus', value);
-  }
-
-  String _pendingStatus = '';
-  String get pendingStatus => _pendingStatus;
-  set pendingStatus(String value) {
-    _pendingStatus = value;
-    prefs.setString('ff_pendingStatus', value);
+  bool _isNewsVisible = true;
+  bool get isNewsVisible => _isNewsVisible;
+  set isNewsVisible(bool value) {
+    _isNewsVisible = value;
+    prefs.setBool('ff_isNewsVisible', value);
   }
 
   int _cartCount = 1; // Default value of 1
@@ -94,7 +77,7 @@ class FFAppState extends ChangeNotifier {
 
   set cartCount(int value) {
     _cartCount = value;
-    notifyListeners();  // Notify listeners when the cart count changes
+   // notifyListeners();  // Notify listeners when the cart count changes
   }
 
  /* int _cartCount = 1;

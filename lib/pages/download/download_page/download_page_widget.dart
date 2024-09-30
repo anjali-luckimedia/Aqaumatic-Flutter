@@ -166,7 +166,7 @@ class _DownloadPageWidgetState extends State<DownloadPageWidget> {
                         width: 40.0,
                         height: 40.0,
                         child: SpinKitFadingCircle(
-                          color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
                           size: 40.0,
                         ),
                       ),

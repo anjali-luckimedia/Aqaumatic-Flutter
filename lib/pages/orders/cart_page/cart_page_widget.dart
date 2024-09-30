@@ -77,6 +77,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                 width: 40.0,
                 height: 40.0,
                 child: SpinKitFadingCircle(
+                    color: Color(0xFF27AEDF),(
                   color: FlutterFlowTheme.of(context).primary,
                   size: 40.0,
                 ),
@@ -213,6 +214,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                 width: 40.0,
                                 height: 40.0,
                                 child: SpinKitFadingCircle(
+                    color: Color(0xFF27AEDF),(
                                   color: FlutterFlowTheme.of(context).primary,
                                   size: 40.0,
                                 ),
@@ -248,6 +250,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                   width: 40.0,
                                                   height: 40.0,
                                                   child: SpinKitFadingCircle(
+                    color: Color(0xFF27AEDF),(
                                                     color: FlutterFlowTheme.of(
                                                             context)
                                                         .primary,
@@ -1389,7 +1392,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                       width: 40.0,
                       height: 40.0,
                       child: SpinKitFadingCircle(
-                        color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
                         size: 40.0,
                       ),
                     ),
@@ -2161,6 +2164,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                 width: 40.0,
                 height: 40.0,
                 child: SpinKitFadingCircle(
+                    color: Color(0xFF27AEDF),(
                   color: FlutterFlowTheme.of(context).primary,
                   size: 40.0,
                 ),
@@ -2280,6 +2284,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                           width: 40.0,
                           height: 40.0,
                           child: SpinKitFadingCircle(
+                    color: Color(0xFF27AEDF),(
                             color: FlutterFlowTheme.of(context).primary,
                             size: 40.0,
                           ),
@@ -2306,6 +2311,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                     //       width: 40.0,
                                     //       height: 40.0,
                                     //       child: SpinKitFadingCircle(
+                    color: Color(0xFF27AEDF),(
                                     //         color: FlutterFlowTheme.of(context).primary,
                                     //         size: 40.0,
                                     //       ),

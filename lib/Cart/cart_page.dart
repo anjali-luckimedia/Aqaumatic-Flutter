@@ -394,8 +394,17 @@ class _CartScreenState extends State<CartScreen> {
 
     _loadCart();
   }
-
   Future<void> _loadCart() async {
+    List<CartItem> favorites = await _cartService.getCart();
+    setState(() {
+      _cartItems = favorites;
+      if (_cartItems != null && _cartItems!.isNotEmpty) {
+        items = lineItems(_cartItems!); // Use _cartItems to get the products
+        print("Formatted Line Items: $items");
+      }
+    });
+  }
+  /*Future<void> _loadCart() async {
     // Fetch cart items from SharedPreferences using _cartService
     final cartItems = await _cartService.getCart();
 
@@ -411,7 +420,7 @@ class _CartScreenState extends State<CartScreen> {
 
     // Log cart items quantities to verify
     print("Cart Items after loading: ${_cartItems?.map((item) => item.quantity).toList()}");
-  }
+  }*/
 
   dynamic lineItems(List<CartItem> cartItems) {
     // Transform cart items into the required format for order creation
@@ -428,8 +437,8 @@ class _CartScreenState extends State<CartScreen> {
     _loadCart();  // Load the cart again every time you come back to the cart page
   }
 
-  void _removeItem(int id) {
-    _cartService.removeFromCart(id);
+  void _removeItem(int id) async{
+    await _cartService.removeFromCart(id);
     _loadCart();
   }
 
@@ -477,11 +486,11 @@ class _CartScreenState extends State<CartScreen> {
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
             child: FlutterFlowIconButton(
-              borderColor: Color(0xFF27AEDF),
+            //  borderColor: Color(0xFF27AEDF),
               borderRadius: 0.0,
               borderWidth: 0.0,
               buttonSize: 40.0,
-              fillColor: Color(0xFF27AEDF),
+              //fillColor: Color(0xFF27AEDF),
               icon: Icon(
                 Icons.close,
                 color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -705,10 +714,12 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                             ),
                             FFButtonWidget(
-                              showLoadingIndicator: true,
-                              onPressed: () {
-                                _removeItem(item.id);
-                              },
+                              //showLoadingIndicator: true,
+                              onPressed: () async {
+                                // _removeItem(item.id);
+                                await _cartService.removeFromCart(item.id);
+                                _removeItem(item.id); // Trigger the callback to refresh favorites
+                                },
                               text: 'Remove',
                               icon: Icon(
                                 Icons.close,
@@ -756,6 +767,10 @@ class _CartScreenState extends State<CartScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  Divider(),
+
+                  ///Radio button add
+
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
                     child: FFButtonWidget(
@@ -767,6 +782,9 @@ class _CartScreenState extends State<CartScreen> {
 
                         // Extract user profile data
                         var userData = userProfile.jsonBody;
+                        var bFName = GetUserProfileCall.bAdd(userData);
+                        var bLName = GetUserProfileCall.bAdd2(userData);
+                        var bPhone = GetUserProfileCall.bAdd(userData);
                         var address1 = GetUserProfileCall.bAdd(userData);
                         var address2 = GetUserProfileCall.bAdd2(userData);
                         var city = GetUserProfileCall.bCity(userData);
@@ -774,17 +792,42 @@ class _CartScreenState extends State<CartScreen> {
                         var postcode = GetUserProfileCall.bPostCode(userData);
                         var country = GetUserProfileCall.bCountry(userData);
 
+                        var shippingFirstName = GetUserProfileCall.shippingFName(userData);
+                        var shippingLastName = GetUserProfileCall.shippingLName(userData);
+                        var shippingPhone = GetUserProfileCall.shippingPhone(userData);
+                        var shippingAddress1 = GetUserProfileCall.shippingAdd(userData);
+                        var shippingAddress2 = GetUserProfileCall.shippingAdd2(userData);
+                        var shippingCity = GetUserProfileCall.shippingCity(userData);
+                        var shippingState = GetUserProfileCall.shippingState(userData);
+                        var shippingPostcode = GetUserProfileCall.shippingPostCode(userData);
+                        var shippingCountry = GetUserProfileCall.shippingCountry(userData);
+
                         // Create order
                         var orderCreate = await CreateOrderCall.call(
-                          firstName: FFAppState().firstName,
-                          lastName: FFAppState().lastName,
+                          //firstName: FFAppState().firstName,
+                          firstName: bFName,
+                          lastName: bLName,
+                          //lastName: FFAppState().lastName,
                           address1: address1,
                           address2: address2,
                           city: city,
                           state: state,
                           postcode: postcode,
                           country: country,
-                          phone: FFAppState().telephone,
+                          //phone: FFAppState().telephone,
+                          phone: bPhone,
+
+                          customerNote: 'Test',
+
+                          shippingAddress1: shippingAddress1,
+                          shippingAddress2: shippingAddress2,
+                          shippingCity: shippingCity,
+                          shippingCountry:shippingCountry ,
+                          shippingFirstName:shippingFirstName,
+                          shippingLastName: shippingLastName,
+                          shippingPhone:shippingPhone,
+                          shippingPostcode: shippingPostcode,
+                           shippingState: shippingState,
                           //lineItemsJson: _cartItems,
                           lineItemsJson: items,
                           customerId: FFAppState().userId.toString(),
@@ -813,7 +856,7 @@ class _CartScreenState extends State<CartScreen> {
 
                         // Payment logic can be added here
                       },
-                      text: 'Checkout',
+                      text: 'Submit order to aquamatic'.toUpperCase(),
                       options: FFButtonOptions(
                         width: double.infinity,
                         height: 45.0,
@@ -821,7 +864,8 @@ class _CartScreenState extends State<CartScreen> {
                         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Open Sans',
                           color: Colors.white,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500
                         ),
                         elevation: 3.0,
                         borderSide: BorderSide(

@@ -100,7 +100,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                       decoration: InputDecoration(
                         //isDense: true,
                         alignLabelWithHint: false,
-                        hintText: 'Enter your password',
+                        hintText: 'Enter your Email',
                         hintStyle:
                             FlutterFlowTheme.of(context).labelMedium.override(
                                   fontFamily: 'Open Sans',
@@ -293,7 +293,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                               content: Text(
                                 getJsonField(
                                   (_model.loginAPIResult?.jsonBody ?? ''),
-                                  r'''$.message''',
+                                  r'''$.data''',
                                 ).toString(),
                                 style: TextStyle(
                                   color: FlutterFlowTheme.of(context)

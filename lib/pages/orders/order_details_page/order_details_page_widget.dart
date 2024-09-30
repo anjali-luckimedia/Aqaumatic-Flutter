@@ -1,5 +1,6 @@
 import 'package:aqaumatic_app/Cart/cart_page.dart';
 import 'package:aqaumatic_app/Cart/cart_service.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import '../../../Cart/CartModel.dart';
 import '/backend/api_requests/api_calls.dart';
@@ -166,7 +167,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                               width: 40.0,
                               height: 40.0,
                               child: SpinKitFadingCircle(
-                                color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
                                 size: 40.0,
                               ),
                             ),
@@ -228,7 +229,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                         width: 40.0,
                                         height: 40.0,
                                         child: SpinKitFadingCircle(
-                                          color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
                                           size: 40.0,
                                         ),
                                       ),
@@ -237,67 +238,89 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
 
                                   final products = getJsonField(snapshot.data!.jsonBody, r'''$.line_items''').toList();
 
-                                  return ListView.separated(
-                                    padding: EdgeInsets.zero,
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: products.length,
-                                    separatorBuilder: (_, __) => SizedBox(height: 15.0),
-                                    itemBuilder: (context, index) {
-                                      final product = products[index];
-                                      return Container(
-                                        width: double.infinity,
-                                        height: 80.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context).secondaryBackground,
-                                          borderRadius: BorderRadius.circular(15.0),
-                                        ),
-                                        child: Row(
-                                          //crossAxisAlignment: CrossAxisAlignment.center,
-                                          //mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(8.0),
-                                                child: Image.network(
-                                                  getJsonField(product, r'''$.image.src''').toString(),
-                                                  width: 58.0,
-                                                  height: 52.0,
-                                                  fit: BoxFit.cover,
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: ListView.separated(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: products.length,
+                                      separatorBuilder: (_, __) => SizedBox(height: 15.0),
+                                      itemBuilder: (context, index) {
+                                        final product = products[index];
+                                        return Container(
+                                          width: double.infinity,
+                                          height: 110.0,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                                            borderRadius: BorderRadius.circular(15.0),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              //crossAxisAlignment: CrossAxisAlignment.center,
+                                              //mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(8.0),
+                                                    child: Image.network(
+                                                      getJsonField(product, r'''$.image.src''').toString(),
+                                                      width: 58.0,
+                                                      height: 52.0,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsetsDirectional.fromSTEB(25.0, 20.0, 0.0, 0.0),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    getJsonField(product, r'''$.name''').toString(),
-                                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                      fontFamily: 'Open Sans',
-                                                      color: Colors.black,
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                                Padding(
+                                                  padding: EdgeInsetsDirectional.fromSTEB(25.0, 10.0, 0.0, 0.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+
+                                                      Container(
+                                                        width: 250,
+
+                                                        child: Text(
+                                                          getJsonField(product, r'''$.name''').toString(),
+
+                                                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                            fontFamily: 'Open Sans',
+                                                            color: Colors.black,
+                                                            fontSize: 15.0,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                      Text(
+                                                        'P/N: ${getJsonField(product, r'''$.sku''').toString()}',
+                                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                          fontFamily: 'Open Sans',
+                                                          color: Colors.black,
+                                                          fontSize: 12.0,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        'Quantity: ${getJsonField(product, r'''$.quantity''').toString()}',
+                                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                          fontFamily: 'Open Sans',
+                                                          color: Colors.black,
+                                                          fontSize: 12.0,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Text(
-                                                    'SKU: ${getJsonField(product, r'''$.sku''').toString()}',
-                                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                      fontFamily: 'Open Sans',
-                                                      color: Colors.black,
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   );
                                 },
                               ),
@@ -317,35 +340,38 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
   }
 
   Widget _buildDetailRow(BuildContext context, String title, String value) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Text(
             title,
             style: FlutterFlowTheme.of(context).bodyLarge.override(
               fontFamily: 'Open Sans',
               color: Color(0xFF43484B),
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
+          child: Text(
+            value,
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+              fontFamily: 'Open Sans',
+              color: Colors.black,
               fontSize: 18.0,
               fontWeight: FontWeight.w600,
             ),
           ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-            child: Text(
-              value,
-              style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Open Sans',
-                color: Colors.black,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          Divider(color: Colors.black),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Divider(color: Color(0xFF43484B),),
+        ),
+      ],
     );
   }
 }

@@ -152,6 +152,9 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
           ),
           elevation: 0.0,
         ),
+        bottomNavigationBar:  CustomBottomNavigationWidget(
+        selectedPage: 'catalouge', // Pass the selected page
+      ),
         body: SafeArea(
           top: true,
           child: Align(
@@ -173,7 +176,7 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                               width: 40.0,
                               height: 40.0,
                               child: SpinKitFadingCircle(
-                                color: FlutterFlowTheme.of(context).primary,
+                    color: Color(0xFF27AEDF),
                                 size: 40.0,
                               ),
                             ),
@@ -361,16 +364,7 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: AlignmentDirectional(0.0, 1.0),
-                  child: wrapWithModel(
-                    model: _model.customBottomNavigationModel,
-                    updateCallback: () => safeSetState(() {}),
-                    child: CustomBottomNavigationWidget(
-                      selectedPage: 'catalouge',
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),

@@ -90,6 +90,7 @@ class CatalougeListPageModel extends FlutterFlowModel<CatalougeListPageWidget> {
   void listViewGetProductListByCatalougePage(ApiPagingParams nextPageMarker) =>
       listViewApiCall!(nextPageMarker)
           .then((listViewGetProductListByCatalougeResponse) {
+        print('JSON Response: ${listViewGetProductListByCatalougeResponse.jsonBody}');
         final pageItems = (getJsonField(
                   listViewGetProductListByCatalougeResponse.jsonBody,
                   //r'''$.data''',

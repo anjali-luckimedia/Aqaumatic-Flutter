@@ -1,9 +1,12 @@
+import 'package:aqaumatic_app/favourite/favorite_service.dart';
+import 'package:aqaumatic_app/favourite/favourite_model.dart';
 import 'package:aqaumatic_app/flutter_flow/flutter_flow_icon_button.dart';
 import 'package:aqaumatic_app/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
@@ -33,7 +36,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
 
   final CartService _cartService = CartService();
+  final FavouriteService favouriteService = FavouriteService();
   List<CartItem>? _cartItems;
+  List<FavoriteItem>? favoriteItem;
  // Allow cart items to be null initially
   Future<void> _loadCart() async {
     // Fetch cart items from SharedPreferences using _cartService
@@ -49,6 +54,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
     print("Cart Items after loading: ${_cartItems?.map((item) => item.quantity).toList()}");
   }
 
+  Future<void> _loadFavorite() async {
+    // Fetch cart items from SharedPreferences using _cartService
+    final favoriteItems = await favouriteService.getFavourite();
+
+    setState(() {
+      favoriteItem = favoriteItems;
+
+
+    });
+
+    // Log cart items quantities to verify
+    print("Cart Items after loading: ${_cartItems?.map((item) => item.quantity).toList()}");
+  }
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -138,7 +156,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 context,
                 icon: Icons.login_sharp,
                 label: 'Logout',
-                onTap: () => _logout(context, cartService: _cartService,loadCart:() => _loadCart,),
+                onTap: () => _logout(context,
+                    cartService: _cartService,
+                    loadCart: () => _loadCart,
+                    favouriteService: favouriteService,
+                    loadFavorite: () => _loadFavorite ,),
               ),
               const Spacer(),
               Padding(
@@ -209,7 +231,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
     await launchUrl(url);
   }
 
-  void _logout(BuildContext context, {required CartService cartService, required Future<void> Function() Function() loadCart}) async {
+  void _logout(BuildContext context,
+      {required CartService cartService,
+      required Future<void> Function() Function() loadCart,
+      required FavouriteService favouriteService,
+      required Future<void> Function() Function() loadFavorite}) async {
     // Show a loading dialog
     showDialog(
       context: context,
@@ -218,7 +244,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         return Center(
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(
-              FlutterFlowTheme.of(context).primaryColor, // Use primary color for the loader
+              Color(0xFF27AEDF),// Use primary color for the loader
             ),
           ),
         );
@@ -236,7 +262,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
       // Clear any redirect locations
       GoRouter.of(context).clearRedirectLocation();
-
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('showNews'); // Reset the news visibility state
       // Clearing state variables
       FFAppState().userId = 0;
       FFAppState().firstName = '';

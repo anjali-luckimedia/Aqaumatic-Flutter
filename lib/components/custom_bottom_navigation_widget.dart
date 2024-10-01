@@ -287,9 +287,9 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
               label: 'Catalogue',
               selected: widget.selectedPage == 'catalouge',
               onTap: () {
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
+                // if (Navigator.of(context).canPop()) {
+                //   context.pop();
+                // }
                 //context.pushNamed('CataloguePage');
                 Navigator.push(context, MaterialPageRoute(builder: (context) => CatalougePageWidget(),));
               },
@@ -300,9 +300,9 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
               label: 'Favourites',
               selected: widget.selectedPage == 'favourites',
               onTap: () {
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
+                // if (Navigator.of(context).canPop()) {
+                //   context.pop();
+                // }
                 Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritesPage()));
               },
             ),
@@ -312,9 +312,9 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
               label: 'Orders',
               selected: widget.selectedPage == 'orders',
               onTap: () {
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
+                // if (Navigator.of(context).canPop()) {
+                //   context.pop();
+                // }
                 context.pushNamed('OrderPage');
               },
             ),
@@ -324,9 +324,9 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
               label: 'About',
               selected: widget.selectedPage == 'about',
               onTap: () {
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
+                // if (Navigator.of(context).canPop()) {
+                //   context.pop();
+                // }
                 context.pushNamed('AboutPage');
               },
             ),
@@ -347,7 +347,7 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: selected ? Colors.blue : Colors.transparent, // Blue container if selected
+          color: selected ? Color(0xFF27AEDF) : Colors.transparent, // Blue container if selected
          // borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(

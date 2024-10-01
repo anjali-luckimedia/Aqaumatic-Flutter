@@ -44,9 +44,7 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _firstName = prefs.getString('ff_firstName') ?? _firstName;
     });
-    _safeInit(() {
-      isNewsVisible = prefs.getBool('ff_isNewsVisible') ?? _isNewsVisible;
-    });
+
   }
 
   void update(VoidCallback callback) {
@@ -64,12 +62,6 @@ class FFAppState extends ChangeNotifier {
   }
 
 
-  bool _isNewsVisible = true;
-  bool get isNewsVisible => _isNewsVisible;
-  set isNewsVisible(bool value) {
-    _isNewsVisible = value;
-    prefs.setBool('ff_isNewsVisible', value);
-  }
 
   int _cartCount = 1; // Default value of 1
 

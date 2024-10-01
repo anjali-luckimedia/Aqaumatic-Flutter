@@ -38,6 +38,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
   final CartService _cartService = CartService();
   List<CartItem> _cartItems = [];
   int count = 0;
+  bool isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -205,13 +206,18 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                               _buildDetailRow(context, 'Order Total (£)', GetOrderDetailsCall.total(orderDetails).toString()),
                               // Purchase Order
                               _buildDetailRow(context, 'Purchase Order', 'POR-${GetOrderDetailsCall.number(orderDetails)}'),
-                              // Phone Number
-                              _buildDetailRow(context, 'Phone Number', GetOrderDetailsCall.phoneNumber(orderDetails) ?? 'Phone number not stored'),
+                              // // Phone Number
+                              // _buildDetailRow(context, 'Phone Number', GetOrderDetailsCall.phoneNumber(orderDetails) ?? 'Phone number not stored'),
+
+                              _buildDetailRow(context, 'Customer Notes', GetOrderDetailsCall.customerNotes(orderDetails) ?? 'Phone number not stored'),
+
+                              _buildDetailRow(context, 'Notes from aquamatic', /*GetOrderDetailsCall.phoneNumber(orderDetails) ?? */'(NONE)'),
+
                               // Products
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                                 child: Text(
-                                  'Products',
+                                  'Order Parts',
                                   style: FlutterFlowTheme.of(context).bodyLarge.override(
                                     fontFamily: 'Open Sans',
                                     color: Color(0xFF43484B),
@@ -229,7 +235,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                         width: 40.0,
                                         height: 40.0,
                                         child: SpinKitFadingCircle(
-                    color: Color(0xFF27AEDF),
+                                         color: Color(0xFF27AEDF),
                                           size: 40.0,
                                         ),
                                       ),
@@ -323,6 +329,110 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                     ),
                                   );
                                 },
+                              ),
+                              SizedBox(height: 10,),
+                              InkWell(
+                                onTap: () async {
+
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 45.0,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0),color: Color(0xFF2dd26f)),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'submit order to apl'.toUpperCase(),
+                                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                            fontFamily: 'Open Sans',
+                                            color: Colors.white,
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.white,
+                                          size: 18.0,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10,),
+                              GetOrderDetailsCall.status(orderDetails).toString() == "cancelled" ?Wrap():InkWell(
+                                onTap: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  var orderCancel = await CancelOrderCall.call(
+                                    status: 'cancelled',
+                                    orderId: widget.orderId,
+                                  );
+                                  if (orderCancel.succeeded == true) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+
+                                    context.go('/catalougePage');
+
+                                  } else {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Order not cancelled',
+                                          style: TextStyle(
+                                            color: FlutterFlowTheme.of(context).primaryText,
+                                          ),
+                                        ),
+                                        duration: Duration(milliseconds: 4000),
+                                        backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 45.0,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0),color: Color(0xFFeb435a)),
+                                  child: Center(
+                                    child: isLoading
+                                        ? SizedBox(width: 23, height: 23,child: CircularProgressIndicator(color: Colors.white,))
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Cancel order'.toUpperCase(),
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily:
+                                                              'Open Sans',
+                                                          color: Colors.white,
+                                                          fontSize: 14.0,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Icon(
+                                                Icons.close_sharp,
+                                                color: Colors.white,
+                                                size: 18.0,
+                                              ),
+                                            ],
+                                          ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

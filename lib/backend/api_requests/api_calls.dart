@@ -912,6 +912,10 @@ class GetOrderDetailsCall {
     r'''$.line_items''',
     true,
   ) as List?;
+  static String? customerNotes(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.customer_note''',
+  ));
 }
 
 /*class GetOrderDetailsCall {
@@ -1247,7 +1251,37 @@ class CreateOrderCall {
     );
   }
 }
+class CancelOrderCall {
+  static Future<ApiCallResponse> call({
+    String? status = '',
+    int? orderId
+  }) async {
+    final ffApiRequestBody = '''
+    {
+ "status" : "${status}"
+}''';
 
+    print('BodyType.JSON: ${ffApiRequestBody}');
+    return ApiManager.instance.makeApiCall(
+      callName: 'createrOrder',
+      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders/$orderId',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization':
+        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
 class CreateWishlistCall {
   static Future<ApiCallResponse> call({
     String? title = '',

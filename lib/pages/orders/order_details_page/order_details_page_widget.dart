@@ -378,7 +378,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                       isLoading = false;
                                     });
 
-                                    context.go('/catalougePage');
+                                    context.go('/orderPage');
 
                                   } else {
                                     setState(() {

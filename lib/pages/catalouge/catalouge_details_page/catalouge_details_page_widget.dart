@@ -64,7 +64,7 @@ class _CatalougeDetailsPageWidgetState
   void initState() {
     super.initState();
     _loadFavorites();
-   FFAppState().cartCount = 1;
+    FFAppState().cartCount = 1;
     _loadCart();
     _model = createModel(context, () => CatalougeDetailsPageModel());
   }
@@ -80,7 +80,7 @@ class _CatalougeDetailsPageWidgetState
     final cartItems = await _cartService.getCart();
     setState(() {
       _cartItems = cartItems;
-      FFAppState().cartCount = _cartItems.length;
+      //FFAppState().cartCount = _cartItems.length;
       count = _cartItems.length;
 
 

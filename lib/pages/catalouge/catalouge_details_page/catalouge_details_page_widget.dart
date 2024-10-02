@@ -30,10 +30,12 @@ class CatalougeDetailsPageWidget extends StatefulWidget {
     super.key,
     required this.slugName,
     required this.catName,
+    required this.name,
   });
 
   final String? slugName;
   final String? catName;
+  final String? name;
 
   @override
   State<CatalougeDetailsPageWidget> createState() =>
@@ -93,7 +95,7 @@ class _CatalougeDetailsPageWidgetState
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFF27AEDF),
         automaticallyImplyLeading: false,
@@ -157,7 +159,7 @@ class _CatalougeDetailsPageWidgetState
         ],
         title: Text(
           valueOrDefault<String>(
-            widget.slugName,
+            widget.name,
             'slug',
           ),
           maxLines: 1,
@@ -244,7 +246,7 @@ class _CatalougeDetailsPageWidgetState
                                           return Image.asset(
                                             'assets/images/error_image.png',  // Placeholder or error image
                                             width: double.infinity,
-                                            height: 200,
+                                           // height: 200,
                                             fit: BoxFit.contain,
                                           );
                                         } else {
@@ -253,8 +255,8 @@ class _CatalougeDetailsPageWidgetState
                                             imageList
                                             /*GetProductDetailsCall.image(jsonResponse)!*/,  // Assuming you want to display the first image
                                             width: double.infinity,
-                                            height: 200,
-                                            fit: BoxFit.cover,
+                                           // height: 200,
+                                            fit: BoxFit.contain,
                                             errorBuilder: (context, error, stackTrace) => Image.asset(
                                               'assets/images/error_image.png',  // Placeholder if image fails to load
                                               width: double.infinity,
@@ -417,7 +419,7 @@ class _CatalougeDetailsPageWidgetState
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0, 5, 0, 0),
                                       child: Text(
-                                        'Price: £ ',
+                                        'Price: £',
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
@@ -456,14 +458,17 @@ class _CatalougeDetailsPageWidgetState
                                 ),
                                 Row(
                                   mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    wrapWithModel(
-                                      model: _model.countControllerComponentModel1,
-                                      updateCallback: () => safeSetState(() {}),
-                                      child: CountControllerComponentWidget(countValue: FFAppState().cartCount,),
+                                    CountControllerComponentWidget(
+                                      //key: Key('Keyz47_${relatedProduct}_of_${relatedProduct.length}'),
+                                      countValue: FFAppState().cartCount,
                                     ),
+                                    // wrapWithModel(
+                                    //   model: _model.countControllerComponentModel1,
+                                    //   updateCallback: () => safeSetState(() {}),
+                                    //   child: CountControllerComponentWidget(countValue: FFAppState().cartCount,),
+                                    // ),
                                     FFButtonWidget(
                                       onPressed: () async {
 
@@ -478,7 +483,7 @@ class _CatalougeDetailsPageWidgetState
                                           GetProductDetailsCall.slug(jsonResponse)!,
                                         ).then((_) {
                                           // Show a dialog box after the item has been added successfully
-                                          _showDialog(context, "Item Added", "The item has been successfully added to your cart.");
+                                          _showDialog(context, "Item Added", "Item hase been added to the cart");
                                         }).catchError((error) {
                                           // Handle any errors here
                                           _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
@@ -500,7 +505,8 @@ class _CatalougeDetailsPageWidgetState
                                         iconPadding:
                                         EdgeInsetsDirectional.fromSTEB(
                                             0, 0, 0, 0),
-                                        color: Color(0xFF1076BA),
+                                        color: Color(0xFF2DD36F),
+                                       // color: Color(0xFF1076BA),
                                         textStyle:
                                         FlutterFlowTheme.of(context)
                                             .titleSmall
@@ -513,7 +519,8 @@ class _CatalougeDetailsPageWidgetState
                                         ),
                                         elevation: 0,
                                         borderSide: BorderSide(
-                                          color: Color(0xFF1076BA),
+                                         // color: Color(0xFF1076BA),
+                                          color: Color(0xFF2DD36F),
                                         ),
                                         borderRadius:
                                         BorderRadius.circular(8),
@@ -565,7 +572,8 @@ class _CatalougeDetailsPageWidgetState
                                         Container(
                                           height: 300,
                                           decoration: BoxDecoration(
-                                            color: FlutterFlowTheme.of(context).primaryBackground,
+                                            color: Colors.white,
+                                          //  color: FlutterFlowTheme.of(context).primaryBackground,
                                             boxShadow: const [
                                               BoxShadow(
                                                 blurRadius: 4,
@@ -592,7 +600,7 @@ class _CatalougeDetailsPageWidgetState
                                                       relatedProduct,
                                                       r'''$.images[0].src''',
                                                     ).toString(),
-                                                    width: 154,
+                                                    width: 100,
                                                     height: 100,
                                                     fit: BoxFit.cover,
                                                     errorBuilder: (context, error,
@@ -642,11 +650,10 @@ class _CatalougeDetailsPageWidgetState
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding:
-                                                        EdgeInsetsDirectional.fromSTEB(
+                                                        padding: EdgeInsetsDirectional.fromSTEB(
                                                             0, 5, 0, 0),
                                                         child: Text(
-                                                          'Price: £ ${getJsonField(relatedProduct, r'''$.price''').toString()}',
+                                                          'Price: £${getJsonField(relatedProduct, r'''$.price''').toString()}',
                                                           style: FlutterFlowTheme.of(context)
                                                               .bodyMedium
                                                               .override(
@@ -657,13 +664,10 @@ class _CatalougeDetailsPageWidgetState
                                                         ),
                                                       ),
                                                       Padding(
-                                                        padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                                                        child: SizedBox(
-                                                          width: 150.0,
-                                                          child: CountControllerComponentWidget(
-                                                            key: Key('Keyz47_${relatedProduct}_of_${relatedProduct.length}'),
-                                                            countValue: FFAppState().cartCount,
-                                                          ),
+                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                                                        child: CountControllerComponentWidget(
+                                                          key: Key('Keyz47_${relatedProduct}_of_${relatedProduct.length}'),
+                                                          countValue: FFAppState().cartCount,
                                                         ),
                                                       ),
                                                       // Add to Cart Button for Related Product
@@ -679,7 +683,7 @@ class _CatalougeDetailsPageWidgetState
                                                             getJsonField(relatedProduct, r'''$.slug''').toString(),
                                                           ).then((_) {
                                                             // Show a dialog box after the item has been added successfully
-                                                            _showDialog(context, "Item Added", "The item has been successfully added to your cart.");
+                                                            _showDialog(context, "Item Added", "Item hase been added to the cart");
                                                           }).catchError((error) {
                                                             // Handle any errors here
                                                             _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
@@ -693,11 +697,12 @@ class _CatalougeDetailsPageWidgetState
                                                           size: 15,
                                                         ),
                                                         options: FFButtonOptions(
-                                                          width: 150,
+                                                          //width: 150,
                                                           height: 30,
-                                                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                                                          padding: EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
                                                           iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                          color: Color(0xFF1076BA),
+                                                          //color: Color(0xFF1076BA),
+                                                          color: Color(0xFF2DD36F),
                                                           textStyle:
                                                           FlutterFlowTheme.of(
                                                               context)
@@ -716,8 +721,8 @@ class _CatalougeDetailsPageWidgetState
                                                           ),
                                                           elevation: 0,
                                                           borderSide: BorderSide(
-                                                            color:
-                                                            Color(0xFF1076BA),
+                                                            //color: Color(0xFF1076BA),
+                                                            color: Color(0xFF2DD36F),
                                                           ),
                                                           borderRadius:
                                                           BorderRadius.circular(

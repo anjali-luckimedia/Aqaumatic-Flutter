@@ -71,7 +71,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
           return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+             backgroundColor: Colors.white,
             body: Center(
               child: SizedBox(
                 width: 40.0,
@@ -94,7 +94,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+             backgroundColor: Colors.white,
 
 
             drawer: CustomDrawer(
@@ -1288,7 +1288,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+         backgroundColor: Colors.white,
         drawer: CustomDrawer(
           firstName: FFAppState().firstName,
           lastName: FFAppState().lastName,
@@ -2158,7 +2158,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
         // Loading indicator
         if (!snapshot.hasData) {
           return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+             backgroundColor: Colors.white,
             body: Center(
               child: SizedBox(
                 width: 40.0,
@@ -2179,7 +2179,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+             backgroundColor: Colors.white,
             drawer: CustomDrawer(
               firstName: FFAppState().firstName,
               lastName: FFAppState().lastName,

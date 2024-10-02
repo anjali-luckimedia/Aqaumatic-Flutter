@@ -70,7 +70,7 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Color(0xFF27AEDF),
           automaticallyImplyLeading: false,

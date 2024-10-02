@@ -55,7 +55,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+         backgroundColor: Colors.white,
 
         drawer: CustomDrawer(
           firstName: FFAppState().firstName,

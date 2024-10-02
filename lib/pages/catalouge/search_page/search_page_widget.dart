@@ -86,7 +86,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xFF27AEDF),
         automaticallyImplyLeading: false,
@@ -416,13 +416,15 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                       InkWell(
                                         onTap: () async {
                                           final slug = itemList['slug'] ?? 'No slug';
-                                          if (slug.isNotEmpty) {
+                                          final name = itemList['name'] ?? 'No name';
+                                          if (slug.isNotEmpty&& name.isNotEmpty) {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     CatalougeDetailsPageWidget(
                                                   slugName: slug,
+                                                 name: name,
                                                  // catName: '',
                                                   catName: slug,
                                                 ),
@@ -509,7 +511,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                             builder: (context) => AlertDialog(
                                               title: Text("Item Added"),
                                               content: Text(
-                                                  "The item has been successfully added to your cart."),
+                                                  "Item hase been added to the cart"),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () =>
@@ -547,7 +549,8 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                         height: 30.0,
                                         padding: EdgeInsetsDirectional.fromSTEB(
                                             16.0, 0.0, 16.0, 0.0),
-                                        color: Color(0xFFE00F0F),
+                                        color: Color(0xFF2DD36F),
+                                       // color: Color(0xFFE00F0F),
                                         textStyle: FlutterFlowTheme.of(context)
                                             .titleSmall
                                             .override(
@@ -558,7 +561,8 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                             ),
                                         elevation: 0.0,
                                         borderSide: BorderSide(
-                                          color: Color(0xFFE00F0F),
+                                          color: Color(0xFF2DD36F),
+                                       //   color: Color(0xFFE00F0F),
                                         ),
                                         borderRadius:
                                             BorderRadius.circular(8.0),
@@ -590,20 +594,22 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                     Icons.favorite_border,
                                     color: FlutterFlowTheme.of(context)
                                         .secondaryBackground,
-                                    size: 20.0,
+                                    size: 15.0,
                                   ),
                                   options: FFButtonOptions(
-                                    width: 100.0,
+                                   // width: 100.0,
                                     height: 30.0,
                                     color: isFavourite
                                         ? Color(0xFFE00F0F)
                                         : Color(0xFF27AEDF),
                                     textStyle: FlutterFlowTheme.of(context)
-                                        .subtitle2
+                                        .titleSmall
                                         .override(
-                                          fontFamily: 'Open Sans',
-                                          color: Colors.white,
-                                        ),
+                                      fontFamily: 'Open Sans',
+                                      color: Colors.white,
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                     elevation: 3.0,
                                     borderSide: BorderSide(
                                       color: isFavourite
@@ -797,13 +803,15 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                   InkWell(
                                     onTap: () async {
                                       final slug = item['slug'] ?? 'No slug';
-                                      if (slug.isNotEmpty) {
+                                      final name = item['name'] ?? 'No slug';
+                                      if (slug.isNotEmpty && name.isNotEmpty) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 CatalougeDetailsPageWidget(
                                               slugName: slug,
+                                              name: name,
                                              // catName: '',
                                                   catName: slug,
                                             ),
@@ -887,7 +895,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                         builder: (context) => AlertDialog(
                                           title: Text("Item Added"),
                                           content: Text(
-                                              "The item has been successfully added to your cart."),
+                                              "Item hase been added to the cart"),
                                           actions: [
                                             TextButton(
                                               onPressed: () =>
@@ -925,7 +933,8 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                     height: 30.0,
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         16.0, 0.0, 16.0, 0.0),
-                                    color: Color(0xFFE00F0F),
+                                    color: Color(0xFF2DD36F),
+                                   // color: Color(0xFFE00F0F),
                                     textStyle: FlutterFlowTheme.of(context)
                                         .titleSmall
                                         .override(
@@ -936,7 +945,8 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                         ),
                                     elevation: 0.0,
                                     borderSide: BorderSide(
-                                      color: Color(0xFFE00F0F),
+                                      color: Color(0xFF2DD36F),
+                                    //  color: Color(0xFFE00F0F),
                                     ),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
@@ -967,20 +977,22 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                 Icons.favorite_border,
                                 color: FlutterFlowTheme.of(context)
                                     .secondaryBackground,
-                                size: 20.0,
+                                size: 15.0,
                               ),
                               options: FFButtonOptions(
-                                width: 100.0,
+                               // width: 100.0,
                                 height: 30.0,
                                 color: isFavourite
                                     ? Color(0xFFE00F0F)
                                     : Color(0xFF27AEDF),
                                 textStyle: FlutterFlowTheme.of(context)
-                                    .subtitle2
+                                    .titleSmall
                                     .override(
-                                      fontFamily: 'Open Sans',
-                                      color: Colors.white,
-                                    ),
+                                  fontFamily: 'Open Sans',
+                                  color: Colors.white,
+                                  fontSize: 13.0,
+                                  fontWeight: FontWeight.w600,
+                                ),
                                 elevation: 3.0,
                                 borderSide: BorderSide(
                                   color: isFavourite
@@ -1362,7 +1374,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                           itemList['sku'],
                                         ).then((_) {
                                           // Show a dialog box after the item has been added successfully
-                                          _showDialog(context, "Item Added", "The item has been successfully added to your cart.");
+                                          _showDialog(context, "Item Added", "Item hase been added to the cart");
                                         }).catchError((error) {
                                           // Handle any errors here
                                           _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
@@ -1798,7 +1810,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                           itemMap['sku'],
                                         ).then((_) {
                                           // Show a dialog box after the item has been added successfully
-                                          _showDialog(context, "Item Added", "The item has been successfully added to your cart.");
+                                          _showDialog(context, "Item Added", "Item hase been added to the cart");
                                         }).catchError((error) {
                                           // Handle any errors here
                                           _showDialog(context, "Error", "An error occurred while adding the item to the cart.");

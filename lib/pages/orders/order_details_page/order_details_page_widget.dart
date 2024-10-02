@@ -70,7 +70,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Color(0xFF27AEDF),
           automaticallyImplyLeading: false,

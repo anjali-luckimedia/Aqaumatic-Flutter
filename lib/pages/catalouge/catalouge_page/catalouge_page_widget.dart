@@ -95,7 +95,8 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
       canPop: false,
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+       backgroundColor: Colors.white,
+       // backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
 
         drawer: CustomDrawer(
           firstName: FFAppState().firstName,

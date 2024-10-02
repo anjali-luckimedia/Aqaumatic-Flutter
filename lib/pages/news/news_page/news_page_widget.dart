@@ -70,7 +70,7 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+         backgroundColor: Colors.white,
 
         drawer: CustomDrawer(
           firstName: FFAppState().firstName,

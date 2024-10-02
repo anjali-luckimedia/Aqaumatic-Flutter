@@ -475,7 +475,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+       backgroundColor: Colors.white,
       key: scaffoldKey,
       drawer: CustomDrawer(
         firstName: FFAppState().firstName,
@@ -814,14 +814,15 @@ class _CartScreenState extends State<CartScreen> {
                                   size: 15.0,
                                 ),
                                 options: FFButtonOptions(
-                                  width: 100.0,
-                                  height: 35.0,
+                                  //width: 100.0,
+                                  height: 30.0,
                                   color: Color(0xFFE00F0F),
-                                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                  textStyle: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .override(
                                     fontFamily: 'Open Sans',
                                     color: Colors.white,
                                     fontSize: 13.0,
-                                    letterSpacing: 0.0,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   elevation: 0.0,

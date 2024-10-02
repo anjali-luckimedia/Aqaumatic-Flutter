@@ -219,6 +219,8 @@ class _CustomBottomNavigationWidgetState
   }
 }
 */
+import 'dart:io';
+
 import '../favourite/favourite_page.dart';
 import '../pages/catalouge/catalouge_page/catalouge_page_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -245,6 +247,10 @@ class CustomBottomNavigationWidget extends StatefulWidget {
 
 class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWidget> {
   late CustomBottomNavigationModel _model;
+  EdgeInsetsDirectional? padding;
+
+// Check the platform
+
 
   @override
   void setState(VoidCallback callback) {
@@ -255,7 +261,7 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
   @override
   void initState() {
     super.initState();
-
+    checkPadding();
     _model = createModel(context, () => CustomBottomNavigationModel());
   }
 
@@ -263,6 +269,17 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
   void dispose() {
     _model.maybeDispose();
     super.dispose();
+  }
+
+  void checkPadding(){
+    if (Platform.isAndroid) {
+      padding = EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 5.0) ; // Android padding
+    } else if (Platform.isIOS) {
+      padding = EdgeInsetsDirectional.fromSTEB(20.0, 10.0, 20.0, 10.0); // iOS padding
+    } else {
+      padding = EdgeInsetsDirectional.all(10.0); // Default padding for other platforms
+    }
+
   }
 
   @override
@@ -275,7 +292,8 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
         color: Color(0xFF43484B),
       ),
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
+        //padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 5.0),
+        padding: padding!,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -373,3 +391,6 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
     );
   }
 }
+
+
+

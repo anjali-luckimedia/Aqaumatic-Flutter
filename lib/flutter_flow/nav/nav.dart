@@ -143,13 +143,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: '/catalougeDetailsPage',
           builder: (context, params) => CatalougeDetailsPageWidget(
             slugName: params.getParam(
-
               'slugName',
               ParamType.String,
             ),
+             name: params.getParam(
+               'name', ParamType.String,
+             ),
              catName: params.getParam(
-
-              'catName',
+               'catName',
               ParamType.String,
             ),
           ),

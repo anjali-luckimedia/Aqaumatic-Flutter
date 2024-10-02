@@ -63,7 +63,7 @@ class _DownloadDetailsPageWidgetState extends State<DownloadDetailsPageWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+       backgroundColor: Colors.white,
 
       appBar: AppBar(
         backgroundColor: Color(0xFF27AEDF),

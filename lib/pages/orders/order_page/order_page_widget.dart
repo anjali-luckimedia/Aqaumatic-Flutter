@@ -74,7 +74,7 @@ class _OrderPageWidgetState extends State<OrderPageWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+         backgroundColor: Colors.white,
 
         drawer: CustomDrawer(
           firstName: FFAppState().firstName,
@@ -634,7 +634,7 @@ class _OrderPageWidgetState extends State<OrderPageWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+       backgroundColor: Colors.white,
 
       drawer: CustomDrawer(
         firstName: FFAppState().firstName,

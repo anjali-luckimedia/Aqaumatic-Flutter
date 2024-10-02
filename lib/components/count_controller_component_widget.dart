@@ -51,8 +51,9 @@ class _CountControllerComponentWidgetState
       width: 120.0,
       height: 50.0,
       decoration: BoxDecoration(
+        color: Colors.white,
        // color: FlutterFlowTheme.of(context).secondaryBackground,
-        color: FlutterFlowTheme.of(context).primaryBackground,
+       // color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(0.0),
         shape: BoxShape.rectangle,
         border: Border.all(

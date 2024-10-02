@@ -79,7 +79,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key:scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+       backgroundColor: Colors.white,
       drawer: CustomDrawer(
         firstName: FFAppState().firstName,
         lastName: FFAppState().lastName,
@@ -190,8 +190,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       child: Image.network(
                         item.imageUrl,  // Display the image from FavoriteItem
                         width: double.infinity,
-                        height: 209.0,
-                        fit: BoxFit.fill,
+                        //height: 209.0,
+                        fit: BoxFit.contain,
                         errorBuilder: (context, error,
                             stackTrace) =>
                             Image.asset(
@@ -300,7 +300,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             options: FFButtonOptions(
                               width: 150.0,
                               height: 30.0,
-                              color: Color(0xFF1076BA),
+                              //color: Color(0xFF1076BA),
+                              color: Color(0xFF2DD36F),
                               textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                                 fontFamily: 'Open Sans',
                                 color: Colors.white,
@@ -308,7 +309,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                 fontWeight: FontWeight.w600,
                               ),
                               borderSide: BorderSide(
-                                color: Color(0xFF1076BA),
+                               // color: Color(0xFF1076BA),
+                                color: Color(0xFF2DD36F),
                               ),
                               borderRadius: BorderRadius.circular(8.0),
                             ),

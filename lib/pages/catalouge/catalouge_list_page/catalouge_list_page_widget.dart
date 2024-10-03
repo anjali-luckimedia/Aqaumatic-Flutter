@@ -109,6 +109,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
       _pagingController.error = error;
     }
   }
+
   Future<void> _loadCart() async {
     final cartItems = await _cartService.getCart();
     setState(() {
@@ -253,8 +254,10 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                   itemBuilder: (context, item, getCatalougeProductListIndex) {
                     final getListItem = item;
                     //final getCatalougeProductListItem = _model.listViewPagingController!.itemList![getCatalougeProductListIndex];
-
+                    bool isFavorite = getListItem['is_favorite'] ?? false;
                     bool isFavourite1 = favorites.contains(getListItem['id']); // Use map access
+
+
 
                     return SizedBox(
                       child: Padding(
@@ -671,6 +674,21 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                   ),
                                 ),
                               ],
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                color: isFavorite ? Colors.red : Colors.grey,
+                              ),
+                              onPressed: () {
+                                if (isFavorite) {
+                                  // Remove from favorites
+                                  //removeFromFavorites(getListItem['id']);
+                                } else {
+                                  // Add to favorites
+                                  //addToFavorites(getListItem['id']);
+                                }
+                              },
                             ),
                             Divider()
                           ],

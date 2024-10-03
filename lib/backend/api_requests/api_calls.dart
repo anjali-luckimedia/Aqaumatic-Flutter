@@ -9,6 +9,7 @@ import 'api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
 import 'dart:developer' as dev;
+import 'package:http/http.dart' as http;
 
 const _kPrivateApiFunctionName = 'ffPrivateApiCall';
 
@@ -363,7 +364,7 @@ class GetProductListByCatalougeCall {
     );
 
     // Print the entire response to see the structure
-   //dev.log('API Response: ${response.jsonBody}');
+   dev.log('API Response: ${response.jsonBody}');
 
     // Return the response
     return response;
@@ -1409,8 +1410,7 @@ class ChangePasswordCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'changePassword',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/change-password',
+      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/change-password',
       callType: ApiCallType.POST,
       headers: {
         'Authorization':
@@ -1431,6 +1431,37 @@ class ChangePasswordCall {
     );
   }
 }
+
+
+
+
+
+class CheckIfFavorite {
+  static Future<void> checkIfFavorite(String productSku, String userId) async {
+  // Replace this with your API URL
+  final String url = 'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/check?product_sku=$productSku&user_id=$userId';
+
+  try {
+    // Make the GET request
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      // Decode the response body
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      // Access the "is_favorite" field
+      bool isFavorite = data['is_favorite'];
+
+      // Print the result or use it in your app logic
+      print('Is favorite: $isFavorite');
+    } else {
+      // Handle error
+      print('Error: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}}
 
 class ApiPagingParams {
   int nextPageNumber = 0;

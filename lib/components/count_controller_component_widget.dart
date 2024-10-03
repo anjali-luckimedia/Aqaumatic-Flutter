@@ -57,7 +57,8 @@ class _CountControllerComponentWidgetState
         borderRadius: BorderRadius.circular(0.0),
         shape: BoxShape.rectangle,
         border: Border.all(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+         //color: FlutterFlowTheme.of(context).primaryBackground,
+         color: Colors.white,
           width: 0.0,
         ),
       ),

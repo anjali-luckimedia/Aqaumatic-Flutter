@@ -564,7 +564,7 @@ class _CatalougeDetailsPageWidgetState
 
 
                                    return Padding(
-                                    padding: const EdgeInsets.only(right: 8.0, left: 5, bottom: 8),
+                                    padding: const EdgeInsets.only(right: 8.0, left: 5, bottom: 8,top: 5),
                                     child: Stack(
                                       alignment: Alignment.topRight,
                                       children: [
@@ -736,7 +736,6 @@ class _CatalougeDetailsPageWidgetState
                                             ),
                                           ),
                                         ),
-
                                         Padding(
                                           padding: EdgeInsetsDirectional.fromSTEB(0, 10, 10, 0),
                                           child: FlutterFlowIconButton(
@@ -770,6 +769,7 @@ class _CatalougeDetailsPageWidgetState
                                             },
                                           ),
                                         ),
+
                                         // Add/Remove Favorite Button
                                        /* Padding(
                                           padding: EdgeInsetsDirectional.fromSTEB(0, 5, 10, 0),

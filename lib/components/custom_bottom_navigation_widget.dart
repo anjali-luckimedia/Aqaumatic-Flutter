@@ -275,7 +275,7 @@ class _CustomBottomNavigationWidgetState extends State<CustomBottomNavigationWid
     if (Platform.isAndroid) {
       padding = EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 5.0) ; // Android padding
     } else if (Platform.isIOS) {
-      padding = EdgeInsetsDirectional.fromSTEB(20.0, 10.0, 20.0, 10.0); // iOS padding
+      padding = EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 10.0); // iOS padding
     } else {
       padding = EdgeInsetsDirectional.all(10.0); // Default padding for other platforms
     }

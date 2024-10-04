@@ -1,7 +1,9 @@
 import 'package:aqaumatic_app/Cart/cart_page.dart';
+import 'package:aqaumatic_app/backend/api_requests/api_calls.dart';
 import 'package:aqaumatic_app/flutter_flow/flutter_flow_theme.dart';
 import 'package:aqaumatic_app/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../Cart/CartModel.dart';
 import '../Cart/cart_service.dart';
@@ -22,9 +24,11 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  final FavouriteService _favoritesService = FavouriteService();
-  List<FavoriteItem> _favorites = [];
-
+  // final FavouriteService _favoritesService = FavouriteService();
+  // List<FavoriteItem> _favorites = [];
+  List<dynamic> favoriteData = [];
+  var data = [];
+  bool isLoading = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final CartService _cartService = CartService();
   List<CartItem> _cartItems = [];
@@ -33,10 +37,49 @@ class _FavoritesPageState extends State<FavoritesPage> {
   void initState() {
     super.initState();
     FFAppState().cartCount = 1;
+    _fetchPage();
     _loadCart();
-    _loadFavorites();
+   // _loadFavorites();
   }
 
+  Future<void> _fetchPage() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await GetFavouritesListCall.call(userId: FFAppState().userId);
+
+      // Assuming response.jsonBody contains a list of favorite items
+      if (response != null && response.jsonBody != null) {
+        // Parse the response and store it in _favorites list
+        favoriteData = response.jsonBody['favorites']; // Adjust 'favorites' if needed
+
+        print('-------$favoriteData');
+
+        setState(() {
+          // Assign the printed data to a variable used in the widget
+          data = favoriteData;
+          isLoading = false;
+        });
+        // setState(() {
+        //   // Parse the JSON data into your FavoriteItem model
+        //   _favorites = favoriteData.map((data) => FavoriteItem.fromJson(data)).toList();
+        // });
+      } else {
+        setState(() {
+          data = []; // Ensure data is not null
+          isLoading = false; // Stop loading even if no data is available
+        });
+        // Handle empty or null response
+        // setState(() {
+        //   _favorites = [];
+        // });
+      }
+    } catch (error) {
+      print("Error fetching favorites: $error");
+      // Optionally, you can handle the error by showing a message in the UI
+    }
+  }
 
   @override
   void dispose() {
@@ -56,24 +99,24 @@ class _FavoritesPageState extends State<FavoritesPage> {
     });
   }
 
-  Future<void> _loadFavorites() async {
-    List<FavoriteItem> favorites = await _favoritesService.getFavourite();
-    setState(() {
-      _favorites = favorites;
-    });
-  }
+  // Future<void> _loadFavorites() async {
+  //   List<FavoriteItem> favorites = await _favoritesService.getFavourite();
+  //   setState(() {
+  //     _favorites = favorites;
+  //   });
+  // }
   //
 
 
-  void _addToFavorites(FavoriteItem item) async {
-    await _favoritesService.addToFavourite(item);
-    _loadFavorites(); // Refresh the list
-  }
-
-  void _removeFromFavorites(int id) async {
-    await _favoritesService.removeFromFavourite(id);
-    _loadFavorites(); // Refresh the list
-  }
+  // void _addToFavorites(FavoriteItem item) async {
+  //   await _favoritesService.addToFavourite(item);
+  //   _loadFavorites(); // Refresh the list
+  // }
+  //
+  // void _removeFromFavorites(int id) async {
+  //   await _favoritesService.removeFromFavourite(id);
+  //   _loadFavorites(); // Refresh the list
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +206,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
       bottomNavigationBar: CustomBottomNavigationWidget(
         selectedPage: 'favourites', // Pass the selected page
       ),
-      body:  _favorites.isEmpty
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : data.isEmpty
           ? Center(
         child: Text(
           'No favorites added yet!',
@@ -174,13 +219,25 @@ class _FavoritesPageState extends State<FavoritesPage> {
           ),
         ),
       )
-          : ListView.builder(
-        itemCount: _favorites.length,
+          :ListView.builder(
+        itemCount: data.length,
         itemBuilder: (context, index) {
-          final item = _favorites[index];
+          final item = data[index];
+          bool isFavorite = item['is_favorite'] ?? false;
+          print(data.length);
           return Padding(
             padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-            child: Column(
+            child:data.isEmpty
+          ? Center(
+          child: Text(
+            'No favorites added yet!',
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+              fontFamily: 'Open Sans',
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          ) :Column(
               children: [
                 Stack(
                   alignment: AlignmentDirectional(0.0, -1.0),
@@ -188,7 +245,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
-                        item.imageUrl,  // Display the image from FavoriteItem
+                        item['image_url'],  // Display the image from FavoriteItem
                         width: double.infinity,
                         //height: 209.0,
                         fit: BoxFit.contain,
@@ -216,9 +273,25 @@ class _FavoritesPageState extends State<FavoritesPage> {
                         ),
                         onPressed: () async {
 
+                          if (isFavorite) {
+                            // Make API call to remove from wishlist
+                            final removeResponse = await RemoveProductToWishlistCallNew.call(
+                              userId: FFAppState().userId,
+                              productSku: '${item['sku']}',
+                            );
 
-                          await _favoritesService.removeFromFavourite(item.id);
-                          _removeFromFavorites(item.id); // Trigger the callback to refresh favorites
+                            // Update UI and local state if API call is successful
+                            if (removeResponse.succeeded) {
+                              setState(() {
+                                isFavorite = false;  // Change isFavorite
+                                item['is_favorite'] = false;
+                                print('removeResponse-->>${item['is_favorite']}');// Sync with item
+                                _fetchPage();
+                              });
+                            }
+                          }
+                          // await _favoritesService.removeFromFavourite(item.id);
+                          // _removeFromFavorites(item.id); // Trigger the callback to refresh favorites
 
 
 
@@ -235,7 +308,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
                       child: Text(
-                        'P/N : ${item.sku}',  // Display SKU
+                        'P/N : ${item['sku']}',  // Display SKU
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Open Sans',
                           fontSize: 16.0,
@@ -246,7 +319,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
                       child: Text(
-                        item.name,  // Display name from FavoriteItem
+                        '${item['name']}',  // Display name from FavoriteItem
                         maxLines: 2,
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Open Sans',
@@ -259,7 +332,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                       child: Text(
-                        'Price : £ ${item.price}',  // Display price from FavoriteItem
+                        'Price : £ ${item['price']}',  // Display price from FavoriteItem
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Open Sans',
                           fontSize: 16.0,
@@ -278,12 +351,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           FFButtonWidget(
                             onPressed: () async {
                               final newItem = CartItem(
-                                id: item.id,
-                                name: item.name,
-                                price: item.price,
+                                id: item['id'],
+                                name: item['name'],
+                                price: item['price'],
                                 quantity: FFAppState().cartCount,
-                                pn: item.sku,
-                                image: item.imageUrl, slug: '',
+                                pn: item['sku'],
+                                image: item['image_url'], slug: '',
                                 // Add slug if needed
                               );
                               await _cartService.addToCart(newItem);

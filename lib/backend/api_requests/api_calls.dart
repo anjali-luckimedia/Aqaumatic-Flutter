@@ -222,12 +222,13 @@ class GetOrderListCall {
 class GetCatalougeSearchCall {
   static Future<ApiCallResponse> call({
     String? catalougeName = '',
+    int?userId
   }) async {
     final response = await ApiManager.instance.makeApiCall(
     //return ApiManager.instance.makeApiCall(
       callName: 'getCatalougeSearch',
       apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products?search=${catalougeName}',
+          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products?search=${catalougeName}&user_id=${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
@@ -505,7 +506,7 @@ class GetProductDetailsCall {
       ) as List?;
   static bool? favourite(dynamic response) => castToType<bool>(getJsonField(
         response,
-        r'''$.data.is_favourite''',
+        r'''$.data.is_favorite''',
       ));
   static int? itemid(dynamic response) => castToType<int>(getJsonField(
         response,
@@ -704,30 +705,69 @@ class CartClearCall {
   }
 }
 
-class AddProductToWishlistCall {
+class AddProductToWishlistCallNew {
   static Future<ApiCallResponse> call({
-    int? productId,
-    required String shareKey,
+    int? userId,
+    String? productSku,
   }) async {
-    final ffApiRequestBody = '''
-{
-  "product_id": ${productId},
-  "variation_id": 0,
-  "meta": {
-    "test": "text"
-  }
-}''';
-    return ApiManager.instance.makeApiCall(
+
+    print(productSku);
+    // Make the API call and capture the response
+    ApiCallResponse response = await ApiManager.instance.makeApiCall(
       callName: 'addProductToWishlist',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/wishlist/$shareKey/add_product',
+      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/add',
       callType: ApiCallType.POST,
       headers: {
         'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
       },
-      params: {},
-      body: ffApiRequestBody,
-      bodyType: BodyType.JSON,
+      params: {
+        'user_id': userId,
+        'product_sku': productSku,
+      },
+      bodyType: BodyType.X_WWW_FORM_URL_ENCODED,
+      // bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+
+    // Print the response body
+    print(response.jsonBody);
+
+    return response;
+  }
+
+  static List? products(dynamic response) => getJsonField(
+    response,
+    r'''$.items''',
+    true,
+  ) as List?;
+}
+
+class RemoveProductToWishlistCallNew {
+  static Future<ApiCallResponse> call({
+    int? userId,
+    String? productSku,
+  }) async {
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'removeProductToWishlist',
+      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/remove',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization':
+        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+      },
+      params: {
+        'user_id': userId,
+        'product_sku': productSku,
+      },
+      bodyType: BodyType.X_WWW_FORM_URL_ENCODED,
+      // bodyType: BodyType.JSON,
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
@@ -738,10 +778,63 @@ class AddProductToWishlistCall {
   }
 
   static List? products(dynamic response) => getJsonField(
-        response,
-        r'''$.items''',
-        true,
-      ) as List?;
+    response,
+    r'''$.items''',
+    true,
+  ) as List?;
+}
+
+
+class GetFavouritesListCall {
+  static Future<ApiCallResponse> call({
+    int? userId,
+  }) async {
+
+    print('User ID: $userId');
+
+    final response = await ApiManager.instance.makeApiCall(
+      callName: 'getFavouritesList',
+      apiUrl:
+      'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/all?user_id=${userId}',
+      //'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?customer=${userId}',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization':
+        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+      },
+
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+
+    // Print the raw API response for debugging
+    dev.log('API Response: ${response.jsonBody}');
+
+    return response;
+  }
+
+  static List<int>? orderId(dynamic response) => (getJsonField(
+    response,
+    r'''$[:].id''',
+    true,
+  ) as List?)
+      ?.withoutNulls
+      .map((x) => castToType<int>(x))
+      .withoutNulls
+      .toList();
+  static List<String>? status(dynamic response) => (getJsonField(
+    response,
+    r'''$[:].status''',
+    true,
+  ) as List?)
+      ?.withoutNulls
+      .map((x) => castToType<String>(x))
+      .withoutNulls
+      .toList();
 }
 
 class UpdateInCartCall {

@@ -41,19 +41,19 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final CartService _cartService = CartService();
   List<CartItem> _cartItems = [];
-  final FavouriteService _favoritesService = FavouriteService();
-  List<int> favorites = [];
+  // final FavouriteService _favoritesService = FavouriteService();
+  // List<int> favorites = [];
   int count = 0;
-  Future<void> _loadFavorites() async {
-    List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
-    setState(() {
-      favorites = favoritesList.map((item) => item.id).toList(); // Assuming FavoriteItem has an 'id'
-    });
-  }
+  // Future<void> _loadFavorites() async {
+  //   List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
+  //   setState(() {
+  //     favorites = favoritesList.map((item) => item.id).toList(); // Assuming FavoriteItem has an 'id'
+  //   });
+  // }
   @override
   void initState() {
     super.initState();
-    _loadFavorites();
+    //_loadFavorites();
     FFAppState().cartCount = 1;
     _loadCart();
     _model = createModel(context, () => SearchPageModel());
@@ -170,7 +170,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
       body: SafeArea(
         top: true,
        child: FutureBuilder<ApiCallResponse>(
-            future: GetCatalougeSearchCall.call(catalougeName: widget.name),
+            future: GetCatalougeSearchCall.call(catalougeName: widget.name,userId: FFAppState().userId),
             builder: (context, snapshot) {
               // 1. **Loading State**
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -240,8 +240,8 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                   itemCount: getSearchList.length,
                   itemBuilder: (context, index) {
                     final itemList = getSearchList[index];
-                    bool isFavourite = favorites.contains(itemList['id']);
-
+                   // bool isFavourite = favorites.contains(itemList['id']);
+                    bool isFavorite = itemList['is_favorite'] ?? false;
                     return GestureDetector(
                       onTap: () {
                         // Navigate to details page
@@ -506,38 +506,10 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                           itemList['sku'],
                                         ).then((_) {
                                           // Show a dialog box after the item has been added successfully
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: Text("Item Added"),
-                                              content: Text(
-                                                  "Item hase been added to the cart"),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: Text("OK"),
-                                                ),
-                                              ],
-                                            ),
-                                          );
+                                          _showDialog(context, "Item Added", "Item hase been added to the cart");
                                         }).catchError((error) {
                                           // Handle any errors here
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: Text("Error"),
-                                              content: Text(
-                                                  "An error occurred while adding the item to the cart."),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: Text("OK"),
-                                                ),
-                                              ],
-                                            ),
-                                          );
+                                          _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
                                         });
                                       },
                                       text: 'Add',
@@ -571,7 +543,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                   ],
                                 ),
                                 // Favourite Button
-                                FFButtonWidget(
+                               /* FFButtonWidget(
                                   onPressed: () async {
                                     if (isFavourite) {
                                       await _favoritesService
@@ -618,7 +590,69 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                     ),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
+                                ),*/
+                                FFButtonWidget(
+                                  onPressed: () async {
+
+
+                                    // Check if the product is already marked as favorite
+                                    if (isFavorite) {
+                                      // Make API call to remove from wishlist
+                                      final removeResponse = await RemoveProductToWishlistCallNew.call(
+                                        userId: FFAppState().userId,
+                                        productSku: itemList['sku'],
+                                      );
+
+                                      // Update UI and local state if API call is successful
+                                      if (removeResponse.succeeded) {
+                                        setState(() {
+                                          isFavorite = false;  // Change isFavorite
+                                          itemList['is_favorite'] = false;
+                                          print('removeResponse-->>${itemList['is_favorite']}');// Sync with item
+                                        });
+                                      }
+                                    } else {
+                                      // Make API call to add to wishlist
+                                      final addResponse = await AddProductToWishlistCallNew.call(
+                                        userId: FFAppState().userId,
+                                        productSku: itemList['sku'],
+                                      );
+
+                                      // Update UI and local state if API call is successful
+                                      if (addResponse.succeeded) {
+                                        setState(() {
+                                          isFavorite = true;  // Change isFavorite
+                                          itemList['is_favorite'] = true;  // Sync with item
+
+                                          print('addResponse-->>${itemList['is_favorite']}');
+                                        });
+                                      }
+                                    }
+                                  },
+                                  text: isFavorite ? 'Remove' : 'Add',
+                                  icon: Icon(
+                                    isFavorite ? Icons.favorite : Icons.favorite_border,  // Update icon instantly
+                                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                                    size: 15.0,
+                                  ),
+                                  options: FFButtonOptions(
+                                    height: 30.0,
+                                    color: isFavorite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),  // Instant color change
+                                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                      fontFamily: 'Open Sans',
+                                      color: Colors.white,
+                                      fontSize: 13.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    elevation: 3.0,
+                                    borderSide: BorderSide(
+                                      color: isFavorite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
                                 ),
+
                               ],
                             ),
                             Divider(),
@@ -633,8 +667,8 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
               // 6. **Handling Map Data**
               else if (getSearchList is Map) {
                 final item = getSearchList;
-                bool isFavourite = favorites.contains(item['id']);
-
+               // bool isFavourite = favorites.contains(item['id']);
+                bool isFavorite = item['is_favorite'] ?? false;
                 return GestureDetector(
                   onTap: () {
                     // Navigate to details page
@@ -890,38 +924,10 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                       item['sku'],
                                     ).then((_) {
                                       // Show a dialog box after the item has been added successfully
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: Text("Item Added"),
-                                          content: Text(
-                                              "Item hase been added to the cart"),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: Text("OK"),
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                      _showDialog(context, "Item Added", "Item hase been added to the cart");
                                     }).catchError((error) {
                                       // Handle any errors here
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: Text("Error"),
-                                          content: Text(
-                                              "An error occurred while adding the item to the cart."),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: Text("OK"),
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                      _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
                                     });
                                   },
                                   text: 'Add',
@@ -954,7 +960,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                               ],
                             ),
                             // Favourite Button
-                            FFButtonWidget(
+                            /*FFButtonWidget(
                               onPressed: () async {
                                 if (isFavourite) {
                                   await _favoritesService
@@ -1001,6 +1007,67 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
+                            ),*/
+                            FFButtonWidget(
+                              onPressed: () async {
+
+
+                                // Check if the product is already marked as favorite
+                                if (isFavorite) {
+                                  // Make API call to remove from wishlist
+                                  final removeResponse = await RemoveProductToWishlistCallNew.call(
+                                    userId: FFAppState().userId,
+                                    productSku: item['sku'],
+                                  );
+
+                                  // Update UI and local state if API call is successful
+                                  if (removeResponse.succeeded) {
+                                    setState(() {
+                                      isFavorite = false;  // Change isFavorite
+                                      item['is_favorite'] = false;
+                                      print('removeResponse-->>${item['is_favorite']}');// Sync with item
+                                    });
+                                  }
+                                } else {
+                                  // Make API call to add to wishlist
+                                  final addResponse = await AddProductToWishlistCallNew.call(
+                                    userId: FFAppState().userId,
+                                    productSku: item['sku'],
+                                  );
+
+                                  // Update UI and local state if API call is successful
+                                  if (addResponse.succeeded) {
+                                    setState(() {
+                                      isFavorite = true;  // Change isFavorite
+                                      item['is_favorite'] = true;  // Sync with item
+
+                                      print('addResponse-->>${item['is_favorite']}');
+                                    });
+                                  }
+                                }
+                              },
+                              text: isFavorite ? 'Remove' : 'Add',
+                              icon: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,  // Update icon instantly
+                                color: FlutterFlowTheme.of(context).secondaryBackground,
+                                size: 15.0,
+                              ),
+                              options: FFButtonOptions(
+                                height: 30.0,
+                                color: isFavorite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),  // Instant color change
+                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                  fontFamily: 'Open Sans',
+                                  color: Colors.white,
+                                  fontSize: 13.0,
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                elevation: 3.0,
+                                borderSide: BorderSide(
+                                  color: isFavorite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
                             ),
                           ],
                         ),
@@ -1022,906 +1089,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
               }
             },
           )
-          /*  child: FutureBuilder<ApiCallResponse>(
-          future: GetCatalougeSearchCall.call(
-            catalougeName: widget.name,
-          ),
-          builder: (context, snapshot) {
-            // Show loading spinner while data is being fetched
-            if (!snapshot.hasData) {
-              return Center(
-                child: SpinKitFadingCircle(
-                    color: Color(0xFF27AEDF),(
-                  color: FlutterFlowTheme.of(context).primary,
-                  size: 40.0,
-                ),
-              );
-            }else if (!snapshot.hasData) {
-              return Center(
-                child: Text(
-                  'No data available.',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              );
-            }
 
-            // Fetch response data
-            final listViewGetCatalougeSearchResponse = snapshot.data!;
-
-            // Extract the list from the JSON response using correct handling
-            final getSearchList = getJsonField(
-              listViewGetCatalougeSearchResponse.jsonBody,
-              r'''$[:]''', // Ensure this path correctly targets the list
-            );
-
-            if (getSearchList is List) {
-              return getSearchList.isEmpty ?Text('No result found',style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Open Sans',
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),):ListView.builder(
-                itemCount: getSearchList.length,
-                itemBuilder: (context, index) {
-                  final itemList = getSearchList[index];
-                  bool isFavourite1 = favorites.contains(itemList['id']); // Use map access
-                  return GestureDetector(
-                    onTap: (){
-                      context.pushNamed(
-                        'CatalougeDetailsPage',
-                        queryParameters: {
-                          'slugName': serializeParam(
-                            itemList['slug'].toString(),
-                            ParamType.String,
-                          ),
-                        }.withoutNulls,
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 0.0),
-                      child: Column(
-                        //mainAxisSize: MainAxisSize.max,
-                        children: [
-
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 120.0,
-                                height: 120.0,
-                                decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  // borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: InkWell(
-                                  onTap: () async {
-                                    await Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        type: PageTransitionType.fade,
-                                        child: FlutterFlowExpandedImageView(
-                                          image: Image.network(
-                                            itemList['images'][0]['src'],
-                                            fit: BoxFit.contain,
-                                            errorBuilder: (context, error,
-                                                stackTrace) =>
-                                                Image.asset(
-                                                  'assets/images/error_image.png',
-                                                  fit: BoxFit.contain,
-                                                ),
-                                          ),
-                                          allowRotation: false,
-                                          tag: itemList['image'][0]['src'],
-                                          useHeroAnimation: true,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Hero(
-                                    tag:itemList['images'][0]['src'],
-                                    transitionOnUserGestures: true,
-                                    child: ClipRRect(
-                                      borderRadius:
-                                      BorderRadius.circular(8.0),
-                                      child: Image.network(
-                                        itemList['images'][0]['src'],
-                                        width: 50.0,
-                                        height: 50.0,
-                                        fit: BoxFit.fill,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                            Image.asset(
-                                              'assets/images/error_image.png',
-                                              width: 50.0,
-                                              height: 50.0,
-                                              fit: BoxFit.fill,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    15.0, 0.0, 0.0, 0.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.start,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 170.0,
-                                      decoration: BoxDecoration(),
-                                      child: Text(
-                                        itemList['name'] ?? 'No name',
-                                        maxLines: 1,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                          fontFamily: 'Open Sans',
-                                          color: Colors.black,
-                                          fontSize: 16.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-                                      child: RichText(
-                                        textScaler: MediaQuery.of(context)
-                                            .textScaler,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'P/N : ',
-                                              style: FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .override(
-                                                fontFamily: 'Open Sans',
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                FontWeight.w400,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: itemList['sku'] ?? 'No name',*//*,getJsonField(
-                                                getCatalougeProductListItem,
-                                                r'''$.sku''',
-                                              ).toString(),*//*
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                          style:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 16.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 5.0, 0.0, 0.0),
-                                      child: RichText(
-                                        textScaler: MediaQuery.of(context)
-                                            .textScaler,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Price : ',
-                                              style: FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .override(
-                                                fontFamily: 'Open Sans',
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                FontWeight.w400,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: '£ ',
-                                              style: TextStyle(),
-                                            ),
-                                            TextSpan(
-                                              text: itemList['price'] ?? 'No name',*//*getJsonField(
-                                                getCatalougeProductListItem,
-                                                r'''$.price''',
-                                              ).toString(),*//*
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                          style:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 16.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 8.0, 0.0, 0.0),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          final slug = itemList['slug'] ?? 'No name';*//*serializeParam(
-                                            getJsonField(getCatalougeProductListItem,
-                                                r'''$.slug''')
-                                                .toString(),
-                                            ParamType.String,
-                                          );
-              *//*
-                                          if (slug != null) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CatalougeDetailsPageWidget(
-                                                      slugName: slug,
-                                                      catName: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else {
-                                            print(
-                                                'Slug is null, cannot navigate');
-                                          }
-                                        },
-                                        child: Container(
-                                          width: 110.0,
-                                          height: 24.0,
-                                          decoration: BoxDecoration(
-                                            //color: FlutterFlowTheme.of(context).secondaryBackground,
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft:
-                                              Radius.circular(5.0),
-                                              bottomRight:
-                                              Radius.circular(5.0),
-                                              topLeft: Radius.circular(5.0),
-                                              topRight:
-                                              Radius.circular(5.0),
-                                            ),
-                                            border: Border.all(
-                                              color: Color(0xFF019ADE),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            //mainAxisSize:MainAxisSize.max,
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(
-                                                    left: 5.0),
-                                                child: Text(
-                                                  'VIEW MORE',
-                                                  style: FlutterFlowTheme
-                                                      .of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                    fontFamily:
-                                                    'Open Sans',
-                                                    color: Color(
-                                                        0xFF019ADE),
-                                                    fontSize: 13.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                    FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                              Icon(
-                                                Icons
-                                                    .arrow_forward_ios_rounded,
-                                                color: Color(0xFF019ADE),
-                                                size: 15.0,
-                                              ),
-                                            ].divide(SizedBox(width: 10.0)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                            children: [
-                              Row(
-                                children: [
-                                  CountControllerComponentWidget(
-                                   // key: Key('Keyqvb_${getCatalougeProductListIndex}_of_${_model.listViewPagingController!.itemList!.length}'),
-                                    countValue: FFAppState().cartCount,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        15.0, 0.0, 0.0, 0.0),
-                                    child: FFButtonWidget(
-                                      onPressed: () {
-                                        _addItem(
-                                          itemList['id'],
-                                          itemList['name'].toString(),
-                                          itemList['price'],
-                                          FFAppState().cartCount,
-                                          itemList['sku'],
-                                          itemList['images'][0]['src'],
-
-                                          itemList['sku'],
-                                        ).then((_) {
-                                          // Show a dialog box after the item has been added successfully
-                                          _showDialog(context, "Item Added", "Item hase been added to the cart");
-                                        }).catchError((error) {
-                                          // Handle any errors here
-                                          _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
-                                        });
-                                      },
-
-                                      text: 'Add',
-                                      icon: Icon(
-                                        Icons.shopping_cart_outlined,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        height: 30.0,
-                                        padding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 0.0, 16.0, 0.0),
-                                        iconPadding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 0.0, 0.0),
-                                        color: Color(0xFFE00F0F),
-                                        textStyle:
-                                        FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                          fontFamily: 'Open Sans',
-                                          color: Colors.white,
-                                          fontSize: 13.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                          FontWeight.w600,
-                                        ),
-                                        elevation: 0.0,
-                                        borderSide: BorderSide(
-                                          color: Color(0xFFE00F0F),
-                                        ),
-                                        borderRadius:
-                                        BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              FFButtonWidget(
-                                onPressed: () async {
-                                  if (isFavourite1) {
-                                    await _favoritesService.removeFromFavourite(itemList['id']); // Access via map
-                                  } else {
-                                    FavoriteItem newItem = FavoriteItem(
-
-                                      id: itemList['id'],
-                                      name: itemList['name'].toString(),
-                                      price: itemList['price'],
-                                      sku: itemList['sku'],
-                                      imageUrl:  itemList['images'][0]['src'],
-
-                                      // id: getJsonField(getCatalougeProductListItem, r'''$.id''',),
-                                      // name: getJsonField(getCatalougeProductListItem, r'''$.name''',).toString(),
-                                      // sku: getJsonField(getCatalougeProductListItem, r'''$.sku''',).toString(),
-                                      // price: getJsonField(getCatalougeProductListItem, r'''$.price''',),
-                                      // imageUrl: getJsonField(getCatalougeProductListItem, r'''$.images[:].src''',).toString(),
-
-                                    );
-                                    //  await favouriteService.addToFavourite(newItem);
-                                    await _favoritesService.addToFavourite(newItem); // Access via map
-                                  }
-                                  await _loadFavorites(); // Refresh favorites list
-                                },
-                               text: isFavourite1 ? 'Remove' : 'Add',
-                               // text:'Add',
-                                icon:Icon(
-                                  Icons.favorite_border,
-                                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                                  size: 20.0,
-                                ),
-                                options: FFButtonOptions(
-                                  width: 100.0,
-                                  height: 30.0,
-                                 color: isFavourite1 ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                 // color:  Color(0xFFE00F0F) ,
-                                  textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-                                    fontFamily: 'Open Sans',
-                                    color: Colors.white,
-                                  ),
-                                  elevation: 3.0,
-                                  borderSide: BorderSide(
-                                   // color:  Color(0xFFE00F0F) ,
-                                  color: isFavourite1 ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Divider()
-                        ],
-                      ),
-                    ),
-                  );
-                  // Customize list item appearance
-                  *//*return ListTile(
-                    leading: item['image'] != null
-                        ? Image.network(
-                      item['image'][0]['src'], // Adjust based on actual key structure
-                      fit: BoxFit.cover,
-                      width: 130.0,
-                      height: 130.0,
-                    )
-                        : Icon(Icons.image), // Fallback icon if no image
-                    title: Text(item['name'] ?? 'No name'),
-                  );*//*
-                },
-              );
-            } else if (getSearchList is Map) {
-              // Handle map case differently, wrap in a list if needed
-              final item = [getSearchList];
-              return getSearchList.isEmpty ?Text('No result found',style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Open Sans',
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),):ListView.builder(
-                itemCount: item.length,
-                itemBuilder: (context, index) {
-                  final itemMap = item[index];
-                  bool isFavouriteMap = favorites.contains(itemMap['id']);
-                  return GestureDetector(
-                    onTap: (){
-                      context.pushNamed(
-                        'CatalougeDetailsPage',
-                        queryParameters: {
-                          'slugName': serializeParam(
-                            itemMap['slug'].toString(),
-                            ParamType.String,
-                          ),
-                        }.withoutNulls,
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 0.0),
-                      child: Column(
-                        //mainAxisSize: MainAxisSize.max,
-                        children: [
-
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 120.0,
-                                height: 120.0,
-                                decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  // borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: InkWell(
-                                  onTap: () async {
-                                    await Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        type: PageTransitionType.fade,
-                                        child: FlutterFlowExpandedImageView(
-                                          image: Image.network(
-                                            itemMap['images'][0]['src'],
-                                            fit: BoxFit.contain,
-                                            errorBuilder: (context, error,
-                                                stackTrace) =>
-                                                Image.asset(
-                                                  'assets/images/error_image.png',
-                                                  fit: BoxFit.contain,
-                                                ),
-                                          ),
-                                          allowRotation: false,
-                                          tag: itemMap['images'][0]['src'],
-                                          useHeroAnimation: true,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Hero(
-                                    tag:itemMap['images'][0]['src'],
-                                    transitionOnUserGestures: true,
-                                    child: ClipRRect(
-                                      borderRadius:
-                                      BorderRadius.circular(8.0),
-                                      child: Image.network(
-                                        itemMap['images'][0]['src'],
-                                        width: 50.0,
-                                        height: 50.0,
-                                        fit: BoxFit.fill,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                            Image.asset(
-                                              'assets/images/error_image.png',
-                                              width: 50.0,
-                                              height: 50.0,
-                                              fit: BoxFit.fill,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    15.0, 0.0, 0.0, 0.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.start,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 170.0,
-                                      decoration: BoxDecoration(),
-                                      child: Text(
-                                        itemMap['name'] ?? 'No name',
-                                        maxLines: 1,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                          fontFamily: 'Open Sans',
-                                          color: Colors.black,
-                                          fontSize: 16.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-                                      child: RichText(
-                                        textScaler: MediaQuery.of(context)
-                                            .textScaler,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'P/N : ',
-                                              style: FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .override(
-                                                fontFamily: 'Open Sans',
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                FontWeight.w400,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: itemMap['sku'] ?? 'No name',*//*,getJsonField(
-                                                getCatalougeProductListItem,
-                                                r'''$.sku''',
-                                              ).toString(),*//*
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                          style:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 16.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 5.0, 0.0, 0.0),
-                                      child: RichText(
-                                        textScaler: MediaQuery.of(context)
-                                            .textScaler,
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Price : ',
-                                              style: FlutterFlowTheme.of(
-                                                  context)
-                                                  .bodyMedium
-                                                  .override(
-                                                fontFamily: 'Open Sans',
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                FontWeight.w400,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: '£ ',
-                                              style: TextStyle(),
-                                            ),
-                                            TextSpan(
-                                              text: itemMap['price'] ?? 'No name',*//*getJsonField(
-                                                getCatalougeProductListItem,
-                                                r'''$.price''',
-                                              ).toString(),*//*
-                                              style: TextStyle(),
-                                            )
-                                          ],
-                                          style:
-                                          FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                            fontFamily: 'Open Sans',
-                                            fontSize: 16.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                            FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 8.0, 0.0, 0.0),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          final slug = itemMap['slug'] ?? 'No name';*//*serializeParam(
-                                            getJsonField(getCatalougeProductListItem,
-                                                r'''$.slug''')
-                                                .toString(),
-                                            ParamType.String,
-                                          );
-              *//*
-                                          if (slug != null) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CatalougeDetailsPageWidget(
-                                                      slugName: slug,
-                                                      catName: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else {
-                                            print(
-                                                'Slug is null, cannot navigate');
-                                          }
-                                        },
-                                        child: Container(
-                                          width: 110.0,
-                                          height: 24.0,
-                                          decoration: BoxDecoration(
-                                            //color: FlutterFlowTheme.of(context).secondaryBackground,
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft:
-                                              Radius.circular(5.0),
-                                              bottomRight:
-                                              Radius.circular(5.0),
-                                              topLeft: Radius.circular(5.0),
-                                              topRight:
-                                              Radius.circular(5.0),
-                                            ),
-                                            border: Border.all(
-                                              color: Color(0xFF019ADE),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            //mainAxisSize:MainAxisSize.max,
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(
-                                                    left: 5.0),
-                                                child: Text(
-                                                  'VIEW MORE',
-                                                  style: FlutterFlowTheme
-                                                      .of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                    fontFamily:
-                                                    'Open Sans',
-                                                    color: Color(
-                                                        0xFF019ADE),
-                                                    fontSize: 13.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                    FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                              Icon(
-                                                Icons
-                                                    .arrow_forward_ios_rounded,
-                                                color: Color(0xFF019ADE),
-                                                size: 15.0,
-                                              ),
-                                            ].divide(SizedBox(width: 10.0)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                            children: [
-                              Row(
-                                children: [
-                                  CountControllerComponentWidget(
-                                    // key: Key('Keyqvb_${getCatalougeProductListIndex}_of_${_model.listViewPagingController!.itemList!.length}'),
-                                    countValue: FFAppState().cartCount,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        15.0, 0.0, 0.0, 0.0),
-                                    child: FFButtonWidget(
-                                      onPressed: () {
-                                        _addItem(
-                                          itemMap['id'],
-                                          itemMap['name'].toString(),
-                                          itemMap['price'],
-                                          FFAppState().cartCount,
-                                          itemMap['sku'],
-                                          itemMap['images'][0]['src'],
-
-                                          itemMap['sku'],
-                                        ).then((_) {
-                                          // Show a dialog box after the item has been added successfully
-                                          _showDialog(context, "Item Added", "Item hase been added to the cart");
-                                        }).catchError((error) {
-                                          // Handle any errors here
-                                          _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
-                                        });
-                                      },
-
-                                      text: 'Add',
-                                      icon: Icon(
-                                        Icons.shopping_cart_outlined,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        height: 30.0,
-                                        padding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 0.0, 16.0, 0.0),
-                                        iconPadding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 0.0, 0.0),
-                                        color: Color(0xFFE00F0F),
-                                        textStyle:
-                                        FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                          fontFamily: 'Open Sans',
-                                          color: Colors.white,
-                                          fontSize: 13.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                          FontWeight.w600,
-                                        ),
-                                        elevation: 0.0,
-                                        borderSide: BorderSide(
-                                          color: Color(0xFFE00F0F),
-                                        ),
-                                        borderRadius:
-                                        BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              FFButtonWidget(
-                                onPressed: () async {
-                                  if (isFavouriteMap) {
-                                    await _favoritesService.removeFromFavourite(itemMap['id']); // Access via map
-                                  } else {
-                                    FavoriteItem newItem = FavoriteItem(
-
-                                      id: itemMap['id'],
-                                      name: itemMap['name'].toString(),
-                                      price: itemMap['price'],
-                                      sku: itemMap['sku'],
-                                      imageUrl:  itemMap['images'][0]['src'],
-
-                                      // id: getJsonField(getCatalougeProductListItem, r'''$.id''',),
-                                      // name: getJsonField(getCatalougeProductListItem, r'''$.name''',).toString(),
-                                      // sku: getJsonField(getCatalougeProductListItem, r'''$.sku''',).toString(),
-                                      // price: getJsonField(getCatalougeProductListItem, r'''$.price''',),
-                                      // imageUrl: getJsonField(getCatalougeProductListItem, r'''$.images[:].src''',).toString(),
-
-                                    );
-                                    //  await favouriteService.addToFavourite(newItem);
-                                    await _favoritesService.addToFavourite(newItem); // Access via map
-                                  }
-                                  await _loadFavorites(); // Refresh favorites list
-                                },
-                                text: isFavouriteMap ? 'Remove' : 'Add',
-                                // text:'Add',
-                                icon:Icon(
-                                  Icons.favorite_border,
-                                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                                  size: 20.0,
-                                ),
-                                options: FFButtonOptions(
-                                  width: 100.0,
-                                  height: 30.0,
-                                  color: isFavouriteMap ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                  // color:  Color(0xFFE00F0F) ,
-                                  textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-                                    fontFamily: 'Open Sans',
-                                    color: Colors.white,
-                                  ),
-                                  elevation: 3.0,
-                                  borderSide: BorderSide(
-                                    // color:  Color(0xFFE00F0F) ,
-                                    color: isFavouriteMap ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Divider()
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-            } else {
-              // Handle unexpected data type
-              return Center(
-                child: Text(
-                  'Data format error: expected a list but got ${getSearchList.runtimeType}.',
-                ),
-              );
-            }
-          },
-        ),*/
       ),
       bottomNavigationBar: CustomBottomNavigationWidget(
         selectedPage: 'catalouge', // Pass the selected page

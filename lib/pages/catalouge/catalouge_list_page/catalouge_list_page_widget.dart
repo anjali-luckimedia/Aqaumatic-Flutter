@@ -54,22 +54,22 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
   bool isLoading = false;  // Loading state
 
   List<CartItem> _cartItems = [];
-  final FavouriteService _favoritesService = FavouriteService();
-  List<int> favorites = [];
+  // final FavouriteService _favoritesService = FavouriteService();
+  // List<int> favorites = [];
   int count = 0;
 
-  Future<void> _loadFavorites() async {
-    List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
-    setState(() {
-      favorites = favoritesList.map((item) => item.id).toList(); // Assuming FavoriteItem has an 'id'
-    });
-  }
+  // Future<void> _loadFavorites() async {
+  //   List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
+  //   setState(() {
+  //     favorites = favoritesList.map((item) => item.id).toList(); // Assuming FavoriteItem has an 'id'
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
     print(widget.catId);
-    _loadFavorites();
+   // _loadFavorites();
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
@@ -255,7 +255,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                     final getListItem = item;
                     //final getCatalougeProductListItem = _model.listViewPagingController!.itemList![getCatalougeProductListIndex];
                     bool isFavorite = getListItem['is_favorite'] ?? false;
-                    bool isFavourite1 = favorites.contains(getListItem['id']); // Use map access
+                   // bool isFavourite1 = favorites.contains(getListItem['id']); // Use map access
 
 
 
@@ -627,10 +627,17 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                   ],
                                 ),
 
-                                FFButtonWidget(
+                              /*  FFButtonWidget(
                                   onPressed: () async {
                                     if (isFavourite1) {
-                                      await _favoritesService.removeFromFavourite(getJsonField(getListItem, r'''$.id''',),); // Access via map
+                                      await _favoritesService
+                                          .removeFromFavourite(
+                                        getJsonField(
+                                          getListItem,
+                                          r'''$.id''',
+                                        ),
+                                      );
+
                                     } else {
                                       FavoriteItem newItem = FavoriteItem(
                                         id: getJsonField(getListItem, r'''$.id''',),
@@ -641,7 +648,8 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
 
                                       );
                                       //  await favouriteService.addToFavourite(newItem);
-                                      await _favoritesService.addToFavourite(newItem); // Access via map
+                                      await _favoritesService.addToFavourite(newItem);
+
                                     }
                                     await _loadFavorites(); // Refresh favorites list
                                   },
@@ -672,24 +680,108 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                     ),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
+                                ),*/
+                                FFButtonWidget(
+                                  onPressed: () async {
+
+
+                                    // Check if the product is already marked as favorite
+                                    if (isFavorite) {
+                                      // Make API call to remove from wishlist
+                                      final removeResponse = await RemoveProductToWishlistCallNew.call(
+                                        userId: FFAppState().userId,
+                                        productSku: getJsonField(
+                                          getListItem,
+                                          r'''$.sku''',
+                                        ).toString(),
+                                      );
+
+                                      // Update UI and local state if API call is successful
+                                      if (removeResponse.succeeded) {
+                                        setState(() {
+                                          isFavorite = false;  // Change isFavorite
+                                          getListItem['is_favorite'] = false;
+                                          print('removeResponse-->>${getListItem['is_favorite']}');// Sync with item
+                                        });
+                                      }
+                                    } else {
+                                      // Make API call to add to wishlist
+                                      final addResponse = await AddProductToWishlistCallNew.call(
+                                        userId: FFAppState().userId,
+                                        productSku: getJsonField(
+                                          getListItem,
+                                          r'''$.sku''',
+                                        ).toString(),
+                                      );
+
+                                      // Update UI and local state if API call is successful
+                                      if (addResponse.succeeded) {
+                                        setState(() {
+                                          isFavorite = true;  // Change isFavorite
+                                          getListItem['is_favorite'] = true;  // Sync with item
+
+                                          print('addResponse-->>${getListItem['is_favorite']}');
+                                        });
+                                      }
+                                    }
+                                  },
+                                  text: isFavorite ? 'Remove' : 'Add',
+                                  icon: Icon(
+                                    isFavorite ? Icons.favorite : Icons.favorite_border,  // Update icon instantly
+                                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                                    size: 15.0,
+                                  ),
+                                  options: FFButtonOptions(
+                                    height: 30.0,
+                                    color: isFavorite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),  // Instant color change
+                                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                      fontFamily: 'Open Sans',
+                                      color: Colors.white,
+                                      fontSize: 13.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    elevation: 3.0,
+                                    borderSide: BorderSide(
+                                      color: isFavorite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
                                 ),
+
+
+
                               ],
                             ),
-                            IconButton(
+                          /*  IconButton(
                               icon: Icon(
                                 isFavorite ? Icons.favorite : Icons.favorite_border,
                                 color: isFavorite ? Colors.red : Colors.grey,
                               ),
                               onPressed: () {
                                 if (isFavorite) {
+                                  RemoveProductToWishlistCallNew.call(
+                                    userId: FFAppState().userId,
+                                    productSku: getJsonField(
+                                      getListItem,
+                                      r'''$.sku''',
+                                    ).toString(),
+                                  );
                                   // Remove from favorites
                                   //removeFromFavorites(getListItem['id']);
                                 } else {
+                                  AddProductToWishlistCallNew.call(
+                                    userId: FFAppState().userId,
+                                    productSku: getJsonField(
+                                      getListItem,
+                                      r'''$.sku''',
+                                    ).toString(),
+                                  );
                                   // Add to favorites
                                   //addToFavorites(getListItem['id']);
                                 }
                               },
-                            ),
+                            ),*/
                             Divider()
                           ],
                         ),

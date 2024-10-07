@@ -361,7 +361,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                               );
                               await _cartService.addToCart(newItem);
                               _showDialog(context, "Added to Cart", "Item added successfully.");
-
+                              FFAppState().cartCount = 1;
 
                               // Add to cart functionality here
                             },

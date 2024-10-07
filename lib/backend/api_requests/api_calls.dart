@@ -243,7 +243,7 @@ class GetCatalougeSearchCall {
       alwaysAllowBody: false,
     );
 
-    dev.log(response.jsonBody.toString());
+    dev.log('-----${response.jsonBody.toString()}');
     return response;
   }
 

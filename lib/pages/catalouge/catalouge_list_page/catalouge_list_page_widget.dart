@@ -57,6 +57,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
   // final FavouriteService _favoritesService = FavouriteService();
   // List<int> favorites = [];
   int count = 0;
+  List<int> quantity = [];
 
   // Future<void> _loadFavorites() async {
   //   List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
@@ -256,6 +257,8 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                     //final getCatalougeProductListItem = _model.listViewPagingController!.itemList![getCatalougeProductListIndex];
                     bool isFavorite = getListItem['is_favorite'] ?? false;
                    // bool isFavourite1 = favorites.contains(getListItem['id']); // Use map access
+
+                    quantity = List.filled(getCatalougeProductListIndex + 1, 1);
 
 
 
@@ -558,10 +561,60 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                               children: [
-                                Row(
+
+
+                                 Row(
                                   children: [
+                                  /*  SizedBox(
+                                      width: 140,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Align(
+                                            alignment: AlignmentDirectional(0.0, 0.0),
+                                            child: FlutterFlowIconButton(
+                                              borderColor: Colors.transparent,
+                                              borderRadius: 20.0,
+                                              buttonSize: 30.0,
+                                              fillColor: Color(0xFFEB445A),
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.minus,
+                                                color: FlutterFlowTheme.of(context).info,
+                                                size: 15.0,
+                                              ),
+                                              showLoadingIndicator: true,
+                                              onPressed: () async {
+
+                                                //_decrementQuantity(item.id);
+                                              },
+                                            ),
+                                          ),
+                                          Text('${FFAppState().cartCount}',
+                                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                              fontFamily: 'Open Sans',
+                                              letterSpacing: 0.0,
+                                            ),
+                                          ),
+                                          FlutterFlowIconButton(
+                                            borderColor: Colors.transparent,
+                                            borderRadius: 20.0,
+                                            buttonSize:30.0,
+                                            fillColor:  Color(0xFF2DD36F) ,
+                                            icon: FaIcon(
+                                              FontAwesomeIcons.plus,
+                                              color: FlutterFlowTheme.of(context).info,
+                                              size: 15.0,
+                                            ),
+                                            showLoadingIndicator: true,
+                                            onPressed: () async {
+                                            //  _incrementQuantity(item.id);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),*/
                                     CountControllerComponentWidget(
-                                     // key: Key('Keyqvb_${getCatalougeProductListIndex}_of_${_model.listViewPagingController!.itemList!.length}'),
+                                    //  key: Key('Keyqvb_${getCatalougeProductListIndex}_of_${_model.listViewPagingController!.itemList!.length}'),
                                       countValue: FFAppState().cartCount,
                                     ),
                                     Padding(
@@ -582,6 +635,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                           ).then((_) {
                                             // Show a dialog box after the item has been added successfully
                                             _showDialog(context, "Item Added", "Item hase been added to the cart");
+                                            FFAppState().cartCount = 1;
                                           }).catchError((error) {
                                             // Handle any errors here
                                             _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
@@ -627,60 +681,107 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                   ],
                                 ),
 
-                              /*  FFButtonWidget(
-                                  onPressed: () async {
-                                    if (isFavourite1) {
-                                      await _favoritesService
-                                          .removeFromFavourite(
-                                        getJsonField(
-                                          getListItem,
-                                          r'''$.id''',
+                                /* Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 140,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Align(
+                                            alignment: AlignmentDirectional(0.0, 0.0),
+                                            child: FlutterFlowIconButton(
+                                              borderColor: Colors.transparent,
+                                              borderRadius: 20.0,
+                                              buttonSize: 30.0,
+                                              fillColor: Color(0xFFEB445A),
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.minus,
+                                                color: FlutterFlowTheme.of(context).info,
+                                                size: 15.0,
+                                              ),
+                                              showLoadingIndicator: true,
+                                              onPressed: () async {
+                                                // Decrement the quantity if it's greater than 1
+
+                                              },
+                                            ),
+                                          ),
+                                          Text('${FFAppState().cartCount}',
+                                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                              fontFamily: 'Open Sans',
+                                              letterSpacing: 0.0,
+                                            ),
+                                          ),
+                                          FlutterFlowIconButton(
+                                            borderColor: Colors.transparent,
+                                            borderRadius: 20.0,
+                                            buttonSize: 30.0,
+                                            fillColor: Color(0xFF2DD36F),
+                                            icon: FaIcon(
+                                              FontAwesomeIcons.plus,
+                                              color: FlutterFlowTheme.of(context).info,
+                                              size: 15.0,
+                                            ),
+                                            showLoadingIndicator: true,
+                                            onPressed: () async {
+                                              // Increment the quantity
+
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(15.0, 0.0, 0.0, 0.0),
+                                      child: FFButtonWidget(
+                                        onPressed: () {
+                                          print(FFAppState().cartCount);
+                                          _addItem(
+                                            getJsonField(getListItem, r'''$.id'''),
+                                            getJsonField(getListItem, r'''$.name''').toString(),
+                                            getJsonField(getListItem, r'''$.price'''),
+                                          //  FFAppState().cartCount,
+                                            quantity[getCatalougeProductListIndex],
+                                            getJsonField(getListItem, r'''$.sku''').toString(),
+                                            getJsonField(getListItem, r'''$.images[:].src''').toString(),
+                                            getJsonField(getListItem, r'''$.slug'''),
+                                          ).then((_) {
+                                            // Show a dialog box after the item has been added successfully
+                                            _showDialog(context, "Item Added", "Item has been added to the cart");
+                                          }).catchError((error) {
+                                            // Handle any errors here
+                                            _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
+                                          });
+                                        },
+                                        text: 'Add',
+                                        icon: Icon(
+                                          Icons.shopping_cart_outlined,
+                                          size: 15.0,
                                         ),
-                                      );
-
-                                    } else {
-                                      FavoriteItem newItem = FavoriteItem(
-                                        id: getJsonField(getListItem, r'''$.id''',),
-                                        name: getJsonField(getListItem, r'''$.name''',).toString(),
-                                        sku: getJsonField(getListItem, r'''$.sku''',).toString(),
-                                        price: getJsonField(getListItem, r'''$.price''',),
-                                        imageUrl: getJsonField(getListItem, r'''$.images[:].src''',).toString(),
-
-                                      );
-                                      //  await favouriteService.addToFavourite(newItem);
-                                      await _favoritesService.addToFavourite(newItem);
-
-                                    }
-                                    await _loadFavorites(); // Refresh favorites list
-                                  },
-                                  text: isFavourite1 ? 'Remove' : 'Add',
-                                  icon:Icon(
-                                    Icons.favorite_border,
-                                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                                    size: 15.0,
-                                  ),
-                                  options: FFButtonOptions(
-                                   // width: 100.0,
-                                    height: 30.0,
-                                    color: isFavourite1 ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                    textStyle:
-                                    FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .override(
-                                      fontFamily: 'Open Sans',
-                                      color: Colors.white,
-                                      fontSize: 13.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight:
-                                      FontWeight.w600,
+                                        options: FFButtonOptions(
+                                          height: 30.0,
+                                          padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                                          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                          color: Color(0xFF2DD36F),
+                                          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                            fontFamily: 'Open Sans',
+                                            color: Colors.white,
+                                            fontSize: 13.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          elevation: 0.0,
+                                          borderSide: BorderSide(
+                                            color: Color(0xFF2DD36F),
+                                          ),
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                      ),
                                     ),
-                                    elevation: 3.0,
-                                    borderSide: BorderSide(
-                                      color: isFavourite1 ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                    ),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                ),*/
+                                  ],
+                                ),
+*/
                                 FFButtonWidget(
                                   onPressed: () async {
 

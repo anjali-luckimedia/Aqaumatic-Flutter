@@ -274,6 +274,59 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                   ),
                                   child: InkWell(
                                     onTap: () async {
+                                      // Check if images exist and are not empty
+                                      Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            type: PageTransitionType.fade,
+                                            child: FlutterFlowExpandedImageView(
+                                              image: Image.network(
+                                                itemList['images'][0]['src'],
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (context, error, stackTrace) => Image.asset(
+                                                  'assets/images/error_image.png',
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                              allowRotation: false,
+                                              tag: itemList['images'][0]['src'],
+                                              useHeroAnimation: true,
+                                            ),
+                                          ),
+                                        );
+
+                                    },
+                                    child: Hero(
+                                      tag: itemList['images'] != null && itemList['images'].isNotEmpty
+                                          ? itemList['images'][0]['src']
+                                          : 'default_tag', // Fallback tag in case of no images
+                                      transitionOnUserGestures: true,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        child: itemList['images'] != null && itemList['images'].isNotEmpty
+                                            ? Image.network(
+                                          itemList['images'][0]['src'],
+                                          width: 50.0,
+                                          height: 50.0,
+                                          fit: BoxFit.fill,
+                                          errorBuilder: (context, error, stackTrace) => Image.asset(
+                                            'assets/images/error_image.png',
+                                            width: 50.0,
+                                            height: 50.0,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        )
+                                            : Image.asset(
+                                          'assets/images/error_image.png', // Fallback image in case of no images
+                                          width: 50.0,
+                                          height: 50.0,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+/*InkWell(
+                                    onTap: () async {
                                       // Navigate to expanded image view
                                       await Navigator.push(
                                         context,
@@ -319,7 +372,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ),*/
                                 ),
                                 // Details Container
                                 Padding(
@@ -507,6 +560,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                         ).then((_) {
                                           // Show a dialog box after the item has been added successfully
                                           _showDialog(context, "Item Added", "Item hase been added to the cart");
+                                          FFAppState().cartCount = 1;
                                         }).catchError((error) {
                                           // Handle any errors here
                                           _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
@@ -725,11 +779,14 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                   );
                                 },
                                 child: Hero(
-                                  tag: item['images'][0]['src'],
+                                  tag:  item['images'] != null && item['images'].isNotEmpty
+                                      ? item['images'][0]['src']
+                                      : 'default_tag', /*item['images'][0]['src'],*/
                                   transitionOnUserGestures: true,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8.0),
-                                    child: Image.network(
+                                    child: item['images'] != null && item['images'].isNotEmpty
+                                        ?Image.network(
                                       item['images'][0]['src'],
                                       width: 50.0,
                                       height: 50.0,
@@ -742,6 +799,11 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                         height: 50.0,
                                         fit: BoxFit.fill,
                                       ),
+                                    ) : Image.asset(
+                                      'assets/images/error_image.png', // Fallback image in case of no images
+                                      width: 50.0,
+                                      height: 50.0,
+                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),
@@ -925,6 +987,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                                     ).then((_) {
                                       // Show a dialog box after the item has been added successfully
                                       _showDialog(context, "Item Added", "Item hase been added to the cart");
+                                      FFAppState().cartCount = 1;
                                     }).catchError((error) {
                                       // Handle any errors here
                                       _showDialog(context, "Error", "An error occurred while adding the item to the cart.");

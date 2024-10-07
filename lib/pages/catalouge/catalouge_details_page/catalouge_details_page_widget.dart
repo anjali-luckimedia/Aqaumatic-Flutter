@@ -687,6 +687,7 @@ class _CatalougeDetailsPageWidgetState
                                                           ).then((_) {
                                                             // Show a dialog box after the item has been added successfully
                                                             _showDialog(context, "Item Added", "Item hase been added to the cart");
+                                                            FFAppState().cartCount = 1;
                                                           }).catchError((error) {
                                                             // Handle any errors here
                                                             _showDialog(context, "Error", "An error occurred while adding the item to the cart.");

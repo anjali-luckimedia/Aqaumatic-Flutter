@@ -358,6 +358,8 @@ class _CartScreenState extends State<CartScreen> {
 
 }
 */
+import 'dart:io';
+
 import 'package:aqaumatic_app/Cart/cart_service.dart';
 import 'package:aqaumatic_app/app_constants.dart';
 import 'package:aqaumatic_app/backend/api_requests/api_calls.dart';
@@ -479,7 +481,12 @@ class _CartScreenState extends State<CartScreen> {
       canPop: false,
 
       onPopInvoked: (didPop) {
-        SystemNavigator.pop();
+        if (Platform.isAndroid) {
+          SystemNavigator.pop();
+        } else if (Platform.isIOS) {
+          exit(0);
+        }
+        // SystemNavigator.pop();
         // faça o que precisar...
       },
       child: Scaffold(

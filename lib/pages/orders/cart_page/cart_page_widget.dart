@@ -1537,7 +1537,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                 text: TextSpan(
                                                   children: [
                                                     TextSpan(
-                                                      text: 'Price: £ ',
+                                                      text: 'Price: £',
                                                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                         fontFamily: 'Open Sans',
                                                         fontSize: 16.0,

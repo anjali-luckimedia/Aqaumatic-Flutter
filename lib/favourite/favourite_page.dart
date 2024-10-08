@@ -332,7 +332,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                       child: Text(
-                        'Price : £ ${item['price']}',  // Display price from FavoriteItem
+                        'Price : £${item['price']}',  // Display price from FavoriteItem
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Open Sans',
                           fontSize: 16.0,

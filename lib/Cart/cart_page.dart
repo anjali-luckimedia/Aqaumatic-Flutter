@@ -426,6 +426,9 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
+
+
+
   /*Future<void> _loadCart() async {
     // Fetch cart items from SharedPreferences using _cartService
     final cartItems = await _cartService.getCart();
@@ -519,7 +522,7 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
           actions: [
-            Padding(
+            _cartItems == null || _cartItems!.isEmpty?Wrap():Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
               child: FlutterFlowIconButton(
               //  borderColor: Color(0xFF27AEDF),
@@ -532,7 +535,7 @@ class _CartScreenState extends State<CartScreen> {
                   color: FlutterFlowTheme.of(context).secondaryBackground,
                   size: 24.0,
                 ),
-                onPressed: () async {
+               /* onPressed: () async {
                   // Check if cart is empty before showing the dialog
                   if (_cartItems == null || _cartItems!.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -580,9 +583,9 @@ class _CartScreenState extends State<CartScreen> {
                     await _cartService.clearCart();
                     _loadCart();
                   }
-                },
+                },*/
 
-                /*onPressed: () async {
+                onPressed: () async {
                   // Show confirmation dialog
                   bool? confirmed = await showDialog<bool>(
                     context: context,
@@ -613,7 +616,7 @@ class _CartScreenState extends State<CartScreen> {
                     await _cartService.clearCart();
                     _loadCart();
                   }
-                },*/
+                },
               ),
             ),
           ],
@@ -730,7 +733,7 @@ class _CartScreenState extends State<CartScreen> {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                text: 'Price: £ ',
+                                                text: 'Price: £',
                                                 style: FlutterFlowTheme.of(
                                                     context)
                                                     .bodyMedium
@@ -863,7 +866,7 @@ class _CartScreenState extends State<CartScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'Total: £ ${_calculateTotal().toStringAsFixed(2)}',
+                        'Total: £${_calculateTotal().toStringAsFixed(2)}',
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                           fontFamily: 'Open Sans',
                           fontSize: 23.0,
@@ -1018,11 +1021,9 @@ class _CartScreenState extends State<CartScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8.0),
-                                            child: Text(
-                                              'Address :- ${userData['shipping']['address_1'] ?? ''}',
+                                          userData['shipping']['address_1'] ==''?Wrap():Padding(
+                                            padding: const EdgeInsets.only(top: 8.0),
+                                            child: Text('Address :- ${userData['shipping']['address_1'] ?? ''}',
                                               style: FlutterFlowTheme.of(context)
                                                   .bodyMedium
                                                   .override(
@@ -1033,7 +1034,7 @@ class _CartScreenState extends State<CartScreen> {
                                                   ),
                                             ),
                                           ),
-                                          Padding(
+                                          userData['shipping']['city'] ==''?Wrap():Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 8.0),
                                             child: Text(
@@ -1048,7 +1049,7 @@ class _CartScreenState extends State<CartScreen> {
                                                   ),
                                             ),
                                           ),
-                                          Padding(
+                                          userData['shipping']['postcode'] ==''?Wrap(): Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 8.0),
                                             child: Text(
@@ -1063,7 +1064,7 @@ class _CartScreenState extends State<CartScreen> {
                                                   ),
                                             ),
                                           ),
-                                          Padding(
+                                          userData['shipping']['country'] ==''?Wrap(): Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 8.0),
                                             child: Text(
@@ -1246,7 +1247,7 @@ class _CartScreenState extends State<CartScreen> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
                   child: InkWell(
-                    onTap: () async {
+                  /*  onTap: () async {
                       // Validation check for Other Address
                       if (selectedAddress == 'Other Address') {
                         if (customerNotesController.text.trim().isEmpty) {
@@ -1298,29 +1299,160 @@ class _CartScreenState extends State<CartScreen> {
                       var shippingCountry = GetUserProfileCall.shippingCountry(userData);
 
 
-                      print("First Name: $bFName");
-                      print("Last Name: $bLName");
-                      print("Address1: $address1");
-                      print("Address2: $address2");
-                      print("City: $city");
-                      print("State: $state");
-                      print("Postcode: $postcode");
-                      print("Country: $country");
-                      print("Phone: $bPhone");
-                      print("Customer Note: ${customerNotesController.text.trim()}");
-                      print("Shipping First Name: $shippingFirstName");
-                      print("Shipping Last Name: $shippingLastName");
-                      print("Shipping Address1: $shippingAddress1");
-                      print("Shipping Address2: $shippingAddress2");
-                      print("Shipping City: $shippingCity");
-                      print("Shipping State: $shippingState");
-                      print("Shipping Postcode: $shippingPostcode");
-                      print("Shipping Country: $shippingCountry");
-                      print("Shipping Phone: $shippingPhone");
-                      print("Billing Method: $selectedAddress");
-                      print("Purchase Note: ${purchaseOrderController.text.trim()}");
-                      print("Line Items: $items");
-                      print("Customer ID: ${FFAppState().userId.toString()}");
+
+                      // Create order
+                      var orderCreate = await CreateOrderCall.call(
+                        firstName: bFName,
+                        lastName: bLName,
+                        address1: address1,
+                        address2: address2,
+                        city: city,
+                        state: state,
+                        postcode: postcode,
+                        country: country,
+                        phone: bPhone,
+                        customerNote: customerNotesController.text.trim(),
+                        shippingFirstName: shippingFirstName,
+                        shippingLastName: shippingLastName,
+                        shippingAddress1: shippingAddress1,
+                        shippingAddress2: shippingAddress2,
+                        shippingCity: shippingCity,
+                        shippingState: shippingState,
+                        shippingPostcode: shippingPostcode,
+                        shippingCountry: shippingCountry,
+                        shippingPhone: shippingPhone,
+                        billingMethod: selectedAddress,
+                        purchaseNote: purchaseOrderController.text.trim(),
+                        lineItemsJson: items,
+                        customerId: FFAppState().userId.toString(),
+                      );
+
+                      // Handle order creation result
+                      if (orderCreate.succeeded == true) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPageWidget()));
+                        await _cartService.clearCart();
+                        _loadCart();
+                      } else {
+                        setState(() {
+                          isLoading = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Order not created',
+                              style: TextStyle(
+                                color: FlutterFlowTheme.of(context).primaryText,
+                              ),
+                            ),
+                            duration: Duration(milliseconds: 4000),
+                            backgroundColor: FlutterFlowTheme.of(context).secondary,
+                          ),
+                        );
+                      }
+                    },*/
+                    onTap: () async {
+                      // Fetch user profile
+                      var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId);
+                      var userData = userProfile.jsonBody;
+
+                      // Extract user profile data
+                      var bFName = GetUserProfileCall.bFName(userData);
+                      var bLName = GetUserProfileCall.bLName(userData);
+                      var bPhone = GetUserProfileCall.bPhone(userData);
+                      var address1 = GetUserProfileCall.bAdd(userData);
+                      var address2 = GetUserProfileCall.bAdd2(userData);
+                      var city = GetUserProfileCall.bCity(userData);
+                      var state = GetUserProfileCall.bState(userData);
+                      var postcode = GetUserProfileCall.bPostCode(userData);
+                      var country = GetUserProfileCall.bCountry(userData);
+
+                      var shippingFirstName = GetUserProfileCall.shippingFName(userData);
+                      var shippingLastName = GetUserProfileCall.shippingLName(userData);
+                      var shippingPhone = GetUserProfileCall.shippingPhone(userData);
+                      var shippingAddress1 = GetUserProfileCall.shippingAdd(userData);
+                      var shippingAddress2 = GetUserProfileCall.shippingAdd2(userData);
+                      var shippingCity = GetUserProfileCall.shippingCity(userData);
+                      var shippingState = GetUserProfileCall.shippingState(userData);
+                      var shippingPostcode = GetUserProfileCall.shippingPostCode(userData);
+                      var shippingCountry = GetUserProfileCall.shippingCountry(userData);
+
+                      // Validation check for Other Address
+                      if (selectedAddress == 'Other Address') {
+                        if (customerNotesController.text.trim().isEmpty) {
+                          // Show validation error message if either of the fields are empty
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Please enter your address under the customer notes',
+                                style: TextStyle(
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                ),
+                              ),
+                              backgroundColor: Colors.red, // Error color
+                              duration: Duration(milliseconds: 3000),
+                            ),
+                          );
+                          return; // Stop execution if validation fails
+                        }
+                      }
+                      // Validation for Billing Address
+                      else if (selectedAddress == 'Billing Address') {
+                        if (bFName == '' || bLName == '' || bPhone == '' ||
+                            address1 == '' || city == '' || state == '' || postcode == '' || country == '') {
+                          // Show validation error if any billing field is null
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Your billing address is empty please contact your administrator',
+                                style: TextStyle(
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                ),
+                              ),
+                              backgroundColor: Colors.red, // Error color
+                              duration: Duration(milliseconds: 3000),
+                            ),
+                          );
+                          setState(() {
+                            isLoading = false;
+                          });
+                          return; // Stop execution if validation fails
+                        }
+                      }
+
+                      // Validation for Delivery Address
+                      else if (selectedAddress == 'Delivery Address') {
+                        if (shippingFirstName == '' || shippingLastName == '' || shippingPhone == '' ||
+                            shippingAddress1 == '' || shippingCity == '' || shippingState == '' || shippingPostcode == '' || shippingCountry == '') {
+                          // Show validation error if any billing field is null
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Your delivery address is empty please contact your administrator',
+                                style: TextStyle(
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                ),
+                              ),
+                              backgroundColor: Colors.red, // Error color
+                              duration: Duration(milliseconds: 3000),
+                            ),
+                          );
+                          setState(() {
+                            isLoading = false;
+                          });
+                          return; // Stop execution if validation fails
+                        }
+                      }
+
+                      // Show loading indicator
+                      setState(() {
+                        isLoading = true;
+                      });
+
+
+
                       // Create order
                       var orderCreate = await CreateOrderCall.call(
                         firstName: bFName,
@@ -1374,6 +1506,7 @@ class _CartScreenState extends State<CartScreen> {
                         );
                       }
                     },
+
                     child: Container(
                       width: double.infinity,
                       height: 45.0,

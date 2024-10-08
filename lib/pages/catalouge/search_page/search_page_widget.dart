@@ -70,18 +70,20 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
 
     super.dispose();
   }
+
   Future<void> _loadCart() async {
     final cartItems = await _cartService.getCart();
     setState(() {
       _cartItems = cartItems;
       print(_cartItems.length);
-      FFAppState().cartCount = _cartItems.length;
+   //   FFAppState().cartCount = _cartItems.length;
       count = _cartItems.length;
 
 
       print('count instant -------$count');
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1165,6 +1167,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
     _cartService.addToCart(newItem);
     _loadCart();
   }
+
   void _showDialog(BuildContext context, String title, String content) {
     showDialog(
       context: context,

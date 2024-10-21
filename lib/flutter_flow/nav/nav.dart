@@ -108,11 +108,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: '/catalougePage',
           builder: (context, params) => CatalougePageWidget(),
         ),
-        FFRoute(
-          name: 'FavouritePage',
-          path: '/favouritePage',
-          builder: (context, params) => FavouritePageWidget(),
-        ),
+        // FFRoute(
+        //   name: 'FavouritePage',
+        //   path: '/favouritePage',
+        //   builder: (context, params) => FavouritePageWidget(),
+        // ),
         FFRoute(
           name: 'OrderPage',
           path: '/orderPage',
@@ -180,11 +180,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: '/profilePage',
           builder: (context, params) => ProfilePageWidget(),
         ),
-        FFRoute(
-          name: 'CartPage',
-          path: '/cartPage',
-          builder: (context, params) => CartPageWidget(),
-        ),
+        // FFRoute(
+        //   name: 'CartPage',
+        //   path: '/cartPage',
+        //   builder: (context, params) => CartPageWidget(),
+        // ),
         FFRoute(
           name: 'SearchPage',
           path: '/searchPage',

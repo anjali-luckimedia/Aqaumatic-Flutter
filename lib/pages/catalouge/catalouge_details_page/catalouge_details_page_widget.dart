@@ -191,6 +191,7 @@ class _CatalougeDetailsPageWidgetState
                   future: GetProductDetailsCall.call(
                     userId: FFAppState().userId,
                     slug: widget.slugName,
+                    
                   ),
                   builder: (context, snapshot) {
                     // Handle the loading state
@@ -296,6 +297,7 @@ class _CatalougeDetailsPageWidgetState
                                       final removeResponse = await RemoveProductToWishlistCallNew.call(
                                         userId: FFAppState().userId,
                                         productSku: GetProductDetailsCall.sku(jsonResponse),
+                                          
                                       );
 
                                       // Update UI and local state if API call is successful
@@ -311,6 +313,7 @@ class _CatalougeDetailsPageWidgetState
                                       final addResponse = await AddProductToWishlistCallNew.call(
                                         userId: FFAppState().userId,
                                         productSku: GetProductDetailsCall.sku(jsonResponse),
+                                          
                                       );
 
                                       // Update UI and local state if API call is successful
@@ -752,6 +755,7 @@ class _CatalougeDetailsPageWidgetState
                                                 final removeResponse = await RemoveProductToWishlistCallNew.call(
                                                   userId: FFAppState().userId,
                                                   productSku:sku,
+                                                    
                                                 );
 
                                                 // Update UI and local state if API call is successful
@@ -768,6 +772,7 @@ class _CatalougeDetailsPageWidgetState
                                                 final addResponse = await AddProductToWishlistCallNew.call(
                                                   userId: FFAppState().userId,
                                                   productSku: sku,
+                                                    
                                                 );
 
                                                 // Update UI and local state if API call is successful

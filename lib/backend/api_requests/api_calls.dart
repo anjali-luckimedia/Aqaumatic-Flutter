@@ -13,51 +13,6 @@ import 'package:http/http.dart' as http;
 
 const _kPrivateApiFunctionName = 'ffPrivateApiCall';
 
-/*class GetCatalougeCall {
-  static Future<ApiCallResponse> call({
-    String? page = '1',
-    int? userId,
-  }) async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'getCatalouge',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products/categories?per_page=10&user_id=${userId}',
-      callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {
-        'page': page,
-      },
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static List<int>? id(dynamic response) => (getJsonField(
-        response,
-        r'''$[:].id''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<int>(x))
-          .withoutNulls
-          .toList();
-  static List<String>? name(dynamic response) => (getJsonField(
-        response,
-        r'''$[:].name''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<String>(x))
-          .withoutNulls
-          .toList();
-}*/
 class GetCatalougeCall {
   static Future<ApiCallResponse> call({
     String? page = '1',
@@ -113,56 +68,6 @@ class GetCatalougeCall {
       .toList();
 }
 
-/*
-class GetOrderListCall {
-  static Future<ApiCallResponse> call({
-    String? page = '1',
-    int? userId,
-  }) async {
-
-    print(userId);
-    return ApiManager.instance.makeApiCall(
-      callName: 'getOrderList',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?per_page=10&customer=${userId}',
-      callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {
-        //'customer':userId,
-        'page': page,
-      },
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static List<int>? orderId(dynamic response) => (getJsonField(
-        response,
-        r'''$[:].id''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<int>(x))
-          .withoutNulls
-          .toList();
-  static List<String>? status(dynamic response) => (getJsonField(
-        response,
-        r'''$[:].status''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<String>(x))
-          .withoutNulls
-          .toList();
-}
-*/
 class GetOrderListCall {
   static Future<ApiCallResponse> call({
     String? page = '1',
@@ -343,6 +248,8 @@ class GetProductListByCatalougeCall {
     int? page,
     int? userId,
   }) async {
+
+
     // Call the API and capture the response
     final response = await ApiManager.instance.makeApiCall(
       callName: 'getProductListByCatalouge',
@@ -392,53 +299,6 @@ class GetProductListByCatalougeCall {
       .withoutNulls
       .toList();
 }
-
-
-/*class GetProductListByCatalougeCall {
-  static Future<ApiCallResponse> call({
-    int? categoryId,
-    int? page,
-    int? userId,
-  }) async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'getProductListByCatalouge',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/products?per_page=10&category=${categoryId}&user_id=${userId}',
-      callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {
-        'page': page,
-      },
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static List<int>? id(dynamic response) => (getJsonField(
-        response,
-        r'''$[:].id''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<int>(x))
-          .withoutNulls
-          .toList();
-  static List<String>? fav(dynamic response) => (getJsonField(
-        response,
-        r'''$.data[:].is_favourite''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<String>(x))
-          .withoutNulls
-          .toList();
-}*/
 
 class GetProductDetailsCall {
   static Future<ApiCallResponse> call({
@@ -512,197 +372,6 @@ class GetProductDetailsCall {
         response,
         r'''$.data.item_id''',
       ));
-}
-
-class GetCartCall {
-  static Future<ApiCallResponse> call() async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'getCart',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/cocart/v2/cart',
-      callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {},
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static int? id(dynamic response) => castToType<int>(getJsonField(
-        response,
-        r'''$.items[:].id''',
-      ));
-  static String? name(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.items[:].name''',
-      ));
-  static String? price(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.items[:].price''',
-      ));
-  static String? sku(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.items[:].meta.sku''',
-      ));
-  static String? image(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.items[:].featured_image''',
-      ));
-  static List? items(dynamic response) => getJsonField(
-        response,
-        r'''$.items''',
-        true,
-      ) as List?;
-  static int? quantity(dynamic response) => castToType<int>(getJsonField(
-        response,
-        r'''$.items[:].quantity.value''',
-      ));
-  static String? company(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_company''',
-      ));
-  static String? country(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_country''',
-      ));
-  static String? address1(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_address_1''',
-      ));
-  static String? address2(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_address_2''',
-      ));
-  static String? city(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_city''',
-      ));
-  static String? state(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_state''',
-      ));
-  static String? postcode(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_postcode''',
-      ));
-  static String? phone(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_phone''',
-      ));
-  static dynamic? rates(dynamic response) => getJsonField(
-        response,
-        r'''$.shipping.packages.default.rates''',
-      );
-  static String? biillingemail(dynamic response) =>
-      castToType<String>(getJsonField(
-        response,
-        r'''$.customer.billing_address.billing_email''',
-      ));
-  static String? sFIrstName(dynamic response) =>
-      castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_first_name''',
-      ));
-  static String? sLastName(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_last_name''',
-      ));
-  static String? sCompnay(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_company''',
-      ));
-  static String? sCountry(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_country''',
-      ));
-  static String? sAddess1(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_address_1''',
-      ));
-  static String? sAddess2(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_address_2''',
-      ));
-  static String? sCity(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_city''',
-      ));
-  static String? sState(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_state''',
-      ));
-  static String? sPostcode(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.customer.shipping_address.shipping_postcode''',
-      ));
-  static int? cartCount(dynamic response) => castToType<int>(getJsonField(
-        response,
-        r'''$.item_count''',
-      ));
-}
-
-class AddToCartCall {
-  static Future<ApiCallResponse> call({
-    int? id,
-    int? quantity,
-  }) async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'addToCart',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/cocart/v2/cart/add-item',
-      callType: ApiCallType.POST,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {
-        'id': id,
-        'quantity': quantity,
-      },
-      bodyType: BodyType.X_WWW_FORM_URL_ENCODED,
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static List? items(dynamic response) => getJsonField(
-        response,
-        r'''$.items''',
-        true,
-      ) as List?;
-}
-
-class CartClearCall {
-  static Future<ApiCallResponse> call() async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'cartClear',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/cocart/v2/cart/clear',
-      callType: ApiCallType.POST,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {},
-      bodyType: BodyType.X_WWW_FORM_URL_ENCODED,
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
 }
 
 class AddProductToWishlistCallNew {
@@ -788,6 +457,7 @@ class RemoveProductToWishlistCallNew {
 class GetFavouritesListCall {
   static Future<ApiCallResponse> call({
     int? userId,
+    required String token,
   }) async {
 
     print('User ID: $userId');
@@ -800,7 +470,8 @@ class GetFavouritesListCall {
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        'Basic $token',
+      //  'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
       },
 
       returnBody: true,
@@ -835,37 +506,6 @@ class GetFavouritesListCall {
       .map((x) => castToType<String>(x))
       .withoutNulls
       .toList();
-}
-
-class UpdateInCartCall {
-  static Future<ApiCallResponse> call({
-    String? itemkey = '',
-    String? quantity = '',
-  }) async {
-    final ffApiRequestBody = '''
-{
-  "quantity": "${quantity}"
-}''';
-    return ApiManager.instance.makeApiCall(
-      callName: 'updateInCart',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/cocart/v2/cart/item/${itemkey}',
-      callType: ApiCallType.POST,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {},
-      body: ffApiRequestBody,
-      bodyType: BodyType.JSON,
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
 }
 
 class GetNewsCall {
@@ -1012,79 +652,6 @@ class GetOrderDetailsCall {
   ));
 }
 
-/*class GetOrderDetailsCall {
-  static Future<ApiCallResponse> call({
-    int? orderId,
-  }) async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'getOrderDetails',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders/${orderId}',
-      callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {},
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static int? id(dynamic response) => castToType<int>(getJsonField(
-        response,
-        r'''$.id''',
-      ));
-  static String? status(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.status''',
-      ));
-  static String? currency(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.currency''',
-      ));
-  static String? createDate(dynamic response) =>
-      castToType<String>(getJsonField(
-        response,
-        r'''$.date_created''',
-      ));
-  static String? total(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.total''',
-      ));
-  static String? updatedDate(dynamic response) =>
-      castToType<String>(getJsonField(
-        response,
-        r'''$.date_modified''',
-      ));
-  static String? firstName(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.shipping.first_name''',
-      ));
-  static String? lastName(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.shipping.last_name''',
-      ));
-  static String? number(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.number''',
-      ));
-  static String? phoneNumber(dynamic response) =>
-      castToType<String>(getJsonField(
-        response,
-        r'''$.shipping.phone''',
-      ));
-  static List? lineItems(dynamic response) => getJsonField(
-        response,
-        r'''$.line_items''',
-        true,
-      ) as List?;
-}*/
-
 class GetUserProfileCall {
   static Future<ApiCallResponse> call({
     int? userId,
@@ -1220,33 +787,6 @@ class GetUserProfileCall {
   ));
 }
 
-class DeleteItemInCartCall {
-  static Future<ApiCallResponse> call({
-    String? itemkey = '',
-    int? quantity,
-  }) async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'deleteItemInCart',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/cocart/v2/cart/item/${itemkey}',
-      callType: ApiCallType.DELETE,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {
-        'quantity': quantity,
-      },
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-}
-
 class CreateOrderCall {
   static Future<ApiCallResponse> call({
     String? customerNote = '',
@@ -1345,6 +885,7 @@ class CreateOrderCall {
     );
   }
 }
+
 class CancelOrderCall {
   static Future<ApiCallResponse> call({
     String? status = '',
@@ -1367,71 +908,6 @@ class CancelOrderCall {
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-}
-class CreateWishlistCall {
-  static Future<ApiCallResponse> call({
-    String? title = '',
-    int? userId,
-  }) async {
-    final ffApiRequestBody = '''
-{
-  "title": "${title} Wishlist",
-  "user_id": ${userId},
-  "staus": "shared"
-}''';
-    return ApiManager.instance.makeApiCall(
-      callName: 'createWishlist',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/wishlist/create',
-      callType: ApiCallType.POST,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {},
-      body: ffApiRequestBody,
-      bodyType: BodyType.JSON,
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static String? shareKey(dynamic response) => castToType<String>(getJsonField(
-        response,
-        r'''$.share_key''',
-      ));
-  static int? id(dynamic response) => castToType<int>(getJsonField(
-        response,
-        r'''$.id''',
-      ));
-}
-
-class RemoveProductWishlistCall {
-  static Future<ApiCallResponse> call({
-    int? itemId,
-  }) async {
-    return ApiManager.instance.makeApiCall(
-      callName: 'removeProductWishlist',
-      apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/wishlist/remove_product/${itemId}',
-      callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {},
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
@@ -1464,37 +940,6 @@ class GetDownloadDataListCall {
   }
 }
 
-class GetNewWishlistDataCall {
-  static Future<ApiCallResponse> call({
-
-    int? userId,
-  }) async {
-    print(userId);
-    return ApiManager.instance.makeApiCall(
-      callName: 'getNewWishlistData',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/wishlist-products?user_id=${userId}',
-      callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
-      params: {},
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-
-  static List? dataList(dynamic response) => getJsonField(
-        response,
-        r'''$.data''',
-        true,
-      ) as List?;
-}
-
 class ChangePasswordCall {
   static Future<ApiCallResponse> call({
     int? userId,
@@ -1525,36 +970,6 @@ class ChangePasswordCall {
   }
 }
 
-
-
-
-
-class CheckIfFavorite {
-  static Future<void> checkIfFavorite(String productSku, String userId) async {
-  // Replace this with your API URL
-  final String url = 'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/check?product_sku=$productSku&user_id=$userId';
-
-  try {
-    // Make the GET request
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      // Decode the response body
-      final Map<String, dynamic> data = json.decode(response.body);
-
-      // Access the "is_favorite" field
-      bool isFavorite = data['is_favorite'];
-
-      // Print the result or use it in your app logic
-      print('Is favorite: $isFavorite');
-    } else {
-      // Handle error
-      print('Error: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error: $e');
-  }
-}}
 
 class ApiPagingParams {
   int nextPageNumber = 0;

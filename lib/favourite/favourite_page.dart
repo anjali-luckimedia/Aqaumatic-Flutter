@@ -43,11 +43,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   Future<void> _fetchPage() async {
+    print( FFAppState().token);
     setState(() {
       isLoading = true;
     });
     try {
-      final response = await GetFavouritesListCall.call(userId: FFAppState().userId);
+      final response = await GetFavouritesListCall.call(userId: FFAppState().userId,token: FFAppState().token );
 
       // Assuming response.jsonBody contains a list of favorite items
       if (response != null && response.jsonBody != null) {
@@ -278,6 +279,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             final removeResponse = await RemoveProductToWishlistCallNew.call(
                               userId: FFAppState().userId,
                               productSku: '${item['sku']}',
+                                
                             );
 
                             // Update UI and local state if API call is successful

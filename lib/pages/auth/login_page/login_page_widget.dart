@@ -267,6 +267,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                         FFAppState().email = LoginCall.email(
                           (_model.loginAPIResult?.jsonBody ?? ''),
                         )!;
+                        FFAppState().token = LoginCall.token(
+                          (_model.loginAPIResult?.jsonBody ?? ''),
+                        )!;
                         // FFAppState().wishlistKey = LoginCall.shareKey(
                         //   (_model.loginAPIResult?.jsonBody ?? ''),
                         // )!;

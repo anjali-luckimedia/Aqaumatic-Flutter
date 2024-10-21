@@ -1,3 +1,4 @@
+/*
 import 'package:aqaumatic_app/Cart/CartModel.dart';
 import 'package:aqaumatic_app/Cart/cart_page.dart';
 import 'package:aqaumatic_app/Cart/cart_service.dart';
@@ -132,7 +133,8 @@ class _FavouritePageWidgetState extends State<FavouritePageWidget> {
                 ),
               ),
             ),
-            /* FutureBuilder<ApiCallResponse>(
+            */
+/* FutureBuilder<ApiCallResponse>(
               future: GetCartCall.call(),
               builder: (context, snapshot) {
                 // Customize what your widget looks like when it's loading.
@@ -179,7 +181,8 @@ class _FavouritePageWidgetState extends State<FavouritePageWidget> {
                   ),
                 );
               },
-            ),*/
+            ),*//*
+
           ],
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
@@ -288,6 +291,7 @@ class _FavouritePageWidgetState extends State<FavouritePageWidget> {
   }
 }
 
+*/
 /*class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -329,7 +333,8 @@ class _FavouritePageWidgetState extends State<FavouritePageWidget> {
   }
 
 
-}*/
+}*//*
+
 
 class WishlistItem extends StatelessWidget {
   final dynamic item;
@@ -390,14 +395,14 @@ class WishlistItem extends StatelessWidget {
                   ),
                   onPressed: () async {
                     print(getJsonField(item, r'''$.item_id'''));
-                    final removeFavorite = await RemoveProductWishlistCall.call(
-                      itemId: getJsonField(item, r'''$.item_id'''),
-                    );
-                    if (removeFavorite.succeeded == true) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Item removed from favorites')));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to remove item')));
-                    }
+                    // final removeFavorite = await RemoveProductWishlistCall.call(
+                    //   itemId: getJsonField(item, r'''$.item_id'''),
+                    // );
+                    // if (removeFavorite.succeeded == true) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Item removed from favorites')));
+                    // } else {
+                    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to remove item')));
+                    // }
                   },
                 ),
               ),
@@ -504,7 +509,8 @@ class WishlistItem extends StatelessWidget {
                       //key: Key('Keyvbk_${getWishlistApiIndex}_of_${getWishlistApi.length}'),
                       countValue: FFAppState().cartCount,
                     ),
-                    FFButtonWidget(
+                    */
+/*FFButtonWidget(
                       onPressed: () async {
                         model.addToCart = await AddToCartCall.call(
                           id: getJsonField(
@@ -574,7 +580,8 @@ class WishlistItem extends StatelessWidget {
                         ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                    ),
+                    ),*//*
+
                   ],
                 ),
               ),
@@ -586,4 +593,4 @@ class WishlistItem extends StatelessWidget {
       ),
     );
   }
-}
+}*/

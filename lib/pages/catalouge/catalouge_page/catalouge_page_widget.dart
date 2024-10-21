@@ -712,6 +712,7 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
                                 userId: FFAppState().userId,
                                 page: functions.getPageNumber(
                                     nextPageMarker.nextPageNumber).toString(),
+                              
                               ),
                         ),
                         padding: EdgeInsets.fromLTRB(0, 0, 0, 25.0),

@@ -44,7 +44,9 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _firstName = prefs.getString('ff_firstName') ?? _firstName;
     });
-
+    _safeInit(() {
+      _token = prefs.getString('ff_token') ?? _token;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -104,6 +106,13 @@ class FFAppState extends ChangeNotifier {
   set email(String value) {
     _email = value;
     prefs.setString('ff_email', value);
+  }
+
+  String _token = '';
+  String get token => _token;
+  set token(String value) {
+    _token = value;
+    prefs.setString('ff_token', value);
   }
 
   String _wishlistKey = '';

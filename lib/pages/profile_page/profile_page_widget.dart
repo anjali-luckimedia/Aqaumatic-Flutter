@@ -108,6 +108,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
               child: FutureBuilder<ApiCallResponse>(
                 future: GetUserProfileCall.call(
                   userId: FFAppState().userId,
+               
                 ),
                 builder: (context, snapshot) {
                   // Customize what your widget looks like when it's loading.
@@ -561,6 +562,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                   userId: FFAppState().userId,
                                   password: _model.oldPasswordTextController.text,
                                   newPassword: _model.newPasswordTextController.text,
+                               
                                 );
 
                                 // Print the full API response for debugging

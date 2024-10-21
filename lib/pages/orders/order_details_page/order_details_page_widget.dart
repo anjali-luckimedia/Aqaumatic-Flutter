@@ -160,7 +160,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(15.0, 0.0, 15.0, 20.0),
                     child: FutureBuilder<ApiCallResponse>(
-                      future: GetOrderDetailsCall.call(orderId: widget.orderId),
+                      future: GetOrderDetailsCall.call(orderId: widget.orderId,),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Center(
@@ -227,7 +227,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                 ),
                               ),
                               FutureBuilder<ApiCallResponse>(
-                                future: GetOrderDetailsCall.call(orderId: widget.orderId),
+                                future: GetOrderDetailsCall.call(orderId: widget.orderId,),
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
                                     return Center(
@@ -372,6 +372,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                   var orderCancel = await CancelOrderCall.call(
                                     status: 'cancelled',
                                     orderId: widget.orderId,
+                                   
                                   );
                                   if (orderCancel.succeeded == true) {
                                     setState(() {

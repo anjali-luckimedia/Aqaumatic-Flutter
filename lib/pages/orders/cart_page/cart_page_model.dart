@@ -1,3 +1,4 @@
+/*
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/custom_bottom_navigation_widget.dart';
@@ -60,3 +61,4 @@ class CartPageModel extends FlutterFlowModel<CartPageWidget> {
     customBottomNavigationModel.dispose();
   }
 }
+*/

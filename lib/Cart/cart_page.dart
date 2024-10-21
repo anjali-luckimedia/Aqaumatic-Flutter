@@ -406,7 +406,7 @@ class _CartScreenState extends State<CartScreen> {
   }
   Future<dynamic> fetchUserProfile() async {
     try {
-      var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId);
+      var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId,);
       print('Error fetching user profile: ${userProfile.jsonBody}');
       return userProfile.jsonBody;
       // Return the profile data
@@ -1355,7 +1355,7 @@ class _CartScreenState extends State<CartScreen> {
                     },*/
                     onTap: () async {
                       // Fetch user profile
-                      var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId);
+                      var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId,);
                       var userData = userProfile.jsonBody;
 
                       // Extract user profile data
@@ -1478,6 +1478,7 @@ class _CartScreenState extends State<CartScreen> {
                         purchaseNote: purchaseOrderController.text.trim(),
                         lineItemsJson: items,
                         customerId: FFAppState().userId.toString(),
+                          
                       );
 
                       // Handle order creation result

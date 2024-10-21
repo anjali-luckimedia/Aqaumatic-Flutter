@@ -94,6 +94,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
         categoryId: widget.catId,
         page: pageKey,
         userId: FFAppState().userId, // Assuming FFAppState().userId exists
+       
       );
 
       // Parse the response to extract the list of orders
@@ -795,6 +796,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                           getListItem,
                                           r'''$.sku''',
                                         ).toString(),
+                                         
                                       );
 
                                       // Update UI and local state if API call is successful
@@ -813,6 +815,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                           getListItem,
                                           r'''$.sku''',
                                         ).toString(),
+                                         
                                       );
 
                                       // Update UI and local state if API call is successful

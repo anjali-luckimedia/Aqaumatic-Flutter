@@ -1205,7 +1205,9 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                       ),
                     ),
                   ),
-                 */
+                 *//*
+
+*/
 /* Align(
                     alignment: AlignmentDirectional(0.0, 1.0),
                     child: wrapWithModel(
@@ -1216,6 +1218,8 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                       ),
                     ),
                   ),*//*
+*/
+/*
 
                 ],
               ),
@@ -1226,7 +1230,8 @@ class _CartPageWidgetState extends State<CartPageWidget> {
     );
   }
 }
-*/
+*//*
+
 import 'package:aqaumatic_app/components/customDrawer.dart';
 import 'package:aqaumatic_app/index.dart';
 import '/auth/custom_auth/auth_util.dart';
@@ -1947,6 +1952,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                               onPressed: () async {
                                 _model.orderCreate =
                                 await CreateOrderCall.call(
+
                                   firstName: FFAppState().firstName,
                                   lastName: FFAppState().lastName,
                                   address1: GetCartCall.address1(
@@ -1972,6 +1978,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                   customerId: FFAppState()
                                       .userId
                                       .toString(),
+                                 
                                 );
 
                                 if ((_model
@@ -2089,6 +2096,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
   }
 }
 
+*/
 /*import 'package:aqaumatic_app/components/customDrawer.dart';
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
@@ -2152,7 +2160,9 @@ class _CartPageWidgetState extends State<CartPageWidget> {
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
-    return *//*FutureBuilder<ApiCallResponse>(
+    return *//*
+*/
+/*FutureBuilder<ApiCallResponse>(
       future: GetCartCall.call(),
       builder: (context, snapshot) {
         // Loading indicator
@@ -2175,7 +2185,9 @@ class _CartPageWidgetState extends State<CartPageWidget> {
         }
 
         final cartPageGetCartResponse = snapshot.data!;
-        return*//* GestureDetector(
+        return*//*
+*/
+/* GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Scaffold(
             key: scaffoldKey,
@@ -2302,7 +2314,9 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                             builder: (context) {
                               if (GetCartCall.items(columnGetCartResponse.jsonBody) != null &&
                                   (GetCartCall.items(columnGetCartResponse.jsonBody))!.isNotEmpty) {
-                                *//* return FutureBuilder<ApiCallResponse>(
+                                *//*
+*/
+/* return FutureBuilder<ApiCallResponse>(
                                   future: GetCartCall.call(),
                                   builder: (context, snapshot) {
                                     // if (!snapshot.hasData) {
@@ -2320,6 +2334,8 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                     // }
 
                                    // final listViewGetCartResponse = snapshot.data!;*//*
+*/
+/*
                                     return Builder(
                                       builder: (context) {
                                         final getCartAPI = getJsonField(
@@ -2497,7 +2513,9 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                                 ),
                                                               ),
                                                             ),
-                                                          *//*  IconButton(
+                                                          *//*
+*/
+/*  IconButton(
                                                               icon: Icon(
                                                                 Icons.delete_forever,
                                                                 color: FlutterFlowTheme.of(context).secondaryText,
@@ -2512,6 +2530,8 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                                 }
                                                               },
                                                             ),*//*
+*/
+/*
                                                           ],
                                                         ),
                                                         Padding(padding:
@@ -2984,8 +3004,12 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                         );
                                       },
                                     );
-                                 *//* },
+                                 *//*
+*/
+/* },
                                 );*//*
+*/
+/*
                               } else {
                                 return Center(
                                   child: Text(
@@ -3014,3 +3038,4 @@ class _CartPageWidgetState extends State<CartPageWidget> {
     // );
   }
 }*/
+

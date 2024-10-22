@@ -110,7 +110,19 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
             },
           ),
         ),
-
+        title: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+          child: Text(
+            'Search ',
+            textAlign: TextAlign.justify,
+            style: FlutterFlowTheme.of(context).headlineMedium.override(
+              fontFamily: 'Open Sans',
+              color: Colors.white,
+              fontSize: 22.0,
+              letterSpacing: 0.0,
+            ),
+          ),
+        ),
         actions: [
           badges.Badge(
             position: badges.BadgePosition.topEnd(top: -5, end: 15),
@@ -150,23 +162,11 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
           ),
 
         ],
-        flexibleSpace: FlexibleSpaceBar(
-          title: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 200.0, 0.0),
-            child: Text(
-              'Search ',
-              textAlign: TextAlign.justify,
-              style: FlutterFlowTheme.of(context).headlineMedium.override(
-                    fontFamily: 'Open Sans',
-                    color: Colors.white,
-                    fontSize: 22.0,
-                    letterSpacing: 0.0,
-                  ),
-            ),
-          ),
-          centerTitle: true,
-          expandedTitleScale: 1.0,
-        ),
+        // flexibleSpace: FlexibleSpaceBar(
+        //
+        //   centerTitle: true,
+        //   expandedTitleScale: 1.0,
+        // ),
         elevation: 0.0,
       ),
       body: SafeArea(

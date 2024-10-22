@@ -148,7 +148,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               _buildDrawerItem(
                 context,
                 icon: FontAwesomeIcons.phone,
-                label: 'Call Aqaumatic',
+                label: 'Call Aquamatic',
                 onTap: () => _makePhoneCall(widget.contactNumber),
               ),
               const SizedBox(height: 15.0),

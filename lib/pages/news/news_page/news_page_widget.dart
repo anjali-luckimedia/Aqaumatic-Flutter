@@ -241,14 +241,14 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                                         ),
                                       ),
                                       child: Row(
-                                        mainAxisSize: MainAxisSize.max,
+                                       // mainAxisSize: MainAxisSize.max,
                                         children: [
                                           ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                             child: Image.asset(
                                               'assets/images/Group_18.png',
-                                              width: 53.0,
+                                              width: 45.0,
                                               height: 57.0,
                                               fit: BoxFit.fitWidth,
                                             ),
@@ -259,10 +259,8 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                                                     10.0, 5.0, 0.0, 0.0),
                                             child: Column(
                                               mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              //mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   getJsonField(
@@ -270,8 +268,8 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                                                     r'''$.title.rendered''',
                                                   ).toString(),
                                                   textAlign: TextAlign.start,
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
+
+                                                  style: FlutterFlowTheme.of(context)
                                                       .bodyLarge
                                                       .override(
                                                         fontFamily: 'Open Sans',
@@ -311,13 +309,15 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                                                               ),
                                                         ),
                                                         TextSpan(
+
                                                           text: functions
                                                               .formatDateTimeCustom(
                                                                   getJsonField(
                                                             getNewsItem,
                                                             r'''$.date_gmt''',
                                                           ).toString()),
-                                                          style: TextStyle(),
+                                                          style: TextStyle(
+                                                            overflow: TextOverflow.ellipsis,),
                                                         )
                                                       ],
                                                       style: FlutterFlowTheme
@@ -341,7 +341,7 @@ class _NewsPageWidgetState extends State<NewsPageWidget> {
                                                       .fromSTEB(
                                                           0.0, 8.0, 0.0, 0.0),
                                                   child: Container(
-                                                    width: 283.0,
+                                                    width: 200.0,
                                                     height: 1.0,
                                                     decoration: BoxDecoration(
                                                       color: Colors.black,

@@ -315,10 +315,10 @@ class GetProductDetailsCall {
      'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/product-detail?slug=${slug}&user_id=${userId}',
       //'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products?slug=${slug}&user_id=${userId}',
       callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
+      // headers: {
+      //   'Authorization':
+      //   'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+      // },
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
@@ -457,7 +457,7 @@ class RemoveProductToWishlistCallNew {
 class GetFavouritesListCall {
   static Future<ApiCallResponse> call({
     int? userId,
-    required String token,
+    //required String token,
   }) async {
 
     print('User ID: $userId');
@@ -470,8 +470,8 @@ class GetFavouritesListCall {
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-        'Basic $token',
-      //  'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+       // 'Basic $token',
+        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
       },
 
       returnBody: true,

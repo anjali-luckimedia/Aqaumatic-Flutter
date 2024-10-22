@@ -48,7 +48,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
       isLoading = true;
     });
     try {
-      final response = await GetFavouritesListCall.call(userId: FFAppState().userId,token: FFAppState().token );
+      final response = await GetFavouritesListCall.call(userId: FFAppState().userId );
 
       // Assuming response.jsonBody contains a list of favorite items
       if (response != null && response.jsonBody != null) {
@@ -77,6 +77,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
         // });
       }
     } catch (error) {
+      setState(() {
+        data = []; // Ensure data is not null
+        isLoading = false; // Stop loading even if no data is available
+      });
       print("Error fetching favorites: $error");
       // Optionally, you can handle the error by showing a message in the UI
     }

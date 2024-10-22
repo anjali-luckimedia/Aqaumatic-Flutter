@@ -18,6 +18,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'news_details_page_model.dart';
 export 'news_details_page_model.dart';
+import 'package:html/parser.dart' as html_parser; // For parsing HTML
 
 class NewsDetailsPageWidget extends StatefulWidget {
   const NewsDetailsPageWidget({
@@ -146,7 +147,7 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(10.0, 5.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(20.0, 10.0, 20.0, 15.0),
             child: FutureBuilder<ApiCallResponse>(
               future: GetNewsDetailsCall.call(
                 slug: widget.slugName,
@@ -157,101 +158,140 @@ class _NewsDetailsPageWidgetState extends State<NewsDetailsPageWidget> {
                   return Wrap();
                 }
                 final columnGetNewsDetailsResponse = snapshot.data!;
+                 final htmlContent = GetNewsDetailsCall.content(columnGetNewsDetailsResponse.jsonBody)!;
+
+                 // Parse the HTML content to extract the plain text
+                 final document = html_parser.parse(htmlContent);
+                 final String parsedText = document.body?.text ?? '';
 
                 return SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-                        child: RichText(
-                          textScaler: MediaQuery.of(context).textScaler,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: valueOrDefault<String>(
-                                  GetNewsDetailsCall.title(
-                                    columnGetNewsDetailsResponse.jsonBody,
-                                  ),
-                                  'title',
-                                ),
-                                style: TextStyle(),
-                              )
-                            ],
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Open Sans',
-                                  color: Color(0xFF43484B),
-                                  fontSize: 22.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                          ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white38,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2), // Shadow color
+                          spreadRadius: 2, // Spread radius
+                          blurRadius: 5, // Blur radius
+                          offset: Offset(2, 2), // Changes the position of the shadow
                         ),
-                      ),
-                      Padding(
-                        padding:
+                      ],
+                      borderRadius: BorderRadius.circular(10), // Optional: for rounded corners
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
                             EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-                        child: RichText(
-                          textScaler: MediaQuery.of(context).textScaler,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: functions.formatDateTimeCustom(
-                                    GetNewsDetailsCall.date(
-                                  columnGetNewsDetailsResponse.jsonBody,
-                                )!),
-                                style: TextStyle(),
-                              )
-                            ],
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
+                            child: RichText(
+                              textScaler: MediaQuery.of(context).textScaler,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: functions.formatDateTimeCustom(
+                                        GetNewsDetailsCall.date(
+                                          columnGetNewsDetailsResponse.jsonBody,
+                                        )!),
+                                    style: TextStyle(),
+                                  )
+                                ],
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
                                   fontFamily: 'Open Sans',
                                   color: Color(0xFF43484B),
                                   fontSize: 18.0,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.w600,
                                 ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      Html(
-                        data:  GetNewsDetailsCall.content(
-                          columnGetNewsDetailsResponse.jsonBody,
-                        )!,
-                        // Optional styling
-                        style: {
-                          "p": Style(
-                            fontSize: FontSize.large,
-                            color: Colors.black87,
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
+                            child: RichText(
+                              textScaler: MediaQuery.of(context).textScaler,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: valueOrDefault<String>(
+                                      GetNewsDetailsCall.title(
+                                        columnGetNewsDetailsResponse.jsonBody,
+                                      ),
+                                      'title',
+                                    ),
+                                    style: TextStyle(),
+                                  )
+                                ],
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Open Sans',
+                                      color: Color(0xFF43484B),
+                                      fontSize: 22.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                              ),
+                            ),
                           ),
-                          "src": Style(
 
-                            //padding:  HtmlPaddings(top: 8,bottom: 8,left: 8,right: 8),
-                            width: Width(MediaQuery.of(context).size.width * 0.3), // Resizes image width
+                          Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: Text(
+                              parsedText,
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                fontFamily: 'Open Sans',
+                                color: Color(0xFF43484B),
+                                fontSize: 14.0,
+                                letterSpacing: 0.0,
+                                fontWeight: FontWeight.w500,
+
+                              ),
+
+                            ),
                           ),
-                        },
+                        /*  Html(
+                            data:  GetNewsDetailsCall.content(
+                              columnGetNewsDetailsResponse.jsonBody,
+                            )!,
+                            // Optional styling
+                            style: {
+                              "p": Style(
+                                fontSize: FontSize.large,
+                                color: Colors.black87,
+                              ),
+                              "src": Style(
+
+                                //padding:  HtmlPaddings(top: 8,bottom: 8,left: 8,right: 8),
+                                width: Width(MediaQuery.of(context).size.width * 0.3), // Resizes image width
+                              ),
+                            },
+                          ),*/
+                        /*  Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                0.0, 8.0, 15.0, 35.0),
+                            child: FlutterFlowWebView(
+                              content: GetNewsDetailsCall.content(
+                                columnGetNewsDetailsResponse.jsonBody,
+                              )!,
+                              width: MediaQuery.sizeOf(context).width * 1.0,
+                              height: MediaQuery.sizeOf(context).height * 1.0,
+                              verticalScroll: true,
+                              horizontalScroll: false,
+                              html: true,
+                            ),
+                          ),*/
+                        ],
                       ),
-                    /*  Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            0.0, 8.0, 15.0, 35.0),
-                        child: FlutterFlowWebView(
-                          content: GetNewsDetailsCall.content(
-                            columnGetNewsDetailsResponse.jsonBody,
-                          )!,
-                          width: MediaQuery.sizeOf(context).width * 1.0,
-                          height: MediaQuery.sizeOf(context).height * 1.0,
-                          verticalScroll: true,
-                          horizontalScroll: false,
-                          html: true,
-                        ),
-                      ),*/
-                    ],
+                    ),
                   ),
                 );
               },

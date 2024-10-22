@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../components/customDrawer.dart';
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
@@ -15,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'profile_page_model.dart';
 export 'profile_page_model.dart';
+import 'package:http/http.dart' as http;
 
 class ProfilePageWidget extends StatefulWidget {
   const ProfilePageWidget({super.key});
@@ -27,7 +30,6 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
   late ProfilePageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   void initState() {
     super.initState();
@@ -68,11 +70,11 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
           leading: Align(
             alignment: AlignmentDirectional(0.0, 0.0),
             child: FlutterFlowIconButton(
-              borderColor: Color(0xFF27AEDF),
+             // borderColor: Color(0xFF27AEDF),
               borderRadius: 0.0,
               borderWidth: 1.0,
               buttonSize: 46.0,
-              fillColor: Color(0xFF27AEDF),
+             // fillColor: Color(0xFF27AEDF),
               icon: Icon(
                 Icons.menu_sharp,
                 color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -108,7 +110,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
               child: FutureBuilder<ApiCallResponse>(
                 future: GetUserProfileCall.call(
                   userId: FFAppState().userId,
-               
+
                 ),
                 builder: (context, snapshot) {
                   // Customize what your widget looks like when it's loading.
@@ -556,13 +558,13 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                           child: Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(0.0, 35.0, 0.0, 0.0),
                             child: FFButtonWidget(
-                              onPressed: () async {
+                              /*onPressed: () async {
                                 // Call the API to change the password
                                 _model.changePasswordAPI = await ChangePasswordCall.call(
                                   userId: FFAppState().userId,
                                   password: _model.oldPasswordTextController.text,
                                   newPassword: _model.newPasswordTextController.text,
-                               
+
                                 );
 
                                 // Print the full API response for debugging
@@ -617,7 +619,53 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
 
                                 // Update the UI
                                 safeSetState(() {});
+                              },*/
+                              onPressed: () async {
+                                // Call the custom changePassword function and handle the response
+                                try {
+                                  // Make sure to pass the necessary parameters
+                                  await changePassword(
+                                    userId: FFAppState().userId,
+                                    password: _model.oldPasswordTextController.text,
+                                    newPassword: _model.newPasswordTextController.text,
+                                  );
+
+                                  // Show success message in a SnackBar
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Password changed successfully!',
+                                        style: TextStyle(
+                                          color: FlutterFlowTheme.of(context).primaryText,
+                                        ),
+                                      ),
+                                      duration: Duration(milliseconds: 4000),
+                                      backgroundColor: FlutterFlowTheme.of(context).secondary, // Success color
+                                    ),
+                                  );
+
+                                  // Clear the text fields after success
+                                  _model.oldPasswordTextController!.clear();
+                                  _model.newPasswordTextController!.clear();
+
+                                } catch (e) {
+                                  // Show error message in a SnackBar in case of failure
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Failed to change password: $e',
+                                        style: TextStyle(
+                                          color: FlutterFlowTheme.of(context).primaryText,
+                                        ),
+                                      ),
+                                      duration: Duration(milliseconds: 4000),
+                                      backgroundColor:Colors.red, // Error color
+                                    ),
+                                  );
+                                }
                               },
+
+
                               text: 'Update Password',
                               options: FFButtonOptions(
                                 width: double.infinity,
@@ -652,5 +700,38 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
         ),
       ),
     );
+  }
+  Future<void> changePassword({
+    required int userId,
+    required String password,
+    required String newPassword,
+  }) async {
+    // The API URL
+    final String url = '${FFAppConstants.baseUrl}wp-json/custom/v1/change-password';
+
+    // Form data to be sent in the request
+    var requestData = {
+      'user_id': userId.toString(), // Ensure the user_id is sent as a string
+      'password': password,
+      'new_password': newPassword,
+    };
+
+    try {
+      // Making the POST request
+      final response = await http.post(
+        Uri.parse(url),
+        body: requestData, // Form data is automatically encoded
+      );
+
+      // Check if the request was successful
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+        print('Password changed successfully: ${responseData['data']}');
+      } else {
+        print('Failed to change password. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
   }
 }

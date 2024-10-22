@@ -236,7 +236,7 @@ class _DownloadPageWidgetState extends State<DownloadPageWidget> {
                                       borderRadius: BorderRadius.circular(8.0),
                                       child: Image.asset(
                                         'assets/images/Group_18.png',
-                                        width: 53.0,
+                                        width: 45.0,
                                         height: 57.0,
                                         fit: BoxFit.fitWidth,
                                       ),
@@ -278,7 +278,7 @@ class _DownloadPageWidgetState extends State<DownloadPageWidget> {
                                                 ),
                                               ),
                                               SizedBox(
-                                                width: 235,
+                                                width: 150,
                                                 child: Text(
                                                    getJsonField(
                                                     getDownloadItem,
@@ -297,96 +297,15 @@ class _DownloadPageWidgetState extends State<DownloadPageWidget> {
 
                                                 ),
                                               )
-                                           /*   Padding(
-                                                padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-                                                child: RichText(
-                                                  textScaler: MediaQuery.of(context).textScaler,
-                                                  text: TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: 'Filename: ',
-                                                        style: FlutterFlowTheme.of(context)
-                                                            .bodyMedium.override(fontFamily: 'Open Sans',
-                                                          color: Color(0xFF43484B),
-                                                          fontSize: 13.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: getJsonField(
-                                                          getDownloadItem,
-                                                          r'''$.pdf_url''',
-                                                        ).toString(),
-
-                                                        style: GoogleFonts.getFont(
-                                                          'Open Sans',
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 13.0,
-                                                        ),
-                                                      )
-                                                    ],
-                                                    style: FlutterFlowTheme.of(context)
-                                                        .bodyMedium.override(fontFamily: 'Open Sans',
-                                                      color: Color(0xFF43484B),
-                                                      fontSize: 13.0,
-                                                      letterSpacing: 0.0,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                  textAlign: TextAlign.justify,
-                                                  maxLines: 2,
-                                                ),
-                                              ),*/
                                             ],
                                           ),
-                                       /*   Padding(
-                                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-                                            child: RichText(
-                                              textScaler: MediaQuery.of(context).textScaler,
-                                              text: TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                    text: 'Filename: ',
-                                                    style: FlutterFlowTheme.of(context)
-                                                        .bodyMedium.override(fontFamily: 'Open Sans',
-                                                          color: Color(0xFF43484B),
-                                                          fontSize: 13.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                  ),
-                                                  TextSpan(
-                                                    text: getJsonField(
-                                                      getDownloadItem,
-                                                      r'''$.pdf_url''',
-                                                    ).toString(),
 
-                                                    style: GoogleFonts.getFont(
-                                                      'Open Sans',
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 13.0,
-                                                    ),
-                                                  )
-                                                ],
-                                                style: FlutterFlowTheme.of(context)
-                                                    .bodyMedium.override(fontFamily: 'Open Sans',
-                                                      color: Color(0xFF43484B),
-                                                      fontSize: 13.0,
-                                                      letterSpacing: 0.0,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                              ),
-                                              textAlign: TextAlign.justify,
-                                              maxLines: 2,
-                                            ),
-                                          ),*/
                                           Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
                                                     0.0, 8.0, 0.0, 0.0),
                                             child: Container(
-                                              width: 283.0,
+                                              width: 200.0,
                                               height: 1.0,
                                               decoration: BoxDecoration(
                                                 color: Colors.black,

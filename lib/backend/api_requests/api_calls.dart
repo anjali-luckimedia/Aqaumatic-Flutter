@@ -24,11 +24,11 @@ class GetCatalougeCall {
     ApiCallResponse response = await ApiManager.instance.makeApiCall(
       callName: 'getCatalouge',
       apiUrl:
-      'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products/categories?per_page=10&user_id=${userId}',
+      '${FFAppConstants.baseUrl}wp-json/wc/v3/products/categories?per_page=10&user_id=${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
       params: {
         'page': page,
@@ -79,12 +79,12 @@ class GetOrderListCall {
     final response = await ApiManager.instance.makeApiCall(
       callName: 'getOrderList',
       apiUrl:
-      'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?per_page=10&customer=${userId}',
-      //'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?customer=${userId}',
+      '${FFAppConstants.baseUrl}wp-json/wc/v3/orders?per_page=10&customer=${userId}',
+      //'${FFAppConstants.baseUrl}wp-json/wc/v3/orders?customer=${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
       params: {
         //'customer':userId,
@@ -133,11 +133,11 @@ class GetCatalougeSearchCall {
     //return ApiManager.instance.makeApiCall(
       callName: 'getCatalougeSearch',
       apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products?search=${catalougeName}&user_id=${userId}',
+          '${FFAppConstants.baseUrl}wp-json/wc/v3/products?search=${catalougeName}&user_id=${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+            '${FFAppConstants.basicAuth}',
       },
       params: {},
       returnBody: true,
@@ -167,8 +167,8 @@ class LoginCall {
     print('BodyType.JSON: ${password}');
     /*return ApiManager.instance.makeApiCall(
       callName: 'login',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/login',
-     // apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/jwt-auth/v1/token',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/custom/v1/login',
+     // apiUrl: '${FFAppConstants.baseUrl}wp-json/jwt-auth/v1/token',
       callType: ApiCallType.POST,
       headers: {},
       params: {},
@@ -183,8 +183,8 @@ class LoginCall {
     );*/
     final response = await ApiManager.instance.makeApiCall(
       callName: 'login',
-     //apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/login',
-     apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/jwt-auth/v1/token',
+     //apiUrl: '${FFAppConstants.baseUrl}wp-json/custom/v1/login',
+     apiUrl: '${FFAppConstants.baseUrl}wp-json/jwt-auth/v1/token',
       callType: ApiCallType.POST,
       headers: {},
       params: {},
@@ -253,12 +253,12 @@ class GetProductListByCatalougeCall {
     // Call the API and capture the response
     final response = await ApiManager.instance.makeApiCall(
       callName: 'getProductListByCatalouge',
-     // apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/products?per_page=10&category=${categoryId}&user_id=${userId}',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products?per_page=10&category=${categoryId}&user_id=${userId}',
+     // apiUrl: '${FFAppConstants.baseUrl}wp-json/custom/v1/products?per_page=10&category=${categoryId}&user_id=${userId}',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/wc/v3/products?per_page=10&category=${categoryId}&user_id=${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
       params: {
         'page': page,
@@ -312,12 +312,12 @@ class GetProductDetailsCall {
     final response = await ApiManager.instance.makeApiCall(
       callName: 'getProductDetails',
       apiUrl:
-     'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/product-detail?slug=${slug}&user_id=${userId}',
-      //'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/products?slug=${slug}&user_id=${userId}',
+     '${FFAppConstants.baseUrl}wp-json/custom/v1/product-detail?slug=${slug}&user_id=${userId}',
+      //'${FFAppConstants.baseUrl}wp-json/wc/v3/products?slug=${slug}&user_id=${userId}',
       callType: ApiCallType.GET,
       // headers: {
       //   'Authorization':
-      //   'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+      //   '${FFAppConstants.basicAuth}',
       // },
       params: {},
       returnBody: true,
@@ -384,11 +384,11 @@ class AddProductToWishlistCallNew {
     // Make the API call and capture the response
     ApiCallResponse response = await ApiManager.instance.makeApiCall(
       callName: 'addProductToWishlist',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/add',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/favorite-products/v1/favorites/add',
       callType: ApiCallType.POST,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
       params: {
         'user_id': userId,
@@ -425,11 +425,11 @@ class RemoveProductToWishlistCallNew {
 
     return ApiManager.instance.makeApiCall(
       callName: 'removeProductToWishlist',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/remove',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/favorite-products/v1/favorites/remove',
       callType: ApiCallType.POST,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
       params: {
         'user_id': userId,
@@ -465,13 +465,13 @@ class GetFavouritesListCall {
     final response = await ApiManager.instance.makeApiCall(
       callName: 'getFavouritesList',
       apiUrl:
-      'https://aquamaticwp.elate-ecommerce.com/wp-json/favorite-products/v1/favorites/all?user_id=${userId}',
-      //'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders?customer=${userId}',
+      '${FFAppConstants.baseUrl}wp-json/favorite-products/v1/favorites/all?user_id=${userId}',
+      //'${FFAppConstants.baseUrl}wp-json/wc/v3/orders?customer=${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
        // 'Basic $token',
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
 
       returnBody: true,
@@ -512,7 +512,7 @@ class GetNewsCall {
   static Future<ApiCallResponse> call() async {
     return ApiManager.instance.makeApiCall(
       callName: 'getNews',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/wp/v2/posts',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/wp/v2/posts',
       callType: ApiCallType.GET,
       headers: {},
       params: {},
@@ -533,7 +533,7 @@ class GetNewsDetailsCall {
     return ApiManager.instance.makeApiCall(
       callName: 'getNewsDetails',
       apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wp/v2/posts?slug=${slug}',
+          '${FFAppConstants.baseUrl}wp-json/wp/v2/posts?slug=${slug}',
       callType: ApiCallType.GET,
       headers: {},
       params: {},
@@ -576,11 +576,11 @@ class GetOrderDetailsCall {
     ApiCallResponse response = await ApiManager.instance.makeApiCall(
       callName: 'getOrderDetails',
       apiUrl:
-      'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders/${orderId}',
+      '${FFAppConstants.baseUrl}wp-json/wc/v3/orders/${orderId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
       params: {},
       returnBody: true,
@@ -659,11 +659,11 @@ class GetUserProfileCall {
     return ApiManager.instance.makeApiCall(
       callName: 'getUserProfile',
       apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/customers/${userId}',
+          '${FFAppConstants.baseUrl}wp-json/wc/v3/customers/${userId}',
       callType: ApiCallType.GET,
       headers: {
         'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+            '${FFAppConstants.basicAuth}',
       },
       params: {},
       returnBody: true,
@@ -867,11 +867,11 @@ class CreateOrderCall {
     print('BodyType.JSON: ${ffApiRequestBody}');
     return ApiManager.instance.makeApiCall(
       callName: 'createrOrder',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/wc/v3/orders',
       callType: ApiCallType.POST,
       headers: {
         'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+            '${FFAppConstants.basicAuth}',
       },
       params: {},
       body: ffApiRequestBody,
@@ -899,11 +899,11 @@ class CancelOrderCall {
     print('BodyType.JSON: ${ffApiRequestBody}');
     return ApiManager.instance.makeApiCall(
       callName: 'createrOrder',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/wc/v3/orders/$orderId',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/wc/v3/orders/$orderId',
       callType: ApiCallType.POST,
       headers: {
         'Authorization':
-        'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
+        '${FFAppConstants.basicAuth}',
       },
       params: {},
       body: ffApiRequestBody,
@@ -920,15 +920,15 @@ class CancelOrderCall {
 
 class GetDownloadDataListCall {
   static Future<ApiCallResponse> call() async {
-    return ApiManager.instance.makeApiCall(
+    final response = await ApiManager.instance.makeApiCall(
       callName: 'getDownloadDataList',
       apiUrl:
-          'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/downloads',
+      '${FFAppConstants.baseUrl}wp-json/custom/v1/downloads',
       callType: ApiCallType.GET,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
+      // headers: {
+      //   'Authorization':
+      //   '${FFAppConstants.basicAuth}',
+      // },
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
@@ -937,6 +937,11 @@ class GetDownloadDataListCall {
       isStreamingApi: false,
       alwaysAllowBody: false,
     );
+
+    // Print the raw response to the console
+    print('API Response: ${response.jsonBody}');
+
+    return response;
   }
 }
 
@@ -946,19 +951,19 @@ class ChangePasswordCall {
     String? password = '',
     String? newPassword = '',
   }) async {
-    return ApiManager.instance.makeApiCall(
+    final response = await ApiManager.instance.makeApiCall(
       callName: 'changePassword',
-      apiUrl: 'https://aquamaticwp.elate-ecommerce.com/wp-json/custom/v1/change-password',
+      apiUrl: '${FFAppConstants.baseUrl}wp-json/custom/v1/change-password',
       callType: ApiCallType.POST,
-      headers: {
-        'Authorization':
-            'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm',
-      },
       params: {
         'user_id': userId,
         'password': password,
         'new_password': newPassword,
       },
+      // headers: {
+      //   'Authorization':
+      //   '${FFAppConstants.basicAuth}',
+      // },
       bodyType: BodyType.X_WWW_FORM_URL_ENCODED,
       returnBody: true,
       encodeBodyUtf8: false,
@@ -967,8 +972,14 @@ class ChangePasswordCall {
       isStreamingApi: false,
       alwaysAllowBody: false,
     );
+
+    // Print the raw API response to the console
+    print('API Response: ${response.jsonBody}');
+
+    return response;
   }
 }
+
 
 
 class ApiPagingParams {

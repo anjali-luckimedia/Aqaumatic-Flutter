@@ -1,3 +1,5 @@
+import 'package:flutter/gestures.dart';
+
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -238,6 +240,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                     ),
                   ),
                 ),
+
+
+
                 Padding(
                   padding:
                       EdgeInsetsDirectional.fromSTEB(0.0, 25.0, 0.0, 0.0),
@@ -406,6 +411,54 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                     ),
                   ),
                 ),
+                SizedBox(height: 15,),
+                Center(
+                  child: RichText(
+                    textAlign: TextAlign.center, // Ensures the text is centered
+                    text: TextSpan(
+                      text: 'Our app is updated! ',
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        fontFamily: 'Open Sans',
+                        color: Colors.black,
+                        fontSize: 13.0,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Reset your password',
+                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            fontFamily: 'Open Sans',
+                            color: Colors.blue, // Hyperlink color
+                            fontSize: 13.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.bold, // Bold text
+                            decoration: TextDecoration.underline, // Hyperlink underline
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              // Add hyperlink logic here
+                              print('Reset your password clicked!');
+                              // Example: Navigate to the reset password page
+                              await launchURL(
+                                  'https://www.aquamatic.co.uk/wp-login.php?action=lostpassword');
+                            },
+                        ),
+                        TextSpan(
+                          text: ' to proceed, or log in if you’ve already done so.',
+                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            fontFamily: 'Open Sans',
+                            color: Colors.black,
+                            fontSize: 13.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
               ],
             ),
           ),

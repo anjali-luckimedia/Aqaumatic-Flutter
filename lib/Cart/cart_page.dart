@@ -421,7 +421,7 @@ class _CartScreenState extends State<CartScreen> {
       _cartItems = cart;
       if (_cartItems != null && _cartItems!.isNotEmpty) {
         items = lineItems(_cartItems!); // Use _cartItems to get the products
-        print("Formatted Line Items: $items");
+        //print("Formatted Line Items: $items");
       }
     });
   }
@@ -660,6 +660,7 @@ class _CartScreenState extends State<CartScreen> {
                   itemCount: _cartItems!.length,
                   itemBuilder: (context, index) {
                     final item = _cartItems![index];
+                    print(item.image);
                     return Padding(
                       padding: EdgeInsets.all(15.0),
                       child: Column(
@@ -675,6 +676,12 @@ class _CartScreenState extends State<CartScreen> {
                                   width: 120.0,
                                   height: 120.0,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error,
+                                      stackTrace) =>
+                                      Image.asset(
+                                        'assets/images/error_image.png',
+                                        fit: BoxFit.contain,
+                                      ),
                                 ),
                               ),
                               Expanded(

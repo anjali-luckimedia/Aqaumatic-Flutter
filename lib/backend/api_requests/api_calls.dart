@@ -859,7 +859,7 @@ class CreateOrderCall {
     {
       "method_id": "flat_rate",
       "method_title": "Flat Rate",
-      "total": "10.00"
+      "total": "0.00"
     }
   ]
 }''';

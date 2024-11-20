@@ -1,4 +1,4 @@
-package com.aquamatic.planetwidecity
+package com.aquamatic.elateagency
 
 import io.flutter.embedding.android.FlutterActivity
 

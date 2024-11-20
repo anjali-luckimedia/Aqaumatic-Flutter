@@ -1,4 +1,4 @@
-# Aqaumatic-App
+# Aquamatic
 
 A new Flutter project!
 

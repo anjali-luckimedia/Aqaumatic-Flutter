@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
     );
     // return MaterialApp.router(
     //   debugShowCheckedModeBanner: false,
-    //   title: 'Aqaumatic-App',
+    //   title: 'Aquamatic',
     //   localizationsDelegates: [
     //     GlobalMaterialLocalizations.delegate,
     //     GlobalWidgetsLocalizations.delegate,

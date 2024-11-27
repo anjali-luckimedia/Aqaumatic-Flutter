@@ -810,6 +810,7 @@ class CreateOrderCall {
     String? shippingPostcode = '',
     String? shippingCountry = '',
     String? shippingPhone = '',
+    String? customOrigin = '',
     dynamic? lineItemsJson,
     String? customerId = '',
   }) async {
@@ -821,6 +822,7 @@ class CreateOrderCall {
   "payment_method": "bacs",
   "payment_method_title": "Direct Bank Transfer",
   "set_paid": true,
+  "status":"pending",
   "customer_id": "${customerId}",
   "billing": {
     "first_name": "${firstName}",
@@ -852,6 +854,10 @@ class CreateOrderCall {
         {
            "key": "purchase note",
             "value": "${purchaseNote}"
+        },
+         {
+           "key": "Custom Origin",
+            "value": "${customOrigin}"
         }
         ],
   "line_items": ${lineItems},
@@ -864,7 +870,7 @@ class CreateOrderCall {
   ]
 }''';
 
-    print('BodyType.JSON: ${ffApiRequestBody}');
+    dev.log('BodyType.JSON: ${ffApiRequestBody}');
     return ApiManager.instance.makeApiCall(
       callName: 'createrOrder',
       apiUrl: '${FFAppConstants.baseUrl}wp-json/wc/v3/orders',

@@ -396,12 +396,13 @@ class _CartScreenState extends State<CartScreen> {
   final TextEditingController customerNotesController = TextEditingController();
    Future<dynamic>? userProfileFuture;
   final _formKey = GlobalKey<FormState>();
-
+  String _deviceType = '';
 
   @override
   void initState() {
     super.initState();
     _loadCart();
+    getDeviceType();
     userProfileFuture = fetchUserProfile();
   }
   Future<dynamic> fetchUserProfile() async {
@@ -427,7 +428,19 @@ class _CartScreenState extends State<CartScreen> {
   }
 
 
-
+  getDeviceType() {
+    if (Platform.isIOS || Platform.isMacOS) {
+      setState(() {
+        _deviceType = 'Ios';
+        print(_deviceType);
+      });
+    } else if (Platform.isAndroid) {
+      setState(() {
+        _deviceType = 'Android';
+        print(_deviceType);
+      });
+    }
+  }
 
   /*Future<void> _loadCart() async {
     // Fetch cart items from SharedPreferences using _cartService
@@ -680,7 +693,9 @@ class _CartScreenState extends State<CartScreen> {
                                       stackTrace) =>
                                       Image.asset(
                                         'assets/images/error_image.png',
-                                        fit: BoxFit.contain,
+                                        // fit: BoxFit.contain,
+                                        width: 120.0,
+                                        height: 120.0,
                                       ),
                                 ),
                               ),
@@ -1483,6 +1498,7 @@ class _CartScreenState extends State<CartScreen> {
                         shippingPhone: shippingPhone,
                         billingMethod: selectedAddress,
                         purchaseNote: purchaseOrderController.text.trim(),
+                        customOrigin: _deviceType,
                         lineItemsJson: items,
                         customerId: FFAppState().userId.toString(),
                           

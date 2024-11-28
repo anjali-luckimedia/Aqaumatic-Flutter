@@ -1,3 +1,4 @@
+import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +24,27 @@ void main() async {
 
   final appState = FFAppState(); // Initialize FFAppState
   await appState.initializePersistedState();
-
+  update();
   runApp(ChangeNotifierProvider(
     create: (context) => appState,
     child: MyApp(),
   ));
 }
+
+void update() {
+  InAppUpdate.checkForUpdate().then((updateInfo) {
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      if (updateInfo.flexibleUpdateAllowed) {
+        InAppUpdate.startFlexibleUpdate().then((appUpdateResult) {
+          if (appUpdateResult == AppUpdateResult.success) {
+            InAppUpdate.completeFlexibleUpdate();
+          }
+        });
+      }
+    }
+  });
+}
+
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
@@ -41,11 +57,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
-
   late AppStateNotifier _appStateNotifier;
   late GoRouter _router;
-
   late Stream<AqaumaticAppAuthUser> userStream;
+  AppUpdateInfo? _updateInfo;
 
   @override
   void initState() {
@@ -60,18 +75,22 @@ class _MyAppState extends State<MyApp> {
 
     Future.delayed(
       Duration(milliseconds: 9),
-      () => _appStateNotifier.stopShowingSplashImage(),
+          () => _appStateNotifier.stopShowingSplashImage(),
     );
+
   }
 
-  void setThemeMode(ThemeMode mode) => safeSetState(() {
-        _themeMode = mode;
-      });
+
+
+  void setThemeMode(ThemeMode mode) {
+    setState(() {
+      _themeMode = mode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    return   ChangeNotifierProvider(
+    return ChangeNotifierProvider(
       create: (_) => AppStateNotifier.instance,
       child: Consumer<AppStateNotifier>(
         builder: (context, appState, _) {
@@ -87,20 +106,6 @@ class _MyAppState extends State<MyApp> {
         },
       ),
     );
-    // return MaterialApp.router(
-    //   debugShowCheckedModeBanner: false,
-    //   title: 'Aquamatic',
-    //   localizationsDelegates: [
-    //     GlobalMaterialLocalizations.delegate,
-    //     GlobalWidgetsLocalizations.delegate,
-    //     GlobalCupertinoLocalizations.delegate,
-    //   ],
-    //   supportedLocales: const [Locale('en', '')],
-    //   theme: ThemeData(
-    //     brightness: Brightness.light,
-    //   ),
-    //   themeMode: _themeMode,
-    //   routerConfig: _router,
-    // );
   }
 }
+

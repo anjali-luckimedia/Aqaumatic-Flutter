@@ -7,5 +7,6 @@ abstract class FFAppConstants {
   static const int newCartCount = 1;
   //static const String baseUrl = 'https://aquamaticwp.elate-ecommerce.com/';///***Dev Old***
   static const String baseUrl = 'https://www.aquamatic.co.uk/';///***Live***
-  static const String basicAuth = 'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm';
+  //static const String basicAuth = 'Basic Y2tfZTZjMTYxYzRiMjEzZjM1YTRhZjVhNWRlMzkxZjcyNTUwYjA2ZmZhZjpjc18zNmRjMTllYzA3YjU5ODc2N2IzNjgzM2FkOGUyYTJkNDY5ZGVhMTlm';
+  static const String basicAuth = 'Basic Y2tfZGUyMjMyNDFiNGJjODYyMTA3YzEwZTBlMjVhMmFmODQ3N2VmYzQwMTpjc18wOGEwMDA1NDkwN2U2OGM1OGVlNzZkNWM4Y2Q0YTQwNGJiOTA0NTFk';
 }

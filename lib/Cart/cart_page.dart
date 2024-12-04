@@ -378,6 +378,7 @@ import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'CartModel.dart';
+import 'dart:developer' as dev;
 
 class CartScreen extends StatefulWidget {
   @override
@@ -408,11 +409,11 @@ class _CartScreenState extends State<CartScreen> {
   Future<dynamic> fetchUserProfile() async {
     try {
       var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId,);
-      print('Error fetching user profile: ${userProfile.jsonBody}');
+    //  dev.log('Error fetching user profile: ${userProfile.jsonBody}');
       return userProfile.jsonBody;
       // Return the profile data
     } catch (e) {
-      print('Error fetching user profile: $e');
+      dev.log('Error fetching user profile: $e');
       return null;
     }
   }
@@ -1269,112 +1270,7 @@ class _CartScreenState extends State<CartScreen> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
                   child: InkWell(
-                  /*  onTap: () async {
-                      // Validation check for Other Address
-                      if (selectedAddress == 'Other Address') {
-                        if (customerNotesController.text.trim().isEmpty) {
-                          // Show validation error message if either of the fields are empty
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Please fill in Customer Notes',
-                                style: TextStyle(
-                                  color: FlutterFlowTheme.of(context).primaryText,
-                                ),
-                              ),
-                              backgroundColor: Colors.red, // Error color
-                              duration: Duration(milliseconds: 3000),
-                            ),
-                          );
-                          return; // Stop execution if validation fails
-                        }
-                      }
 
-                      // Show loading indicator
-                      setState(() {
-                        isLoading = true;
-                      });
-
-                      // Fetch user profile
-                      var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId);
-                      var userData = userProfile.jsonBody;
-
-                      // Extract user profile data
-                      var bFName = GetUserProfileCall.bFName(userData);
-                      var bLName = GetUserProfileCall.bLName(userData);
-                      var bPhone = GetUserProfileCall.bPhone(userData);
-                      var address1 = GetUserProfileCall.bAdd(userData);
-                      var address2 = GetUserProfileCall.bAdd2(userData);
-                      var city = GetUserProfileCall.bCity(userData);
-                      var state = GetUserProfileCall.bState(userData);
-                      var postcode = GetUserProfileCall.bPostCode(userData);
-                      var country = GetUserProfileCall.bCountry(userData);
-
-                      var shippingFirstName = GetUserProfileCall.shippingFName(userData);
-                      var shippingLastName = GetUserProfileCall.shippingLName(userData);
-                      var shippingPhone = GetUserProfileCall.shippingPhone(userData);
-                      var shippingAddress1 = GetUserProfileCall.shippingAdd(userData);
-                      var shippingAddress2 = GetUserProfileCall.shippingAdd2(userData);
-                      var shippingCity = GetUserProfileCall.shippingCity(userData);
-                      var shippingState = GetUserProfileCall.shippingState(userData);
-                      var shippingPostcode = GetUserProfileCall.shippingPostCode(userData);
-                      var shippingCountry = GetUserProfileCall.shippingCountry(userData);
-
-
-
-                      // Create order
-                      var orderCreate = await CreateOrderCall.call(
-                        firstName: bFName,
-                        lastName: bLName,
-                        address1: address1,
-                        address2: address2,
-                        city: city,
-                        state: state,
-                        postcode: postcode,
-                        country: country,
-                        phone: bPhone,
-                        customerNote: customerNotesController.text.trim(),
-                        shippingFirstName: shippingFirstName,
-                        shippingLastName: shippingLastName,
-                        shippingAddress1: shippingAddress1,
-                        shippingAddress2: shippingAddress2,
-                        shippingCity: shippingCity,
-                        shippingState: shippingState,
-                        shippingPostcode: shippingPostcode,
-                        shippingCountry: shippingCountry,
-                        shippingPhone: shippingPhone,
-                        billingMethod: selectedAddress,
-                        purchaseNote: purchaseOrderController.text.trim(),
-                        lineItemsJson: items,
-                        customerId: FFAppState().userId.toString(),
-                      );
-
-                      // Handle order creation result
-                      if (orderCreate.succeeded == true) {
-                        setState(() {
-                          isLoading = false;
-                        });
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPageWidget()));
-                        await _cartService.clearCart();
-                        _loadCart();
-                      } else {
-                        setState(() {
-                          isLoading = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Order not created',
-                              style: TextStyle(
-                                color: FlutterFlowTheme.of(context).primaryText,
-                              ),
-                            ),
-                            duration: Duration(milliseconds: 4000),
-                            backgroundColor: FlutterFlowTheme.of(context).secondary,
-                          ),
-                        );
-                      }
-                    },*/
                     onTap: () async {
                       // Fetch user profile
                       var userProfile = await GetUserProfileCall.call(userId: FFAppState().userId,);
@@ -1391,6 +1287,19 @@ class _CartScreenState extends State<CartScreen> {
                       var postcode = GetUserProfileCall.bPostCode(userData);
                       var country = GetUserProfileCall.bCountry(userData);
 
+
+                      print('Billing Address Details:');
+                      print('First Name: $bFName');
+                      print('Last Name: $bLName');
+                      print('Phone: $bPhone');
+                      print('Address 1: $address1');
+                      print('Address 2: $address2');
+                      print('City: $city');
+                      print('State: $state');
+                      print('Postcode: $postcode');
+                      print('Country: $country');
+
+
                       var shippingFirstName = GetUserProfileCall.shippingFName(userData);
                       var shippingLastName = GetUserProfileCall.shippingLName(userData);
                       var shippingPhone = GetUserProfileCall.shippingPhone(userData);
@@ -1400,6 +1309,18 @@ class _CartScreenState extends State<CartScreen> {
                       var shippingState = GetUserProfileCall.shippingState(userData);
                       var shippingPostcode = GetUserProfileCall.shippingPostCode(userData);
                       var shippingCountry = GetUserProfileCall.shippingCountry(userData);
+
+
+                      print('Shipping Address Details:');
+                      print('First Name: $shippingFirstName');
+                      print('Last Name: $shippingLastName');
+                      print('Phone: $shippingPhone');
+                      print('Address 1: $shippingAddress1');
+                      print('Address 2: $shippingAddress2');
+                      print('City: $shippingCity');
+                      print('State: $shippingState');
+                      print('Postcode: $shippingPostcode');
+                      print('Country: $shippingCountry');
 
                       // Validation check for Other Address
                       if (selectedAddress == 'Other Address') {
@@ -1477,6 +1398,15 @@ class _CartScreenState extends State<CartScreen> {
 
                       // Create order
                       var orderCreate = await CreateOrderCall.call(
+                        // billingFirstName: bFName,
+                        // billingLastName: bLName,
+                        // billingAddress1:address1 ,
+                        // billingAddress2: address2,
+                        // billingCity:city ,
+                        // billingState: state,
+                        // billingPostcode: postcode,
+                        // billingCountry:country ,
+                        // billingPhone: bPhone,
                         firstName: bFName,
                         lastName: bLName,
                         address1: address1,

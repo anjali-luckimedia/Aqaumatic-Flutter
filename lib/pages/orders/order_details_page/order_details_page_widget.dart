@@ -331,7 +331,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                 },
                               ),
                               SizedBox(height: 10,),
-                              InkWell(
+                              /*InkWell(
                                 onTap: () async {
 
                                 },
@@ -363,7 +363,7 @@ class _OrderDetailsPageWidgetState extends State<OrderDetailsPageWidget> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 10,),*/
                               GetOrderDetailsCall.status(orderDetails).toString() == "cancelled" ?Wrap():InkWell(
                                 onTap: () async {
                                   setState(() {

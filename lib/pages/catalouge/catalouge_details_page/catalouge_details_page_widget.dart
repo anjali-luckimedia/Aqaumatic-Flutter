@@ -1,6 +1,7 @@
 import 'package:aqaumatic_app/Cart/CartModel.dart';
 import 'package:aqaumatic_app/Cart/cart_page.dart';
 import 'package:aqaumatic_app/favourite/favorite_service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../Cart/cart_service.dart';
 import '../../../favourite/favourite_model.dart';
@@ -55,20 +56,52 @@ class _CatalougeDetailsPageWidgetState
   final FavouriteService _favoritesService = FavouriteService();
   List<int> favorites = [];
   int count = 0;
-  Future<void> _loadFavorites() async {
-    List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
-    setState(() {
-      favorites = favoritesList.map((item) => item.id).toList(); // Assuming FavoriteItem has an 'id'
-    });
-  }
+
+  List<dynamic>? relatedProducts1;
+  List<int> quantitiesRel = [];
+  List<TextEditingController> controllersRel = [];
+
+
+  int quantitiesDetails = 1;
+  TextEditingController controllersDetails  = TextEditingController(text: '1');
+  // Future<void> _loadFavorites() async {
+  //   List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
+  //   setState(() {
+  //     favorites = favoritesList.map((item) => item.id).toList(); // Assuming FavoriteItem has an 'id'
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
-    _loadFavorites();
+    // _loadFavorites();
+    _loadData();
     FFAppState().cartCount = 1;
     _loadCart();
     _model = createModel(context, () => CatalougeDetailsPageModel());
+
+  }
+
+
+
+  Future<void> _loadData() async {
+    final getProductDetailsResponse = await GetProductDetailsCall.call(
+      userId: FFAppState().userId,
+      slug: widget.slugName,
+    );
+
+    final jsonResponse = getProductDetailsResponse.jsonBody;
+    setState(() {
+      relatedProducts1 = GetProductDetailsCall.relatedProduct(jsonResponse);
+
+      if (relatedProducts1 != null) {
+        quantitiesRel = List<int>.filled(relatedProducts1!.length, 1);
+        controllersRel = List<TextEditingController>.generate(
+          relatedProducts1!.length,
+              (index) => TextEditingController(text: '1'),
+        );
+      }
+    });
   }
 
 
@@ -187,11 +220,10 @@ class _CatalougeDetailsPageWidgetState
               alignment: AlignmentDirectional(0, -1),
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(15, 0, 15, 15),
-                child: FutureBuilder<ApiCallResponse>(
+                child:FutureBuilder<ApiCallResponse>(
                   future: GetProductDetailsCall.call(
                     userId: FFAppState().userId,
                     slug: widget.slugName,
-                    
                   ),
                   builder: (context, snapshot) {
                     // Handle the loading state
@@ -201,7 +233,7 @@ class _CatalougeDetailsPageWidgetState
                           width: 40,
                           height: 40,
                           child: SpinKitFadingCircle(
-                    color: Color(0xFF27AEDF),
+                            color: Color(0xFF27AEDF),
 
                             size: 40,
                           ),
@@ -214,10 +246,13 @@ class _CatalougeDetailsPageWidgetState
                     final jsonResponse = getProductDetailsResponse.jsonBody;
                     bool isFavourite = GetProductDetailsCall.favourite(jsonResponse)?? false;
 
-                   // bool isFavourite = favorites.contains(GetProductDetailsCall.id(jsonResponse)!); // Use map access
+                    print('----------- Favourite${GetProductDetailsCall.favourite(jsonResponse)}');
+                    // bool isFavourite = favorites.contains(GetProductDetailsCall.id(jsonResponse)!); // Use map access
 
 
                     final relatedProducts1 = GetProductDetailsCall.relatedProduct(jsonResponse);
+
+                    // If it's a new page, append the new quantities and controllers
 
 
                     return SingleChildScrollView(
@@ -247,7 +282,7 @@ class _CatalougeDetailsPageWidgetState
                                           return Image.asset(
                                             'assets/images/error_image.png',  // Placeholder or error image
                                             width: double.infinity,
-                                           // height: 200,
+                                            // height: 200,
                                             fit: BoxFit.contain,
                                           );
                                         } else {
@@ -256,7 +291,7 @@ class _CatalougeDetailsPageWidgetState
                                             imageList
                                             /*GetProductDetailsCall.image(jsonResponse)!*/,  // Assuming you want to display the first image
                                             width: double.infinity,
-                                           // height: 200,
+                                            // height: 200,
                                             fit: BoxFit.contain,
                                             errorBuilder: (context, error, stackTrace) => Image.asset(
                                               'assets/images/error_image.png',  // Placeholder if image fails to load
@@ -297,7 +332,6 @@ class _CatalougeDetailsPageWidgetState
                                       final removeResponse = await RemoveProductToWishlistCallNew.call(
                                         userId: FFAppState().userId,
                                         productSku: GetProductDetailsCall.sku(jsonResponse),
-                                          
                                       );
 
                                       // Update UI and local state if API call is successful
@@ -313,7 +347,6 @@ class _CatalougeDetailsPageWidgetState
                                       final addResponse = await AddProductToWishlistCallNew.call(
                                         userId: FFAppState().userId,
                                         productSku: GetProductDetailsCall.sku(jsonResponse),
-                                          
                                       );
 
                                       // Update UI and local state if API call is successful
@@ -344,11 +377,11 @@ class _CatalougeDetailsPageWidgetState
                                 AutoSizeText(
                                   widget.catName == ''
                                       ? valueOrDefault<String>(
-                                          GetProductDetailsCall.name(
-                                            jsonResponse,
-                                          ),
-                                          'name',
-                                        )
+                                    GetProductDetailsCall.name(
+                                      jsonResponse,
+                                    ),
+                                    'name',
+                                  )
                                       : widget.catName.toString(),
                                   maxLines: 2,
                                   style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -465,10 +498,66 @@ class _CatalougeDetailsPageWidgetState
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    CountControllerComponentWidget(
-                                      //key: Key('Keyz47_${relatedProduct}_of_${relatedProduct.length}'),
-                                      countValue: FFAppState().cartCount,
+                                    GestureDetector(
+                                      onTap:(){
+                                        setState(() {
+                                          if (quantitiesDetails > 1) {
+                                            quantitiesDetails--;
+                                            controllersDetails.text = quantitiesDetails.toString();
+                                          }
+                                        });
+                                      },
+                                      child: FaIcon(
+                                        FontAwesomeIcons.minusCircle,
+                                        color:  Color(0xFFEB445A),
+                                        size: 25.0,
+                                      ),
                                     ),
+
+                                    // TextFormField to display and edit quantity
+                                    SizedBox(
+                                      width: 60,
+                                      child: TextFormField(
+                                        controller: controllersDetails,
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            // Parse the value, allow 0 or empty temporarily
+                                            int quantity = int.tryParse(value) ?? 0;
+
+                                            // Enforce only the maximum limit
+                                            if (quantity > 9999) {
+                                              quantity = 9999;
+                                              controllersDetails.text = quantity.toString(); // Correct input if it exceeds 9999
+                                              controllersDetails.selection = TextSelection.fromPosition( // Keep cursor at the end
+                                                TextPosition(offset: controllersDetails.text.length),
+                                              );
+                                            }
+
+                                            // Update the quantity
+                                            quantitiesDetails = quantity;
+                                          });
+                                        },
+                                      ),
+                                    ),
+
+
+                                    GestureDetector(
+                                      onTap: (){
+                                        setState(() {
+                                          quantitiesDetails++;
+                                          controllersDetails.text = quantitiesDetails.toString();
+                                        });
+                                      },
+                                      child: FaIcon(
+
+                                        FontAwesomeIcons.plusCircle,
+                                        color:  Color(0xFF2DD36F),
+                                        size: 25.0,
+                                      ),
+                                    ),
+
                                     // wrapWithModel(
                                     //   model: _model.countControllerComponentModel1,
                                     //   updateCallback: () => safeSetState(() {}),
@@ -476,19 +565,29 @@ class _CatalougeDetailsPageWidgetState
                                     // ),
                                     FFButtonWidget(
                                       onPressed: () async {
+                                        setState(() {
+                                          // Validate the input: if 0 or invalid, set it to 1
+                                          int quantity = int.tryParse(controllersDetails.text) ?? 1;
+                                          if (quantity <= 0) {
+                                            quantity = 1;
+                                            controllersDetails.text = quantity.toString();
+                                          }
+                                          quantitiesDetails= quantity;
+                                        });
 
                                         _addItem(
                                           GetProductDetailsCall.id(jsonResponse)!,
                                           GetProductDetailsCall.name(jsonResponse)!,
                                           GetProductDetailsCall.price(jsonResponse)!,
-
-                                          FFAppState().cartCount,
+                                          int.parse(controllersDetails.text),
+                                          //FFAppState().cartCount,
                                           GetProductDetailsCall.sku(jsonResponse)!,
                                           GetProductDetailsCall.image(jsonResponse)!,
                                           GetProductDetailsCall.slug(jsonResponse)!,
                                         ).then((_) {
                                           // Show a dialog box after the item has been added successfully
                                           _showDialog(context, "Item Added", "Item hase been added to the cart");
+                                          FFAppState().cartCount = 1;
                                         }).catchError((error) {
                                           // Handle any errors here
                                           _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
@@ -511,7 +610,7 @@ class _CatalougeDetailsPageWidgetState
                                         EdgeInsetsDirectional.fromSTEB(
                                             0, 0, 0, 0),
                                         color: Color(0xFF2DD36F),
-                                       // color: Color(0xFF1076BA),
+                                        // color: Color(0xFF1076BA),
                                         textStyle:
                                         FlutterFlowTheme.of(context)
                                             .titleSmall
@@ -524,7 +623,7 @@ class _CatalougeDetailsPageWidgetState
                                         ),
                                         elevation: 0,
                                         borderSide: BorderSide(
-                                         // color: Color(0xFF1076BA),
+                                          // color: Color(0xFF1076BA),
                                           color: Color(0xFF2DD36F),
                                         ),
                                         borderRadius:
@@ -558,8 +657,11 @@ class _CatalougeDetailsPageWidgetState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: List.generate(relatedProducts1!.length, (index) {
                                   final relatedProduct = relatedProducts1[index];
-                                 // bool isRelFavourite = favorites.contains(getJsonField(relatedProduct, r'''$.id'''));
+                                  // bool isRelFavourite = favorites.contains(getJsonField(relatedProduct, r'''$.id'''));
                                   bool isRelFavourite = getJsonField(relatedProduct, r'''$.is_favorite''');
+
+
+
 
                                   // Extract necessary data from the product
                                   final name = getJsonField(relatedProduct, r'''$.name''').toString();
@@ -569,17 +671,17 @@ class _CatalougeDetailsPageWidgetState
                                   final productId = getJsonField(relatedProduct, r'''$.id''');
 
 
-                                   return Padding(
+                                  return Padding(
                                     padding: const EdgeInsets.only(right: 8.0, left: 5, bottom: 8,top: 5),
                                     child: Stack(
                                       alignment: Alignment.topRight,
                                       children: [
                                         // Related Product Card
                                         Container(
-                                          height: 300,
+                                          height: 320,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
-                                          //  color: FlutterFlowTheme.of(context).primaryBackground,
+                                            //  color: FlutterFlowTheme.of(context).primaryBackground,
                                             boxShadow: const [
                                               BoxShadow(
                                                 blurRadius: 4,
@@ -669,64 +771,139 @@ class _CatalougeDetailsPageWidgetState
                                                           ),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                        child: CountControllerComponentWidget(
-                                                          key: Key('Keyz47_${relatedProduct}_of_${relatedProduct.length}'),
-                                                          countValue: FFAppState().cartCount,
-                                                        ),
-                                                      ),
-                                                      // Add to Cart Button for Related Product
-                                                      FFButtonWidget(
-                                                        onPressed: () async {
-                                                          _addItem(
-                                                            getJsonField(relatedProduct, r'''$.id''',),
-                                                            getJsonField(relatedProduct, r'''$.name''').toString(),
-                                                            getJsonField(relatedProduct, r'''$.price''').toString(),
-                                                            FFAppState().cartCount,
-                                                            getJsonField( relatedProduct,r'''$.sku''').toString(),
-                                                            getJsonField(relatedProduct, r'''$.images[0].src''',).toString(),
-                                                            getJsonField(relatedProduct, r'''$.slug''').toString(),
-                                                          ).then((_) {
-                                                            // Show a dialog box after the item has been added successfully
-                                                            _showDialog(context, "Item Added", "Item hase been added to the cart");
-                                                            FFAppState().cartCount = 1;
-                                                          }).catchError((error) {
-                                                            // Handle any errors here
-                                                            _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
-                                                          });
 
-                                                        },
-                                                        text: 'Add to cart',
-                                                        icon: Icon(
-                                                          Icons
-                                                              .shopping_cart_outlined,
-                                                          size: 15,
-                                                        ),
-                                                        options: FFButtonOptions(
-                                                          //width: 150,
-                                                          height: 30,
-                                                          padding: EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
-                                                          iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                          //color: Color(0xFF1076BA),
-                                                          color: Color(0xFF2DD36F),
-                                                          textStyle:
-                                                          FlutterFlowTheme.of(context).titleSmall.override(
-                                                            fontFamily: 'Open Sans',
-                                                            color: Colors.white,
-                                                            fontSize: 13,
-                                                            letterSpacing: 0.0,
-                                                            fontWeight:
-                                                            FontWeight.w600,
+                                                      Row(
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                print('Controller Text: ${controllersRel[index].text}');
+                                                                print('Quantity: ${quantitiesRel[index]}');
+
+                                                                if (quantitiesRel[index] > 1) {
+                                                                  quantitiesRel[index]--;
+                                                                  // Update the TextEditingController's text
+                                                                  controllersRel[index].text = quantitiesRel[index].toString();
+                                                                }
+                                                              });
+                                                            },
+                                                            child: FaIcon(
+                                                              FontAwesomeIcons.minusCircle,
+                                                              color: Color(0xFFEB445A),
+                                                              size: 25.0,
+                                                            ),
                                                           ),
-                                                          elevation: 0,
-                                                          borderSide: BorderSide(
+                                                          SizedBox(
+                                                            width: 60,
+                                                            child: TextFormField(
+                                                              controller: controllersRel[index],
+                                                              textAlign: TextAlign.center,
+                                                              keyboardType: TextInputType.number,
+                                                              onChanged: (value) {
+
+                                                                setState(() {
+                                                                  // Parse the value, allow 0 or empty temporarily
+                                                                  int quantity = int.tryParse(value) ?? 0;
+
+                                                                  // Apply only the maximum limit
+                                                                  if (quantity > 9999) {
+                                                                    quantity = 9999;
+                                                                    controllersRel[index].text = quantity.toString();
+                                                                  }
+
+                                                                  // Update the quantity
+                                                                  quantitiesRel[index] = quantity;
+                                                                });
+                                                                //controllersRel[index].text = quantitiesRel[index].toString();
+
+                                                              },
+                                                            ),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                print('Controller Text: ${controllersRel[index].text}');
+                                                                print('Quantity: ${quantitiesRel[index]}');
+
+                                                                quantitiesRel[index]++;
+                                                                // Update the TextEditingController's text
+                                                                controllersRel[index].text = quantitiesRel[index].toString();
+                                                              });
+                                                            },
+                                                            child: FaIcon(
+                                                              FontAwesomeIcons.plusCircle,
+                                                              color: Color(0xFF2DD36F),
+                                                              size: 25.0,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+
+
+                                                      // Add to Cart Button for Related Product
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 8.0),
+                                                        child: FFButtonWidget(
+                                                          onPressed: () async {
+                                                            setState(() {
+                                                              // Validate the input: if 0 or invalid, set it to 1
+                                                              int quantity = int.tryParse(controllersRel[index].text) ?? 1;
+                                                              if (quantity <= 0) {
+                                                                quantity = 1;
+                                                                controllersRel[index].text = quantity.toString();
+                                                              }
+                                                              quantitiesRel[index] = quantity;
+                                                            });
+                                                            _addItem(
+                                                              getJsonField(relatedProduct, r'''$.id''',),
+                                                              getJsonField(relatedProduct, r'''$.name''').toString(),
+                                                              getJsonField(relatedProduct, r'''$.price''').toString(),
+                                                              // FFAppState().cartCount,
+                                                              int.parse(controllersRel[index].text),
+                                                              getJsonField( relatedProduct,r'''$.sku''').toString(),
+                                                              getJsonField(relatedProduct, r'''$.images[0].src''',).toString(),
+                                                              getJsonField(relatedProduct, r'''$.slug''').toString(),
+                                                            ).then((_) {
+                                                              // Show a dialog box after the item has been added successfully
+                                                              _showDialog(context, "Item Added", "Item hase been added to the cart");
+                                                              FFAppState().cartCount = 1;
+                                                            }).catchError((error) {
+                                                              // Handle any errors here
+                                                              _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
+                                                            });
+
+                                                          },
+                                                          text: 'Add to cart',
+                                                          icon: Icon(
+                                                            Icons
+                                                                .shopping_cart_outlined,
+                                                            size: 15,
+                                                          ),
+                                                          options: FFButtonOptions(
+                                                            //width: 150,
+                                                            height: 30,
+                                                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
+                                                            iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
                                                             //color: Color(0xFF1076BA),
                                                             color: Color(0xFF2DD36F),
+                                                            textStyle:
+                                                            FlutterFlowTheme.of(context).titleSmall.override(
+                                                              fontFamily: 'Open Sans',
+                                                              color: Colors.white,
+                                                              fontSize: 13,
+                                                              letterSpacing: 0.0,
+                                                              fontWeight:
+                                                              FontWeight.w600,
+                                                            ),
+                                                            elevation: 0,
+                                                            borderSide: BorderSide(
+                                                              //color: Color(0xFF1076BA),
+                                                              color: Color(0xFF2DD36F),
+                                                            ),
+                                                            borderRadius:
+                                                            BorderRadius.circular(
+                                                                8),
                                                           ),
-                                                          borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
                                                         ),
                                                       ),
                                                     ],
@@ -755,7 +932,6 @@ class _CatalougeDetailsPageWidgetState
                                                 final removeResponse = await RemoveProductToWishlistCallNew.call(
                                                   userId: FFAppState().userId,
                                                   productSku:sku,
-                                                    
                                                 );
 
                                                 // Update UI and local state if API call is successful
@@ -772,7 +948,6 @@ class _CatalougeDetailsPageWidgetState
                                                 final addResponse = await AddProductToWishlistCallNew.call(
                                                   userId: FFAppState().userId,
                                                   productSku: sku,
-                                                    
                                                 );
 
                                                 // Update UI and local state if API call is successful
@@ -785,58 +960,12 @@ class _CatalougeDetailsPageWidgetState
                                                   });
                                                 }
                                               }
-                                              /*if (isRelFavourite) {
-                                                // Remove from favorites
-                                                await _favoritesService.removeFromFavourite(productId);
-                                              } else {
-                                                // Add to favorites
-                                                FavoriteItem newItem = FavoriteItem(
-                                                  id: productId,
-                                                  name: name,
-                                                  sku: sku,
-                                                  price: price,
-                                                  imageUrl: image,
-                                                );
-                                                await _favoritesService.addToFavourite(newItem);
-                                              }
-                                              // Reload the favorites and update state
-                                              await _loadFavorites();*/
+
                                             },
                                           ),
                                         ),
 
-                                        // Add/Remove Favorite Button
-                                       /* Padding(
-                                          padding: EdgeInsetsDirectional.fromSTEB(0, 5, 10, 0),
-                                          child:FlutterFlowIconButton(
-                                            borderColor: isRelFavourite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                            borderRadius: 20,
-                                            borderWidth: 1,
-                                            buttonSize: 40,
-                                            fillColor: isRelFavourite ? Color(0xFFE00F0F) : Color(0xFF27AEDF),
-                                            icon: Icon(
-                                              Icons.favorite,
-                                              color: FlutterFlowTheme.of(context).secondaryBackground,
-                                              size: 24,
-                                            ),
-                                            onPressed: () async {
-                                              if (isRelFavourite) {
-                                                await _favoritesService.removeFromFavourite(getJsonField(relatedProduct, r'''$.item_id''')); // Access via map
-                                              } else {
-                                                FavoriteItem newItem = FavoriteItem(
-                                                  id: getJsonField(relatedProduct, r'''$.item_id'''),
-                                                  name: name,
-                                                  sku: sku,
-                                                  price:price,
-                                                  imageUrl: image,
 
-                                                );
-                                                await _favoritesService.addToFavourite(newItem); // Access via map
-                                              }
-                                              await _loadFavorites();
-                                            },
-                                          ),
-                                        ),*/
 
                                       ],
                                     ),

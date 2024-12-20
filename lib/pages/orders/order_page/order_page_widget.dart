@@ -804,6 +804,11 @@ class _OrderPageWidgetState extends State<OrderPageWidget> {
                               'fillColor': Colors.red,
                               'icon': Icons.close_outlined,
                             },
+                            'on-hold': {
+                              'borderColor': Colors.grey,
+                              'fillColor': Colors.grey,
+                              'icon': Icons.back_hand_outlined,
+                            },
                             'processing': {
                               'borderColor': Colors.orange,
                               'fillColor': Colors.orange,
@@ -818,6 +823,11 @@ class _OrderPageWidgetState extends State<OrderPageWidget> {
                               'borderColor': Colors.green,
                               'fillColor': Colors.green,
                               'icon': Icons.check_sharp,
+                            },
+                            'dispatched': {
+                              'borderColor': Colors.red,
+                              'fillColor': Colors.red,
+                              'icon': Icons.delivery_dining,
                             },
                           };
       

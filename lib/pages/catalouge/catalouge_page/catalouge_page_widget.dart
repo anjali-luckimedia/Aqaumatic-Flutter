@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:aqaumatic_app/Cart/CartModel.dart';
 import 'package:aqaumatic_app/Cart/cart_service.dart';
 import 'package:aqaumatic_app/components/customDrawer.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +45,8 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
   final CartService _cartService = CartService();
   int count = 0;
   bool _showNews = true;
+  int _qtyPressBack = 0;
+
 
   @override
   void initState() {
@@ -86,13 +91,58 @@ class _CatalougePageWidgetState extends State<CatalougePageWidget> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('showNews', value);
   }
+  Future<void> _showExitConfirmationDialog() async {
+    final exitApp = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Exit"),
+        content: Text("Are you sure you want to exit?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Dismiss dialog
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              if (Platform.isAndroid) {
+                SystemNavigator.pop();
+              } else if (Platform.isIOS) {
+                exit(0);
+              }
+            },
+            child: Text("Yes"),
+          ),
+        ],
+      ),
+    );
 
+    if (exitApp == true) {
+      // Exit the app
+      Navigator.of(context).pop();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
     return PopScope(
-      canPop: false,
+      canPop: _qtyPressBack < 2,
+      onPopInvoked: (didPop) {
+        setState(() {
+          _qtyPressBack++;
+        });
+
+        if (_qtyPressBack >= 2) {
+          _showExitConfirmationDialog();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Press back again to exit"),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      },
       child: Scaffold(
         key: scaffoldKey,
        backgroundColor: Colors.white,

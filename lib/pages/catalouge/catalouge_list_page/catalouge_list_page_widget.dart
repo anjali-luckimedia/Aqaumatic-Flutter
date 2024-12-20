@@ -88,17 +88,35 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
   }
 
 
+  List<int> quantities = [];
+  List<TextEditingController> controllers = [];
+
   Future<void> _fetchPage(int pageKey) async {
     try {
       final response = await GetProductListByCatalougeCall.call(
         categoryId: widget.catId,
         page: pageKey,
         userId: FFAppState().userId, // Assuming FFAppState().userId exists
-       
       );
 
-      // Parse the response to extract the list of orders
+      // Parse the response to extract the list of products
       final List<dynamic> fetchedOrders = response.jsonBody as List<dynamic>;
+
+      // Initialize or update quantities and controllers based on the fetched products
+      setState(() {
+        // If it's a new page, append the new quantities and controllers
+        if (pageKey == 0) {
+          // For the first page, clear any existing data
+          quantities = [];
+          controllers = [];
+        }
+
+        // Update the quantities and controllers for the fetched products
+        for (var product in fetchedOrders) {
+          quantities.add(product['quantity'] ?? 1); // Default to 1 if no quantity
+          controllers.add(TextEditingController(text: product['quantity']?.toString() ?? '1'));
+        }
+      });
 
       final isLastPage = fetchedOrders.length < _pageSize;
       if (isLastPage) {
@@ -111,6 +129,31 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
       _pagingController.error = error;
     }
   }
+
+
+  // Future<void> _fetchPage(int pageKey) async {
+  //   try {
+  //     final response = await GetProductListByCatalougeCall.call(
+  //       categoryId: widget.catId,
+  //       page: pageKey,
+  //       userId: FFAppState().userId, // Assuming FFAppState().userId exists
+  //     );
+  //
+  //     // Parse the response to extract the list of orders
+  //     final List<dynamic> fetchedOrders = response.jsonBody as List<dynamic>;
+  //
+  //     final isLastPage = fetchedOrders.length < _pageSize;
+  //     if (isLastPage) {
+  //       _pagingController.appendLastPage(fetchedOrders);
+  //     } else {
+  //       final nextPageKey = pageKey + 1;
+  //       _pagingController.appendPage(fetchedOrders, nextPageKey);
+  //     }
+  //   } catch (error) {
+  //     _pagingController.error = error;
+  //   }
+  // }
+
 
   Future<void> _loadCart() async {
     final cartItems = await _cartService.getCart();
@@ -560,76 +603,99 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                             Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                               children: [
-
-
-                                 Row(
+                                Row(
                                   children: [
-                                  /*  SizedBox(
-                                      width: 140,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Align(
-                                            alignment: AlignmentDirectional(0.0, 0.0),
-                                            child: FlutterFlowIconButton(
-                                              borderColor: Colors.transparent,
-                                              borderRadius: 20.0,
-                                              buttonSize: 30.0,
-                                              fillColor: Color(0xFFEB445A),
-                                              icon: FaIcon(
-                                                FontAwesomeIcons.minus,
-                                                color: FlutterFlowTheme.of(context).info,
-                                                size: 15.0,
-                                              ),
-                                              showLoadingIndicator: true,
-                                              onPressed: () async {
-
-                                                //_decrementQuantity(item.id);
-                                              },
-                                            ),
-                                          ),
-                                          Text('${FFAppState().cartCount}',
-                                            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                              fontFamily: 'Open Sans',
-                                              letterSpacing: 0.0,
-                                            ),
-                                          ),
-                                          FlutterFlowIconButton(
-                                            borderColor: Colors.transparent,
-                                            borderRadius: 20.0,
-                                            buttonSize:30.0,
-                                            fillColor:  Color(0xFF2DD36F) ,
-                                            icon: FaIcon(
-                                              FontAwesomeIcons.plus,
-                                              color: FlutterFlowTheme.of(context).info,
-                                              size: 15.0,
-                                            ),
-                                            showLoadingIndicator: true,
-                                            onPressed: () async {
-                                            //  _incrementQuantity(item.id);
-                                            },
-                                          ),
-                                        ],
+                                    GestureDetector(
+                                      onTap:(){
+                                        setState(() {
+                                          if (quantities[getCatalougeProductListIndex] > 1) {
+                                            quantities[getCatalougeProductListIndex]--;
+                                            controllers[getCatalougeProductListIndex].text = quantities[getCatalougeProductListIndex].toString();
+                                          }
+                                        });
+                                      },
+                                      child: FaIcon(
+                                        FontAwesomeIcons.minusCircle,
+                                        color:  Color(0xFFEB445A),
+                                        size: 25.0,
                                       ),
-                                    ),*/
-                                    CountControllerComponentWidget(
-                                    //  key: Key('Keyqvb_${getCatalougeProductListIndex}_of_${_model.listViewPagingController!.itemList!.length}'),
-                                      countValue: FFAppState().cartCount,
                                     ),
+
+                                    SizedBox(
+                                      width: 60,
+                                      child: TextFormField(
+                                        controller: controllers[getCatalougeProductListIndex],
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            // Parse the value, allow 0 or empty temporarily
+                                            int quantity = int.tryParse(value) ?? 0;
+
+                                            // Apply only the maximum limit
+                                            if (quantity > 9999) {
+                                              quantity = 9999;
+                                              controllers[getCatalougeProductListIndex].text = quantity.toString();
+                                            }
+
+                                            // Update the quantity
+                                            quantities[getCatalougeProductListIndex] = quantity;
+                                          });
+                                        },
+                                      ),
+                                    ),
+
+
+
+                                    GestureDetector(
+                                      onTap: (){
+                                        setState(() {
+                                          quantities[getCatalougeProductListIndex]++;
+                                          controllers[getCatalougeProductListIndex].text = quantities[getCatalougeProductListIndex].toString();
+                                        });
+                                      },
+                                      child: FaIcon(
+
+                                        FontAwesomeIcons.plusCircle,
+                                        color:  Color(0xFF2DD36F),
+                                        size: 25.0,
+                                      ),
+                                    ),
+                                    // Increase quantity button
+                                    // IconButton(
+                                    //   onPressed: () {
+                                    //     setState(() {
+                                    //       quantities[getCatalougeProductListIndex]++;
+                                    //       controllers[getCatalougeProductListIndex].text = quantities[getCatalougeProductListIndex].toString();
+                                    //     });
+                                    //   },
+                                    //   icon: Icon(Icons.add),
+                                    // ),
+
                                     Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          15.0, 0.0, 0.0, 0.0),
+                                      padding: EdgeInsetsDirectional.fromSTEB(15.0, 0.0, 0.0, 0.0),
                                       child: FFButtonWidget(
                                         onPressed: () {
+                                          setState(() {
+                                            // Validate the input: if 0 or invalid, set it to 1
+                                            int quantity = int.tryParse(controllers[getCatalougeProductListIndex].text) ?? 1;
+                                            if (quantity <= 0) {
+                                              quantity = 1;
+                                              controllers[getCatalougeProductListIndex].text = quantity.toString();
+                                            }
+                                            quantities[getCatalougeProductListIndex] = quantity;
+                                          });
 
                                           print( FFAppState().cartCount,);
+                                          print(quantities[getCatalougeProductListIndex]);
+                                          print(controllers[getCatalougeProductListIndex].text);
                                           _addItem(
                                             getJsonField(getListItem, r'''$.id''',),
                                             getJsonField(getListItem, r'''$.name''',).toString(),
                                             getJsonField(getListItem, r'''$.price''',),
-                                            FFAppState().cartCount,
+                                            int.parse(controllers[getCatalougeProductListIndex].text),
+                                            // FFAppState().cartCount,
                                             getJsonField(getListItem, r'''$.sku''',).toString(),
                                             getJsonField(getListItem, r'''$.images[:].src''',).toString(),
                                             getJsonField(getListItem, r'''$.slug''',),
@@ -651,138 +717,37 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                         options: FFButtonOptions(
                                           height: 30.0,
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  16.0, 0.0, 16.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              16.0, 0.0, 16.0, 0.0),
                                           iconPadding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
                                           //color: Color(0xFFE00F0F),
                                           color: Color(0xFF2DD36F),
                                           textStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .titleSmall
-                                                  .override(
-                                                    fontFamily: 'Open Sans',
-                                                    color: Colors.white,
-                                                    fontSize: 13.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                        FontWeight.w600,
-                                                  ),
-                                          elevation: 0.0,
-                                          borderSide: BorderSide(
-                                           // color: Color(0xFFE00F0F),
-                                            color: Color(0xFF2DD36F),
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                /* Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 140,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Align(
-                                            alignment: AlignmentDirectional(0.0, 0.0),
-                                            child: FlutterFlowIconButton(
-                                              borderColor: Colors.transparent,
-                                              borderRadius: 20.0,
-                                              buttonSize: 30.0,
-                                              fillColor: Color(0xFFEB445A),
-                                              icon: FaIcon(
-                                                FontAwesomeIcons.minus,
-                                                color: FlutterFlowTheme.of(context).info,
-                                                size: 15.0,
-                                              ),
-                                              showLoadingIndicator: true,
-                                              onPressed: () async {
-                                                // Decrement the quantity if it's greater than 1
-
-                                              },
-                                            ),
-                                          ),
-                                          Text('${FFAppState().cartCount}',
-                                            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                              fontFamily: 'Open Sans',
-                                              letterSpacing: 0.0,
-                                            ),
-                                          ),
-                                          FlutterFlowIconButton(
-                                            borderColor: Colors.transparent,
-                                            borderRadius: 20.0,
-                                            buttonSize: 30.0,
-                                            fillColor: Color(0xFF2DD36F),
-                                            icon: FaIcon(
-                                              FontAwesomeIcons.plus,
-                                              color: FlutterFlowTheme.of(context).info,
-                                              size: 15.0,
-                                            ),
-                                            showLoadingIndicator: true,
-                                            onPressed: () async {
-                                              // Increment the quantity
-
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(15.0, 0.0, 0.0, 0.0),
-                                      child: FFButtonWidget(
-                                        onPressed: () {
-                                          print(FFAppState().cartCount);
-                                          _addItem(
-                                            getJsonField(getListItem, r'''$.id'''),
-                                            getJsonField(getListItem, r'''$.name''').toString(),
-                                            getJsonField(getListItem, r'''$.price'''),
-                                          //  FFAppState().cartCount,
-                                            quantity[getCatalougeProductListIndex],
-                                            getJsonField(getListItem, r'''$.sku''').toString(),
-                                            getJsonField(getListItem, r'''$.images[:].src''').toString(),
-                                            getJsonField(getListItem, r'''$.slug'''),
-                                          ).then((_) {
-                                            // Show a dialog box after the item has been added successfully
-                                            _showDialog(context, "Item Added", "Item has been added to the cart");
-                                          }).catchError((error) {
-                                            // Handle any errors here
-                                            _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
-                                          });
-                                        },
-                                        text: 'Add',
-                                        icon: Icon(
-                                          Icons.shopping_cart_outlined,
-                                          size: 15.0,
-                                        ),
-                                        options: FFButtonOptions(
-                                          height: 30.0,
-                                          padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                                          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                          color: Color(0xFF2DD36F),
-                                          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                          FlutterFlowTheme.of(context)
+                                              .titleSmall
+                                              .override(
                                             fontFamily: 'Open Sans',
                                             color: Colors.white,
                                             fontSize: 13.0,
                                             letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight:
+                                            FontWeight.w600,
                                           ),
                                           elevation: 0.0,
                                           borderSide: BorderSide(
+                                            // color: Color(0xFFE00F0F),
                                             color: Color(0xFF2DD36F),
                                           ),
-                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderRadius:
+                                          BorderRadius.circular(8.0),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-*/
+
                                 FFButtonWidget(
                                   onPressed: () async {
 
@@ -796,7 +761,6 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                           getListItem,
                                           r'''$.sku''',
                                         ).toString(),
-                                         
                                       );
 
                                       // Update UI and local state if API call is successful
@@ -815,7 +779,6 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                           getListItem,
                                           r'''$.sku''',
                                         ).toString(),
-                                         
                                       );
 
                                       // Update UI and local state if API call is successful

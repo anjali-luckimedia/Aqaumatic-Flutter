@@ -4,6 +4,7 @@ import 'package:aqaumatic_app/flutter_flow/flutter_flow_theme.dart';
 import 'package:aqaumatic_app/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../Cart/CartModel.dart';
 import '../Cart/cart_service.dart';
@@ -33,22 +34,36 @@ class _FavoritesPageState extends State<FavoritesPage> {
   final CartService _cartService = CartService();
   List<CartItem> _cartItems = [];
   int count = 0;
+  List<int> quantities = [];
+  List<TextEditingController> controllers = [];
+
   @override
   void initState() {
     super.initState();
     FFAppState().cartCount = 1;
     _fetchPage();
     _loadCart();
+    _initializeQuantitiesAndControllers();
    // _loadFavorites();
   }
 
-  Future<void> _fetchPage() async {
-    print( FFAppState().token);
+  void _initializeQuantitiesAndControllers() {
+    // Initialize quantities list with 1 for each favorite item (or set a default quantity)
+    quantities = List<int>.filled(favoriteData.length, 1);
+
+    // Initialize controllers list for each favorite item
+    controllers = List<TextEditingController>.generate(
+        favoriteData.length,
+            (index) => TextEditingController(text: quantities[index].toString())
+    );
+  }
+
+  /* Future<void> _fetchPage() async {
     setState(() {
       isLoading = true;
     });
     try {
-      final response = await GetFavouritesListCall.call(userId: FFAppState().userId );
+      final response = await GetFavouritesListCall.call(userId: FFAppState().userId);
 
       // Assuming response.jsonBody contains a list of favorite items
       if (response != null && response.jsonBody != null) {
@@ -77,12 +92,38 @@ class _FavoritesPageState extends State<FavoritesPage> {
         // });
       }
     } catch (error) {
-      setState(() {
-        data = []; // Ensure data is not null
-        isLoading = false; // Stop loading even if no data is available
-      });
       print("Error fetching favorites: $error");
       // Optionally, you can handle the error by showing a message in the UI
+    }
+  }*/
+
+  Future<void> _fetchPage() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await GetFavouritesListCall.call(userId: FFAppState().userId);
+      if (response != null && response.jsonBody != null) {
+        // Parse the response and store it in the favoriteData list
+        favoriteData = response.jsonBody['favorites'];
+        setState(() {
+          // Assign the parsed data to a variable used in the widget
+          data = favoriteData;
+          isLoading = false;
+          // Initialize quantities and controllers after data is loaded
+          _initializeQuantitiesAndControllers();
+        });
+      } else {
+        setState(() {
+          data = [];
+          isLoading = false;
+        });
+      }
+    } catch (error) {
+      print("Error fetching favorites: $error");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -346,21 +387,153 @@ class _FavoritesPageState extends State<FavoritesPage> {
                         ),
                       ),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //
+                    //       CountControllerComponentWidget(
+                    //         countValue: FFAppState().cartCount,  // Your cart counter logic
+                    //       ),
+                    //       FFButtonWidget(
+                    //         onPressed: () async {
+                    //           final newItem = CartItem(
+                    //             id: item['id'],
+                    //             name: item['name'],
+                    //             price: item['price'],
+                    //             quantity: FFAppState().cartCount,
+                    //             pn: item['sku'],
+                    //             image: item['image_url'], slug: '',
+                    //             // Add slug if needed
+                    //           );
+                    //           await _cartService.addToCart(newItem);
+                    //           _showDialog(context, "Added to Cart", "Item added successfully.");
+                    //           FFAppState().cartCount = 1;
+                    //
+                    //           // Add to cart functionality here
+                    //         },
+                    //         text: 'Add to cart',
+                    //         icon: Icon(
+                    //           Icons.shopping_cart_outlined,
+                    //           size: 15.0,
+                    //         ),
+                    //         options: FFButtonOptions(
+                    //           width: 150.0,
+                    //           height: 30.0,
+                    //           //color: Color(0xFF1076BA),
+                    //           color: Color(0xFF2DD36F),
+                    //           textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                    //             fontFamily: 'Open Sans',
+                    //             color: Colors.white,
+                    //             fontSize: 13.0,
+                    //             fontWeight: FontWeight.w600,
+                    //           ),
+                    //           borderSide: BorderSide(
+                    //            // color: Color(0xFF1076BA),
+                    //             color: Color(0xFF2DD36F),
+                    //           ),
+                    //           borderRadius: BorderRadius.circular(8.0),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CountControllerComponentWidget(
-                            countValue: FFAppState().cartCount,  // Your cart counter logic
+                          // CountControllerComponentWidget(
+                          //   countValue: FFAppState().cartCount,  // Your cart counter logic
+                          //
+                          // ),
+                          GestureDetector(
+                            onTap:(){
+                              setState(() {
+                                if (quantities[index] > 1) {
+                                  quantities[index]--;
+                                  controllers[index].text = quantities[index].toString();
+                                }
+                              });
+                            },
+                            child: FaIcon(
+                              FontAwesomeIcons.minusCircle,
+                              color:  Color(0xFFEB445A),
+                              size: 25.0,
+                            ),
+                          ),
+                          // IconButton(
+                          //   onPressed: () {
+                          //     setState(() {
+                          //       if (quantities[getCatalougeProductListIndex] > 0) {
+                          //         quantities[getCatalougeProductListIndex]--;
+                          //         controllers[getCatalougeProductListIndex].text = quantities[getCatalougeProductListIndex].toString();
+                          //       }
+                          //     });
+                          //   },
+                          //   icon: Icon(Icons.remove),
+                          // ),
+                          // TextFormField to display and edit quantity
+                          SizedBox(
+                            width: 60,
+                            child: TextFormField(
+                              controller: controllers[index],
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  // Parse the value, allow 0 or empty temporarily
+                                  int quantity = int.tryParse(value) ?? 0;
+
+                                  // Apply only the maximum limit
+                                  if (quantity > 9999) {
+                                    quantity = 9999;
+                                    controllers[index].text = quantity.toString();
+                                  }
+
+                                  // Update the quantity
+                                  quantities[index] = quantity;
+                                });
+                                // setState(() {
+                                //   quantities[index] = int.tryParse(value) ?? 0;
+                                // });
+                              },
+                            ),
+                          ),
+
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                quantities[index]++;
+                                controllers[index].text = quantities[index].toString();
+                              });
+                            },
+                            child: FaIcon(
+
+                              FontAwesomeIcons.plusCircle,
+                              color:  Color(0xFF2DD36F),
+                              size: 25.0,
+                            ),
                           ),
                           FFButtonWidget(
                             onPressed: () async {
+                              setState(() {
+                                // Validate the input: if 0 or invalid, set it to 1
+                                int quantity = int.tryParse(controllers[index].text) ?? 1;
+                                if (quantity <= 0) {
+                                  quantity = 1;
+                                  controllers[index].text = quantity.toString();
+                                }
+                                quantities[index] = quantity;
+                              });
+
                               final newItem = CartItem(
                                 id: item['id'],
                                 name: item['name'],
                                 price: item['price'],
-                                quantity: FFAppState().cartCount,
+                                quantity: int.parse(controllers[index].text),
+                                // quantity: FFAppState().cartCount,
                                 pn: item['sku'],
                                 image: item['image_url'], slug: '',
                                 // Add slug if needed
@@ -388,7 +561,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                 fontWeight: FontWeight.w600,
                               ),
                               borderSide: BorderSide(
-                               // color: Color(0xFF1076BA),
+                                // color: Color(0xFF1076BA),
                                 color: Color(0xFF2DD36F),
                               ),
                               borderRadius: BorderRadius.circular(8.0),

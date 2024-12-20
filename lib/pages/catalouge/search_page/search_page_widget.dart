@@ -541,112 +541,64 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    // Count Controller
-                                    CountControllerComponentWidget(
-                                      countValue: FFAppState().cartCount,
-                                    ),
-                                    SizedBox(width: 15.0),
-                                    // Add to Cart Button
-                                    FFButtonWidget(
-                                      onPressed: () {
-                                        _addItem(
-                                          itemList['id'],
-                                          itemList['name'].toString(),
-                                          itemList['price'].toString(),
-                                          FFAppState().cartCount,
-                                          itemList['sku'],
-                                          itemList['images'][0]['src'],
-                                          itemList['sku'],
-                                        ).then((_) {
-                                          // Show a dialog box after the item has been added successfully
-                                          _showDialog(context, "Item Added", "Item hase been added to the cart");
-                                          FFAppState().cartCount = 1;
-                                        }).catchError((error) {
-                                          // Handle any errors here
-                                          _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
-                                        });
-                                      },
-                                      text: 'Add',
-                                      icon: Icon(
-                                        Icons.shopping_cart_outlined,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        height: 30.0,
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 0.0, 16.0, 0.0),
-                                        color: Color(0xFF2DD36F),
-                                       // color: Color(0xFFE00F0F),
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                              fontFamily: 'Open Sans',
-                                              color: Colors.white,
-                                              fontSize: 13.0,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                        elevation: 0.0,
-                                        borderSide: BorderSide(
-                                          color: Color(0xFF2DD36F),
-                                       //   color: Color(0xFFE00F0F),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                // Favourite Button
-                               /* FFButtonWidget(
-                                  onPressed: () async {
-                                    if (isFavourite) {
-                                      await _favoritesService
-                                          .removeFromFavourite(itemList['id']);
-                                    } else {
-                                      FavoriteItem newItem = FavoriteItem(
-                                        id: itemList['id'],
-                                        name: itemList['name'].toString(),
-                                        price: itemList['price'].toString(),
-                                        sku: itemList['sku'],
-                                        imageUrl: itemList['images'][0]['src'],
-                                      );
-                                      await _favoritesService
-                                          .addToFavourite(newItem);
-                                    }
-                                    await _loadFavorites();
-                                  },
-                                  text: isFavourite ? 'Remove' : 'Add',
-                                  icon: Icon(
-                                    Icons.favorite_border,
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    size: 15.0,
-                                  ),
-                                  options: FFButtonOptions(
-                                   // width: 100.0,
-                                    height: 30.0,
-                                    color: isFavourite
-                                        ? Color(0xFFE00F0F)
-                                        : Color(0xFF27AEDF),
-                                    textStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .override(
-                                      fontFamily: 'Open Sans',
-                                      color: Colors.white,
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    elevation: 3.0,
-                                    borderSide: BorderSide(
-                                      color: isFavourite
-                                          ? Color(0xFFE00F0F)
-                                          : Color(0xFF27AEDF),
-                                    ),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                ),*/
+                                // Row(
+                                //   children: [
+                                //     // Count Controller
+                                //     CountControllerComponentWidget(
+                                //       countValue: FFAppState().cartCount,
+                                //     ),
+                                //     SizedBox(width: 15.0),
+                                //     // Add to Cart Button
+                                //     FFButtonWidget(
+                                //       onPressed: () {
+                                //         _addItem(
+                                //           itemList['id'],
+                                //           itemList['name'].toString(),
+                                //           itemList['price'].toString(),
+                                //           FFAppState().cartCount,
+                                //           itemList['sku'],
+                                //           itemList['images'][0]['src'],
+                                //           itemList['sku'],
+                                //         ).then((_) {
+                                //           // Show a dialog box after the item has been added successfully
+                                //           _showDialog(context, "Item Added", "Item hase been added to the cart");
+                                //           FFAppState().cartCount = 1;
+                                //         }).catchError((error) {
+                                //           // Handle any errors here
+                                //           _showDialog(context, "Error", "An error occurred while adding the item to the cart.");
+                                //         });
+                                //       },
+                                //       text: 'Add',
+                                //       icon: Icon(
+                                //         Icons.shopping_cart_outlined,
+                                //         size: 15.0,
+                                //       ),
+                                //       options: FFButtonOptions(
+                                //         height: 30.0,
+                                //         padding: EdgeInsetsDirectional.fromSTEB(
+                                //             16.0, 0.0, 16.0, 0.0),
+                                //         color: Color(0xFF2DD36F),
+                                //        // color: Color(0xFFE00F0F),
+                                //         textStyle: FlutterFlowTheme.of(context)
+                                //             .titleSmall
+                                //             .override(
+                                //               fontFamily: 'Open Sans',
+                                //               color: Colors.white,
+                                //               fontSize: 13.0,
+                                //               fontWeight: FontWeight.w600,
+                                //             ),
+                                //         elevation: 0.0,
+                                //         borderSide: BorderSide(
+                                //           color: Color(0xFF2DD36F),
+                                //        //   color: Color(0xFFE00F0F),
+                                //         ),
+                                //         borderRadius:
+                                //             BorderRadius.circular(8.0),
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
+                                Spacer(),
                                 FFButtonWidget(
                                   onPressed: () async {
 

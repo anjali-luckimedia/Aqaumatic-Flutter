@@ -651,9 +651,13 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                     GestureDetector(
                                       onTap: (){
                                         setState(() {
-                                          quantities[getCatalougeProductListIndex]++;
-                                          controllers[getCatalougeProductListIndex].text = quantities[getCatalougeProductListIndex].toString();
-                                        });
+                                          if (controllers[getCatalougeProductListIndex].text == '9999') {
+                                            // Perform any additional logic if required
+                                          }else{
+                                            quantities[getCatalougeProductListIndex]++;
+                                            controllers[getCatalougeProductListIndex].text = quantities[getCatalougeProductListIndex].toString();
+
+                                          }  });
                                       },
                                       child: FaIcon(
 

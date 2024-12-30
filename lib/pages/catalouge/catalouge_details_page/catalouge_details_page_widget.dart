@@ -546,8 +546,13 @@ class _CatalougeDetailsPageWidgetState
                                     GestureDetector(
                                       onTap: (){
                                         setState(() {
-                                          quantitiesDetails++;
-                                          controllersDetails.text = quantitiesDetails.toString();
+                                          if (controllersDetails.text == '9999') {
+                                            // Perform any additional logic if required
+                                          }else{
+
+                                            quantitiesDetails++;
+                                            controllersDetails.text = quantitiesDetails.toString();
+                                          }
                                         });
                                       },
                                       child: FaIcon(
@@ -824,10 +829,14 @@ class _CatalougeDetailsPageWidgetState
                                                               setState(() {
                                                                 print('Controller Text: ${controllersRel[index].text}');
                                                                 print('Quantity: ${quantitiesRel[index]}');
+                                                                if (controllersRel[index].text == '9999') {
+                                                                  // Perform any additional logic if required
+                                                                }else{
+                                                                  quantitiesRel[index]++;
+                                                                  // Update the TextEditingController's text
+                                                                  controllersRel[index].text = quantitiesRel[index].toString();
+                                                                }
 
-                                                                quantitiesRel[index]++;
-                                                                // Update the TextEditingController's text
-                                                                controllersRel[index].text = quantitiesRel[index].toString();
                                                               });
                                                             },
                                                             child: FaIcon(

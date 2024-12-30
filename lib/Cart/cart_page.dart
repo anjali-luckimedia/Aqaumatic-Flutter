@@ -39,6 +39,7 @@ class _CartScreenState extends State<CartScreen> {
    Future<dynamic>? userProfileFuture;
   final _formKey = GlobalKey<FormState>();
   String _deviceType = '';
+  int? parsedValue;
 
   List<int> quantities = [];
   List<TextEditingController> controllers = [];
@@ -447,7 +448,7 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               SizedBox(
                                 width: 140,
-                                child:Row(
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     GestureDetector(
@@ -466,9 +467,46 @@ class _CartScreenState extends State<CartScreen> {
                                         size: 25.0,
                                       ),
                                     ),
+                                    /*SizedBox(
+                                      width: 60,
+                                      child: TextFormField(
+                                        controller: controllers[index],
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            int parsedValue = int.tryParse(value) ?? 1;
+
+                                            // Enforce the limits
+                                            parsedValue = parsedValue.clamp(1, 9999);
+
+                                            quantities[index] = parsedValue;
+                                            controllers[index].text = parsedValue.toString();
+
+                                            // Update quantity in the model
+                                            updateQuantity(_cartItems![index].id, parsedValue);
+                                          });
+                                        },
+                                        // onChanged: (value) {
+                                        //   setState(() {
+                                        //     // Parse the value directly from the input (onChanged callback)
+                                        //     int parsedValue = int.tryParse(value) ?? 1;
+                                        //     quantities[index] = parsedValue;
+                                        //     updateQuantity(_cartItems![index].id, parsedValue);
+                                        //
+                                        //     // Update the quantity in the model or cart
+                                        //     //_updateQuantity(item.id, parsedValue);
+                                        //   });
+                                        //
+                                        //   // Print the value of the controller (debugging)
+                                        //   print('Controller value: ${controllers[index].text}');
+                                        // },
+                                      ),
+                                    ),*/
                                     SizedBox(
                                       width: 60,
                                       child: TextFormField(
+                                        cursorColor: Colors.black,
                                         controller: controllers[index],
                                         textAlign: TextAlign.center,
                                         keyboardType: TextInputType.number,
@@ -477,66 +515,58 @@ class _CartScreenState extends State<CartScreen> {
                                           LengthLimitingTextInputFormatter(4),   // Limit the max input to 4 digits
                                         ],
                                         onChanged: (value) {
-                                          // Parse the value as an integer
-                                          int parsedValue = int.tryParse(value) ?? 1;
-
-                                          // Handle lower and upper bounds
-                                          if (parsedValue < 1) {
-                                            parsedValue = 1; // Prevent going below 1
+                                          // Check if the input is empty
+                                          if (value.isEmpty) {
+                                            parsedValue = null; // Set to null if the field is empty
+                                          } else {
+                                            // Parse and validate the input
+                                            parsedValue = int.tryParse(value) ?? 1;
+                                            if (parsedValue! < 1) parsedValue = 1; // Clamp minimum value
+                                            if (parsedValue! > 9999) parsedValue = 9999; // Clamp maximum value
                                           }
-                                          if (parsedValue > 9999) {
-                                            parsedValue = 9999; // Prevent going above 9999
-                                          }
 
-                                          // Only update the quantity if it is different from the current one
-                                          if (quantities[index] != parsedValue) {
-                                            setState(() {
-                                              quantities[index] = parsedValue; // Update the quantity list
-                                              controllers[index].text = parsedValue.toString(); // Update the controller text
-                                              controllers[index].selection = TextSelection.fromPosition(
-                                                TextPosition(offset: controllers[index].text.length), // Move cursor to the end
-                                              );
-
-                                              // Update the cart model
-                                              updateQuantity(_cartItems![index].id, parsedValue);
-                                            });
+                                          // Update the controller text only if input is valid
+                                          if (parsedValue != null) {
+                                            controllers[index].text = parsedValue.toString();
+                                            controllers[index].selection = TextSelection.fromPosition(
+                                              TextPosition(offset: controllers[index].text.length),
+                                            );
                                           }
                                         },
+
+                                        // onChanged: (value) {
+                                        //   // Parse and store the value temporarily
+                                        //   parsedValue = int.tryParse(value) ?? 1;
+                                        //
+                                        //   // Clamp the value between 1 and 9999
+                                        //   if (parsedValue! < 1) parsedValue = 1;
+                                        //   if (parsedValue! > 9999) parsedValue = 9999;
+                                        //
+                                        //   // Update the controller text to reflect the clamped value
+                                        //   controllers[index].text = parsedValue.toString();
+                                        //   controllers[index].selection = TextSelection.fromPosition(
+                                        //     TextPosition(offset: controllers[index].text.length), // Move cursor to the end
+                                        //   );
+                                        // },
                                       ),
                                     ),
-                                    //
-                                    // SizedBox(
-                                    //   width: 60,
-                                    //   child: TextFormField(
-                                    //     controller: controllers[index],
-                                    //     textAlign: TextAlign.center,
-                                    //     keyboardType: TextInputType.number,
-                                    //     onChanged: (value) {
-                                    //       setState(() {
-                                    //         quantities[index] = int.tryParse(value) ?? 1;
-                                    //         // Update quantity
-                                    //         _updateQuantity(item.id, int.parse(quantities[index].toString()));
-                                    //       });
-                                    //
-                                    //       // Print the value of the controller
-                                    //       print('Controller value: ${controllers[index].text}');
-                                    //     },
-                                    //   ),
-                                    // ),
-
 
                                     GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         setState(() {
-                                          quantities[index]++;
-                                          controllers[index].text = quantities[index].toString();
-                                          _incrementQuantity(item.id);
+                                          // Check if the quantity is less than the maximum value
+                                          if (controllers[index].text == '9999') {
+                                            // Perform any additional logic if required
+                                          }else{
+                                            quantities[index]++;  // Increment the quantity
+                                            controllers[index].text = quantities[index].toString();  // Update the controller text
+                                            _incrementQuantity(item.id);
+                                          }
                                         });
                                       },
                                       child: FaIcon(
-
                                         FontAwesomeIcons.plusCircle,
-                                        color:  Color(0xFF2DD36F),
+                                        color: Color(0xFF2DD36F),
                                         size: 25.0,
                                       ),
                                     ),
@@ -583,13 +613,52 @@ class _CartScreenState extends State<CartScreen> {
                                   ],
                                 ),
                               ),
+
+
+                              FFButtonWidget(
+                                onPressed: () async {
+                                  // Use the stored parsed value to update the quantity
+                                  if (parsedValue != quantities[index]) {
+                                    await updateQuantity(_cartItems![index].id, parsedValue!);
+                                    _loadCart();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: Color(0xFF27AEDF),
+                                        content: Text('Quantity updated to $parsedValue.'),
+                                        duration: Duration(seconds: 2), // Optional: how long the SnackBar will be visible
+                                      ),
+                                    );
+                                  }
+                                },
+                                text: 'Update',
+                                icon: Icon(
+                                  Icons.update,
+                                  size: 15.0,
+                                ),
+                                options: FFButtonOptions(
+                                  height: 30.0,
+                                  color: Color(0xFF27AEDF),
+                                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                    fontFamily: 'Open Sans',
+                                    color: Colors.white,
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  elevation: 0.0,
+                                  borderSide: BorderSide(
+                                    color: Color(0xFF27AEDF),
+                                    width: 1.0,
+                                  ),
+                                ),
+                              ),
+
                               FFButtonWidget(
                                 //showLoadingIndicator: true,
                                 onPressed: () async {
                                   // _removeItem(item.id);
                                   await _cartService.removeFromCart(item.id);
                                   _removeItem(item.id); // Trigger the callback to refresh favorites
-                                  },
+                                },
                                 text: 'Remove',
                                 icon: Icon(
                                   Icons.close,

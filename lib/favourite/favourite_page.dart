@@ -505,8 +505,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           GestureDetector(
                             onTap: (){
                               setState(() {
-                                quantities[index]++;
-                                controllers[index].text = quantities[index].toString();
+                                if (controllers[index].text == '9999') {
+                                  // Perform any additional logic if required
+                                }else{
+                                  quantities[index]++;
+                                  controllers[index].text = quantities[index].toString();
+                                }
+
                               });
                             },
                             child: FaIcon(

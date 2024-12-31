@@ -36,6 +36,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   int count = 0;
   List<int> quantities = [];
   List<TextEditingController> controllers = [];
+  int? parsedValue;
 
   @override
   void initState() {
@@ -482,35 +483,54 @@ class _FavoritesPageState extends State<FavoritesPage> {
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.number,
                               onChanged: (value) {
-                                setState(() {
-                                  // Parse the value, allow 0 or empty temporarily
-                                  int quantity = int.tryParse(value) ?? 0;
+                                // Check if the input is empty
+                                if (value.isEmpty) {
+                                  parsedValue = null; // Set to null if the field is empty
+                                } else {
+                                  // Parse and validate the input
+                                  parsedValue = int.tryParse(value) ?? 1;
+                                  if (parsedValue! < 1) parsedValue = 1; // Clamp minimum value
+                                  //if (parsedValue! > 9999) parsedValue = 9999; // Clamp maximum value
+                                }
 
-                                  // Apply only the maximum limit
-                                  if (quantity > 9999) {
-                                    quantity = 9999;
-                                    controllers[index].text = quantity.toString();
-                                  }
-
-                                  // Update the quantity
-                                  quantities[index] = quantity;
-                                });
-                                // setState(() {
-                                //   quantities[index] = int.tryParse(value) ?? 0;
-                                // });
+                                // Update the controller text only if input is valid
+                                if (parsedValue != null) {
+                                  controllers[index].text = parsedValue.toString();
+                                  controllers[index].selection = TextSelection.fromPosition(
+                                    TextPosition(offset: controllers[index].text.length),
+                                  );
+                                }
                               },
+                              // onChanged: (value) {
+                              //   setState(() {
+                              //     // Parse the value, allow 0 or empty temporarily
+                              //     int quantity = int.tryParse(value) ?? 0;
+                              //
+                              //     // Apply only the maximum limit
+                              //     //if (quantity > 9999) {
+                              //     //  quantity = 9999;
+                              //       controllers[index].text = quantity.toString();
+                              //    // }
+                              //
+                              //     // Update the quantity
+                              //     quantities[index] = quantity;
+                              //   });
+                              //   // setState(() {
+                              //   //   quantities[index] = int.tryParse(value) ?? 0;
+                              //   // });
+                              // },
                             ),
                           ),
 
                           GestureDetector(
                             onTap: (){
                               setState(() {
-                                if (controllers[index].text == '9999') {
-                                  // Perform any additional logic if required
-                                }else{
+                                // if (controllers[index].text == '9999') {
+                                //   // Perform any additional logic if required
+                                // }else{
                                   quantities[index]++;
                                   controllers[index].text = quantities[index].toString();
-                                }
+                               // }
 
                               });
                             },

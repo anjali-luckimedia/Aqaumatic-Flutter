@@ -58,6 +58,7 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
   // List<int> favorites = [];
   int count = 0;
   List<int> quantity = [];
+  int? parsedValue;
 
   // Future<void> _loadFavorites() async {
   //   List<FavoriteItem> favoritesList = await _favoritesService.getFavourite();
@@ -629,20 +630,39 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                         textAlign: TextAlign.center,
                                         keyboardType: TextInputType.number,
                                         onChanged: (value) {
-                                          setState(() {
-                                            // Parse the value, allow 0 or empty temporarily
-                                            int quantity = int.tryParse(value) ?? 0;
+                                          // Check if the input is empty
+                                          if (value.isEmpty) {
+                                            parsedValue = null; // Set to null if the field is empty
+                                          } else {
+                                            // Parse and validate the input
+                                            parsedValue = int.tryParse(value) ?? 1;
+                                            if (parsedValue! < 1) parsedValue = 1; // Clamp minimum value
+                                            //if (parsedValue! > 9999) parsedValue = 9999; // Clamp maximum value
+                                          }
 
-                                            // Apply only the maximum limit
-                                            if (quantity > 9999) {
-                                              quantity = 9999;
-                                              controllers[getCatalougeProductListIndex].text = quantity.toString();
-                                            }
-
-                                            // Update the quantity
-                                            quantities[getCatalougeProductListIndex] = quantity;
-                                          });
+                                          // Update the controller text only if input is valid
+                                          if (parsedValue != null) {
+                                            controllers[getCatalougeProductListIndex].text = parsedValue.toString();
+                                            controllers[getCatalougeProductListIndex].selection = TextSelection.fromPosition(
+                                              TextPosition(offset: controllers[getCatalougeProductListIndex].text.length),
+                                            );
+                                          }
                                         },
+                                        // onChanged: (value) {
+                                        //   setState(() {
+                                        //     // Parse the value, allow 0 or empty temporarily
+                                        //     int quantity = int.tryParse(value) ?? 0;
+                                        //
+                                        //     // Apply only the maximum limit
+                                        //     // if (quantity > 9999) {
+                                        //     //   quantity = 9999;
+                                        //       controllers[getCatalougeProductListIndex].text = quantity.toString();
+                                        //     // }
+                                        //
+                                        //     // Update the quantity
+                                        //     quantities[getCatalougeProductListIndex] = quantity;
+                                        //   });
+                                        // },
                                       ),
                                     ),
 
@@ -651,13 +671,14 @@ class _CatalougeListPageWidgetState extends State<CatalougeListPageWidget> {
                                     GestureDetector(
                                       onTap: (){
                                         setState(() {
-                                          if (controllers[getCatalougeProductListIndex].text == '9999') {
-                                            // Perform any additional logic if required
-                                          }else{
+                                          // if (controllers[getCatalougeProductListIndex].text == '9999') {
+                                          //   // Perform any additional logic if required
+                                          // }else{
                                             quantities[getCatalougeProductListIndex]++;
                                             controllers[getCatalougeProductListIndex].text = quantities[getCatalougeProductListIndex].toString();
 
-                                          }  });
+                                         // }
+                                      });
                                       },
                                       child: FaIcon(
 

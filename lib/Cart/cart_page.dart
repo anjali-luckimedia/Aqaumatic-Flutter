@@ -512,7 +512,7 @@ class _CartScreenState extends State<CartScreen> {
                                         keyboardType: TextInputType.number,
                                         inputFormatters: [
                                           FilteringTextInputFormatter.digitsOnly, // Allow only numeric input
-                                          LengthLimitingTextInputFormatter(4),   // Limit the max input to 4 digits
+                                          //LengthLimitingTextInputFormatter(4),   // Limit the max input to 4 digits
                                         ],
                                         onChanged: (value) {
                                           // Check if the input is empty
@@ -522,7 +522,7 @@ class _CartScreenState extends State<CartScreen> {
                                             // Parse and validate the input
                                             parsedValue = int.tryParse(value) ?? 1;
                                             if (parsedValue! < 1) parsedValue = 1; // Clamp minimum value
-                                            if (parsedValue! > 9999) parsedValue = 9999; // Clamp maximum value
+                                            //if (parsedValue! > 9999) parsedValue = 9999; // Clamp maximum value
                                           }
 
                                           // Update the controller text only if input is valid
@@ -555,13 +555,13 @@ class _CartScreenState extends State<CartScreen> {
                                       onTap: () {
                                         setState(() {
                                           // Check if the quantity is less than the maximum value
-                                          if (controllers[index].text == '9999') {
-                                            // Perform any additional logic if required
-                                          }else{
+                                          // if (controllers[index].text == '9999') {
+                                          //   // Perform any additional logic if required
+                                          // }else{
                                             quantities[index]++;  // Increment the quantity
                                             controllers[index].text = quantities[index].toString();  // Update the controller text
                                             _incrementQuantity(item.id);
-                                          }
+                                         // }
                                         });
                                       },
                                       child: FaIcon(

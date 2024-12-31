@@ -60,6 +60,8 @@ class _CatalougeDetailsPageWidgetState
   List<dynamic>? relatedProducts1;
   List<int> quantitiesRel = [];
   List<TextEditingController> controllersRel = [];
+  int? parsedValueDetails;
+  int? parsedValueRel;
 
 
   int quantitiesDetails = 1;
@@ -522,23 +524,42 @@ class _CatalougeDetailsPageWidgetState
                                         textAlign: TextAlign.center,
                                         keyboardType: TextInputType.number,
                                         onChanged: (value) {
-                                          setState(() {
-                                            // Parse the value, allow 0 or empty temporarily
-                                            int quantity = int.tryParse(value) ?? 0;
+                                          // Check if the input is empty
+                                          if (value.isEmpty) {
+                                            parsedValueDetails = null; // Set to null if the field is empty
+                                          } else {
+                                            // Parse and validate the input
+                                            parsedValueDetails = int.tryParse(value) ?? 1;
+                                            if (parsedValueDetails! < 1) parsedValueDetails = 1; // Clamp minimum value
+                                            //if (parsedValue! > 9999) parsedValue = 9999; // Clamp maximum value
+                                          }
 
-                                            // Enforce only the maximum limit
-                                            if (quantity > 9999) {
-                                              quantity = 9999;
-                                              controllersDetails.text = quantity.toString(); // Correct input if it exceeds 9999
-                                              controllersDetails.selection = TextSelection.fromPosition( // Keep cursor at the end
-                                                TextPosition(offset: controllersDetails.text.length),
-                                              );
-                                            }
-
-                                            // Update the quantity
-                                            quantitiesDetails = quantity;
-                                          });
+                                          // Update the controller text only if input is valid
+                                          if (parsedValueDetails != null) {
+                                            controllersDetails.text = parsedValueDetails.toString();
+                                            controllersDetails.selection = TextSelection.fromPosition(
+                                              TextPosition(offset: controllersDetails.text.length),
+                                            );
+                                          }
                                         },
+                                        // onChanged: (value) {
+                                        //   setState(() {
+                                        //     // Parse the value, allow 0 or empty temporarily
+                                        //     int quantity = int.tryParse(value) ?? 0;
+                                        //
+                                        //     // Enforce only the maximum limit
+                                        //     // if (quantity > 9999) {
+                                        //     //   quantity = 9999;
+                                        //       controllersDetails.text = quantity.toString(); // Correct input if it exceeds 9999
+                                        //       controllersDetails.selection = TextSelection.fromPosition( // Keep cursor at the end
+                                        //         TextPosition(offset: controllersDetails.text.length),
+                                        //       );
+                                        //   //  }
+                                        //
+                                        //     // Update the quantity
+                                        //     quantitiesDetails = quantity;
+                                        //   });
+                                        // },
                                       ),
                                     ),
 
@@ -546,13 +567,13 @@ class _CatalougeDetailsPageWidgetState
                                     GestureDetector(
                                       onTap: (){
                                         setState(() {
-                                          if (controllersDetails.text == '9999') {
-                                            // Perform any additional logic if required
-                                          }else{
+                                          // if (controllersDetails.text == '9999') {
+                                          //   // Perform any additional logic if required
+                                          // }else{
 
                                             quantitiesDetails++;
                                             controllersDetails.text = quantitiesDetails.toString();
-                                          }
+                                         // }
                                         });
                                       },
                                       child: FaIcon(
@@ -805,23 +826,42 @@ class _CatalougeDetailsPageWidgetState
                                                               textAlign: TextAlign.center,
                                                               keyboardType: TextInputType.number,
                                                               onChanged: (value) {
+                                                                // Check if the input is empty
+                                                                if (value.isEmpty) {
+                                                                  parsedValueRel = null; // Set to null if the field is empty
+                                                                } else {
+                                                                  // Parse and validate the input
+                                                                  parsedValueRel = int.tryParse(value) ?? 1;
+                                                                  if (parsedValueRel! < 1) parsedValueRel = 1; // Clamp minimum value
+                                                                  //if (parsedValue! > 9999) parsedValue = 9999; // Clamp maximum value
+                                                                }
 
-                                                                setState(() {
-                                                                  // Parse the value, allow 0 or empty temporarily
-                                                                  int quantity = int.tryParse(value) ?? 0;
-
-                                                                  // Apply only the maximum limit
-                                                                  if (quantity > 9999) {
-                                                                    quantity = 9999;
-                                                                    controllersRel[index].text = quantity.toString();
-                                                                  }
-
-                                                                  // Update the quantity
-                                                                  quantitiesRel[index] = quantity;
-                                                                });
-                                                                //controllersRel[index].text = quantitiesRel[index].toString();
-
+                                                                // Update the controller text only if input is valid
+                                                                if (parsedValueRel != null) {
+                                                                  controllersRel[index].text = parsedValueRel.toString();
+                                                                  controllersRel[index].selection = TextSelection.fromPosition(
+                                                                    TextPosition(offset: controllersRel[index].text.length),
+                                                                  );
+                                                                }
                                                               },
+                                                              // onChanged: (value) {
+                                                              //
+                                                              //   setState(() {
+                                                              //     // Parse the value, allow 0 or empty temporarily
+                                                              //     int quantity = int.tryParse(value) ?? 0;
+                                                              //
+                                                              //     // Apply only the maximum limit
+                                                              //     if (quantity > 9999) {
+                                                              //       quantity = 9999;
+                                                              //       controllersRel[index].text = quantity.toString();
+                                                              //     }
+                                                              //
+                                                              //     // Update the quantity
+                                                              //     quantitiesRel[index] = quantity;
+                                                              //   });
+                                                              //   //controllersRel[index].text = quantitiesRel[index].toString();
+                                                              //
+                                                              // },
                                                             ),
                                                           ),
                                                           GestureDetector(
@@ -829,13 +869,13 @@ class _CatalougeDetailsPageWidgetState
                                                               setState(() {
                                                                 print('Controller Text: ${controllersRel[index].text}');
                                                                 print('Quantity: ${quantitiesRel[index]}');
-                                                                if (controllersRel[index].text == '9999') {
-                                                                  // Perform any additional logic if required
-                                                                }else{
+                                                                // if (controllersRel[index].text == '9999') {
+                                                                //   // Perform any additional logic if required
+                                                                // }else{
                                                                   quantitiesRel[index]++;
                                                                   // Update the TextEditingController's text
                                                                   controllersRel[index].text = quantitiesRel[index].toString();
-                                                                }
+                                                                //}
 
                                                               });
                                                             },
